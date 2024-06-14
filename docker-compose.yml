@@ -49,3 +49,22 @@ services:
     volumes:
       - "./certbot/conf:/etc/letsencrypt"
       - "./certbot/www:/var/www/certbot"
+  
+  db:
+    image: postgres:14.1-alpine
+    restart: always
+    env_file:
+      - .env
+    environment:
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    # volumes:
+    #  - ../events-db/init:/docker-entrypoint-initdb.d
+    #  - /events-db/data:/var/lib/postgresql/data
+    ports:
+      - 5433:5432
+    networks:
+      - ldt
+      
+networks:
+  ldt:
+    driver: bridge
