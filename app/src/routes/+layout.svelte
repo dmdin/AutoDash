@@ -1,36 +1,68 @@
-<script>
-  import "../app.css";
+<script lang="ts">
+  import { onMount } from 'svelte';
+  import { scale } from 'svelte/transition'
+	import { signIn, signOut } from '@auth/sveltekit/client';
+
+  import Enter from '~icons/iconamoon/enter';
+	import Exit from '~icons/iconamoon/exit';
+  import Moon from '~icons/ph/moon';
+  import Sun from '~icons/ph/sun';
+
+	import '../app.css';
+  import { theme, type Themes } from '$stores'
+
+	export let data;
+
+  onMount(() => {
+    const savedTheme = localStorage.getItem('theme') ?? 'light' 
+    theme.set(savedTheme as Themes)
+  })
+
 </script>
 
-<slot/>
+<div id="theme-root" data-theme={$theme} class="w-full h-full min-h-[100vh] flex flex-col transition-colors">
+<header class="m-2">
+	<div class="navbar">
+		<div class="flex-1">
+			<a
+				class="btn btn-ghost bg-gradient-to-r from-primary to-secondary inline-block text-transparent bg-clip-text text-xl font-black"
+				><i class="text-3xl">AutoDash</i></a
+			>
+		</div>
+		<div class="flex gap-4">
+      <button
+        class="btn btn-square btn-sm flex items-center gap-4 transition hover:text-primary"
+        on:click={() => ($theme = $theme === 'light' ? 'dark' : 'light')}
+		  >
+			{#if $theme === 'light'}
+        <span in:scale={{duration: 300}}>
+          <Sun width="24" />
+        </span>
+			{:else}
+        <span in:scale={{duration: 300}}>
+          <Moon width="24" />
+        </span>
+			{/if}
+		</button>
 
-<!--<header>-->
-<!--  <div class="navbar bg-base-100">-->
-<!--    <div class="flex-1">-->
-<!--      <a class="btn btn-ghost text-xl">HackStarter</a>-->
-<!--    </div>-->
-<!--    <div class="flex-none">-->
-<!--      <ul class="menu menu-horizontal px-1">-->
-<!--        <li><a>Link</a></li>-->
-<!--        <li>-->
-<!--          <details>-->
-<!--            <summary>-->
-<!--              Parent-->
-<!--            </summary>-->
-<!--            <ul class="p-2 bg-base-100 rounded-t-none">-->
-<!--              <li><a>Link 1</a></li>-->
-<!--              <li><a>Link 2</a></li>-->
-<!--            </ul>-->
-<!--          </details>-->
-<!--        </li>-->
-<!--      </ul>-->
-<!--    </div>-->
-<!--  </div>-->
+			{#if !data.session}
+				<button class="btn btn-primary btn-sm" on:click={signIn}>
+					<Enter />
+					Войти
+				</button>
+			{:else}
+				<button class="btn btn-outline btn-sm" on:click={signOut}>
+					<Exit />
+					Выйти
+				</button>
+			{/if}
+		</div>
+	</div>
+</header>
 
-<!--</header>-->
-<!--<main class="grow h-full @container/main flex flex-col">-->
-<!--  <slot />-->
-<!--</main>-->
+<main class="grow h-full @container/main flex flex-col">
+	<slot />
+</main>
 
 <!--<footer class="footer items-center p-4 bg-neutral text-neutral-content">-->
 <!--  <aside class="items-center grid-flow-col">-->
@@ -44,3 +76,4 @@
 <!--    <a><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="fill-current"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"></path></svg></a>-->
 <!--  </nav>-->
 <!--</footer>-->
+</div>
