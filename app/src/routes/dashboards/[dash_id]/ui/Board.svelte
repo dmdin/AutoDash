@@ -1,4 +1,5 @@
 <script>
+  import { theme } from '$stores'
   import { writable } from 'svelte/store';
   import {
     SvelteFlow,
@@ -9,7 +10,9 @@
   } from '@xyflow/svelte';
 
   import '@xyflow/svelte/dist/style.css';
+  import BlockNode from './BlockNode.svelte'
   import ContextMenu from './ContextMenu.svelte'
+  import DownloadButton from './DownloadButton.svelte'
   import PlotNode from './PlotNode.svelte'
 
   let menu
@@ -25,10 +28,9 @@
       position: { x: 0, y: 0 }
     },
     {
-      id: '2',
+      id: '2a',
       type: 'plot-node',
-      data: { label: 'Node' },
-      position: { x: 0, y: 150 }
+      position: { x: 0, y: 150 },
     }
   ]);
 
@@ -38,7 +40,8 @@
   const snapGrid = [25, 25];
 
   const nodeTypes = {
-    'plot-node': PlotNode
+    'plot-node': PlotNode,
+    'block-node': BlockNode
   }
 
   function handleContextMenu({ detail }) {
@@ -60,23 +63,22 @@
   }
 </script>
 
-<div class="mx-auto max-w-[1080px] h-screen relative" bind:clientWidth={width} bind:clientHeight={height} bind:this={boardDom}>
+<div class="w-full h-full relative" bind:clientWidth={width} bind:clientHeight={height} bind:this={boardDom}>
   <SvelteFlow
     {nodes}
     {edges}
     {snapGrid}
     {nodeTypes}
     fitView
+    colorMode={$theme}
     on:nodeclick={(event) => console.log('on node click', event.detail.node)}
     on:selectionclick={() => console.log('on:selectionclick')}
     on:selectioncontextmenu={handleContextMenu}
     on:nodecontextmenu={handleContextMenu}
     on:paneclick={handlePaneClick}
   >
-    <Controls />
     <Background variant={BackgroundVariant.Dots} />
-    <MiniMap />
-
+    <DownloadButton />
     {#if menu}
       <ContextMenu
         onClick={handlePaneClick}
