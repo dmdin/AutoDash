@@ -1,0 +1,51 @@
+version: '3.3'
+
+services:
+  sveltekit:
+    container_name: sveltekit-container
+    restart: unless-stopped
+    build:
+      context: ./app
+      dockerfile: ./app/Dockerfile
+    environment:
+      - PORT=3000
+    volumes:
+      - ./static:/app/static
+    ports:
+      - 3000:3000
+    depends_on:
+      - redis
+
+  redis:
+    container_name: redis-container
+    image: redis:latest
+    restart: always
+    entrypoint: redis-server --appendonly yes --requirepass REDIS_PASSWORD_HERE --maxmemory 512mb --maxmemory-policy allkeys-lru
+    networks:
+      - default
+    ports:
+      - 6379:6379
+    volumes:
+      - /tmp/appdata/redis/data:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+  nginx:
+    image: nginx
+    container_name: nginx
+    ports:
+      - 80:80
+      - 443:443
+    restart: always
+    volumes:
+      - ../nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ../certbot/conf:/etc/letsencrypt
+      - ../certbot/www:/var/www/certbot
+
+  certbot:
+    image: certbot/certbot:latest
+    #docker-compose run --rm certbot certonly --webroot --webroot-path /var/www/certbot/ --dry-run -d domain_name -
+    #docker-compose run --rm certbot certonly --webroot --webroot-path /var/www/certbot/ -d domain_name
+    volumes:
+      - "./certbot/conf:/etc/letsencrypt"
+      - "./certbot/www:/var/www/certbot"
