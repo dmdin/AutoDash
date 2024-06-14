@@ -51,6 +51,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@xyflow/svelte": "^0.1.6",
 		"drizzle-orm": "^0.29.3",
 		"postgres": "^3.4.3"
 	}
