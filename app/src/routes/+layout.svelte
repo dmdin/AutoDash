@@ -21,11 +21,11 @@
 </script>
 
 <div id="theme-root" data-theme={$theme} class="w-full h-full min-h-[100vh] flex flex-col transition-colors">
-<header class="m-2">
+<header class="m-2 border-b border-neutral/40">
 	<div class="navbar">
 		<div class="flex-1">
 			<a
-				class="btn btn-ghost bg-gradient-to-r from-primary to-secondary inline-block text-transparent bg-clip-text text-xl font-black"
+				class="p-0 btn btn-ghost bg-gradient-to-r from-primary to-secondary inline-block text-transparent bg-clip-text text-xl font-black"
 				><i class="text-3xl">AutoDash</i></a
 			>
 		</div>
@@ -60,7 +60,7 @@
 	</div>
 </header>
 
-<main class="grow h-full @container/main flex flex-col">
+<main class="grow h-full @container/main flex flex-col px-2">
 	<slot />
 </main>
 
