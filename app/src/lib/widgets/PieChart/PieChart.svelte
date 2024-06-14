@@ -23,23 +23,33 @@
       top: 0,
       left: 0,
       right: 0,
-      show: true,
+      bottom: 0,
+      show: false,
+      borderWidth: 1,
     },
 		tooltip: {
 			trigger: 'item'
 		},
 		legend: {
 			orient: 'vertical',
-			right: '45%',
+			right: '10',
 			top: 'middle',
       icon: 'circle',
+      textStyle: {
+        fontSize: 12,
+        fontWeight: 'lighter',
+      }
 		},
 		series: [
 			{
+        width: 180,
+        height: 180,
 				name: 'Access From',
 				type: 'pie',
-				radius: ['30%', '40%'],
+        center: ['33%', '38%'],
+				radius: ['40%', '50%'],
 				avoidLabelOverlap: false,
+        position: 'left',
 				data: [
 					{ value: 1048, name: 'Search Engine', color: SERIES_COLORS[0] },
 					{ value: 735, name: 'Direct', color: SERIES_COLORS[1] },
@@ -47,10 +57,8 @@
 					{ value: 484, name: 'Union Ads', color: SERIES_COLORS[3] },
 					{ value: 300, name: 'Video Ads', color: SERIES_COLORS[4] }
 				],
-        right: '50%',
 				label: {
 					show: false,
-					position: 'center'
 				},
 				itemStyle: {
 					borderRadius: 100,
@@ -70,9 +78,9 @@
 	};
 </script>
 
-<div class="w-[800px] bg-base-200 rounded-[16px] p-[24px]">
+<div class="w-[400px] bg-base-200 rounded-[16px] p-[24px]">
   <h3 class="text-base-content text-[16px] font-semibold leading-5">Overview Data</h3>
-  <div class="w-[800px] h-[400px]">
-    <Chart {init} {options} />
+  <div class="w-[350px] h-[120px]">
+    <Chart x={0} {init} {options} />
   </div>
 </div>
