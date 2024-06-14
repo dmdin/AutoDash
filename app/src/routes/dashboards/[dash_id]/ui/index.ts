@@ -1,1 +1,1 @@
-export { default as PlotNode } from './PlotNode.svelte'
+export { default as Board } from './Board.svelte'
