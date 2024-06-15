@@ -27,7 +27,8 @@ export default {
 					'base-100': '#ffffff',
 					'base-200': '#f7f9fb',
 					'base-300': '#e5ecf6',
-					neutral: '#474848'
+					neutral: '#474848',
+          success: '#BAEDBD',
 				}
 			},
 			{
@@ -38,7 +39,8 @@ export default {
 					'base-100': '#1c1c1c',
 					'base-200': '#282828',
 					'base-300': '#e5ecf6',
-					neutral: '#e5ecf6'
+					neutral: '#e5ecf6',
+          success: '#BAEDBD',
 				}
 			}
 		]
