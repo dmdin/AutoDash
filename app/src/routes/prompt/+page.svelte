@@ -5,6 +5,7 @@
 	import Dice from '~icons/fad/random-1dice';
 	import Spark from '~icons/streamline/ai-generate-variation-spark';
 	import Play from '~icons/solar/play-broken';
+	import Save from '~icons/material-symbols/save-outline';
 
 	function randomTopic(params: type) {
 		topic = 'Отчет по рынку BI систем';
@@ -56,8 +57,15 @@
 		bind:value={description}
 	></textarea>
 
-	<button class="self-end btn text-md btn-primary mt-4" on:click={generateDashboard}>
-		<Play />
-		Сгенерировать отчет
-	</button>
+	<div class="flex gap-5">
+		<button class="self-end btn text-md btn-primary mt-4" on:click={generateDashboard}>
+			<Play />
+			Сгенерировать отчет
+		</button>
+
+		<button class="self-end btn text-md btn-secondary mt-4">
+			<Save width="20" height="20"/>
+			Сохранить шаблон
+		</button>
+	</div>
 </div>
