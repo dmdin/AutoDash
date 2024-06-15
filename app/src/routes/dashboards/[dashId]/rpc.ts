@@ -1,8 +1,8 @@
 import { db } from '$repo/db'
 import type { TableType } from '$repo/db/utils'
-import { dashboards, widgets } from '$schema'
+import { blocks, dashboards, widgets } from '$schema'
 import { rpc } from '@chord-ts/rpc'
-import { eq } from 'drizzle-orm'
+import { asc, desc, eq } from 'drizzle-orm'
 
 export class Dashboard {
 
@@ -16,7 +16,8 @@ export class Dashboard {
             widgets: true
           }
         }
-      }
+      },
+      orderBy: [desc(blocks.order), desc(widgets.order)]
     })
   }
 

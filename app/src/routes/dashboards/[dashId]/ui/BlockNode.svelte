@@ -1,11 +1,8 @@
-<script>
-  import { Background, BackgroundVariant } from '@xyflow/svelte'
-
-  export let data
+<script lang="ts">
+  export let data: {
+    name: string
+  }
   export let selected
 </script>
 
-<div class="w-[1080px] h-96 p-4 border-2">
-  <p>{data.label}</p>
-</div>
-
+<h1 class="border-l-2 border-neutral pl-2 max-w-64 text-xl font-bold max-w-[900px]">{data.name}</h1>

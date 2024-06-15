@@ -5,20 +5,21 @@
   import { WIDGET_SHIFT_X, WIDGET_SHIFT_Y } from '$root/routes/dashboards/[dashId]/constants'
   import TextNode from '$root/routes/dashboards/[dashId]/ui/TextNode.svelte'
   import { theme } from '$stores'
-  import { onMount } from 'svelte'
+  import { onMount, tick } from 'svelte'
   import { writable } from 'svelte/store';
   import {
     SvelteFlow,
     Controls,
     Background,
     BackgroundVariant,
-    MiniMap
-  } from '@xyflow/svelte';
+    MiniMap, getNodesBounds,
+  } from '@xyflow/svelte'
   import '@xyflow/svelte/dist/style.css';
   import BlockNode from './BlockNode.svelte'
   import ContextMenu from './ContextMenu.svelte'
   import PlotNode from './PlotNode.svelte'
   import { nodes, edges, dashboard, reservedPlace, dashId } from '../controller'
+  import { useNodesInitialized } from '@xyflow/svelte'
 
   const TEXT_NODE_SIZE = { height: 25 }
 
@@ -40,6 +41,7 @@
   })
 
   async function createNodes() {
+    console.log('qwe')
     if (!$dashboard) return
 
     for (const block of $dashboard.blocks) {
@@ -49,34 +51,56 @@
       }
       const textNode = {
         id: block.id,
-        type: 'text-node',
+        type: 'block-node',
         position: position,
         data: block
       }
-      $nodes = [...$nodes, textNode]
-      // endX: width - Это хак, чтобы после ноды с текстом, все переходило на новую строку
-      $reservedPlace = { x: 0, y: position.y, endX: width, endY: position.y + TEXT_NODE_SIZE.height}
 
-      for (const widget of block.widgets) {
+      await addNode(textNode, width) // Тут добавляем extra bound, чтобы виджеты не заходили на эту же линиюy
+
+      for (const widget of block.widgets.sort((a, b) => a.order - b.order)) {
         let position
-        if (widget.xPos === null || widget.yPos === null) {
-          position = calcPos()
-          await rpc.Dashboard.updateWidget(widget.id, { xPos: position.x, yPos: position.y })
-        } else {
-          position = { x: widget.xPos, y: widget.yPos }
-        }
+        position = calcPos()
+        // if (widget.xPos === null || widget.yPos === null) {
+        //   position = calcPos()
+        //   await rpc.Dashboard.updateWidget(widget.id, { xPos: position.x, yPos: position.y })
+        // } else {
+        //   position = { x: widget.xPos, y: widget.yPos }
+        // }
 
+        const nodeType = widget.data.type === 'text' ? 'text-node' : 'plot-node'
+        console.log(widget)
         const node = {
           id: widget.id,
-          type: 'plot-node',
+          type: nodeType,
           position: position,
           data: widget
         }
 
-        $reservedPlace = { x: position.x, y: position.y, endX: position.x + CHART_WIDTH, endY: position.y + CHART_HEIGHT }
-        $nodes = [...$nodes, node]
+        await addNode(node, nodeType === 'text-node' ? width : 0) // 🤪🤪🤪🤪🤪
       }
     }
+  }
+
+  async function addNode(node, extraBoundX = 0, extraBoundY = 0) {
+    $nodes = [...$nodes, node]
+    const bounds = await getNodeBounds($nodes.length - 1)
+    $reservedPlace = { x: bounds.x, y: bounds.y, endX: bounds.x + bounds.width + extraBoundX,
+      endY: bounds.y + bounds.height + extraBoundY }
+  }
+
+  async function getNodeBounds(ind) {
+    return new Promise((resolve) => {
+      const timer = setInterval(() => { // 🤪🤪🤪🤪🤪
+        const bounds = getNodesBounds([$nodes[ind]])
+        console.log(bounds)
+        if (bounds.width !== 0) {
+          clearInterval(timer)
+          resolve(bounds)
+        }
+      }, 10)
+    })
+
   }
 
   function calcPos() {
