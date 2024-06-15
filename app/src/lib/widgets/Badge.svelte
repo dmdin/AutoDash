@@ -11,11 +11,11 @@
 <div
 	class="max-w-[200px] max-h-[120px] h-full flex-shrink-0 p-[24px] rounded-[16px] bg-base-200 {$$props.class}"
 >
-	<h3 class="text-base-content font-semibold text-[14px] mb-[8px] truncate">{title}</h3>
+	<h3 class="text-primary-content font-semibold text-[14px] mb-[8px] truncate">{title}</h3>
 
 	<div class="flex gap-10 justify-between items-center">
-		<p class="text-base-content font-semibold text-[24px]">{formatNumber(value)}&nbsp;{unit}</p>
-		<p class="text-base-content text-[12px] gap-[4px] flex justify-center items-center">
+		<p class="text-primary-content font-semibold text-[24px]">{formatNumber(value)}&nbsp;{unit}</p>
+		<p class="text-primary-content text-[12px] gap-[4px] flex justify-center items-center">
 			{#if delta > 0}
 				<Icon icon="ep:plus" width="8px" height="8px" style="color: black" />
 			{/if}
