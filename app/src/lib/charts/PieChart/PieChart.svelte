@@ -2,8 +2,7 @@
 	import { Chart } from 'svelte-echarts';
 
 	import { init, use } from 'echarts/core';
-	import { color, type EChartsOption } from 'echarts';
-	import { BarChart, PieChart } from 'echarts/charts';
+	import { PieChart } from 'echarts/charts';
 	import {
 		GridComponent,
 		LegendComponent,
@@ -12,11 +11,14 @@
 	} from 'echarts/components';
 	import { CanvasRenderer } from 'echarts/renderers';
 	import { SERIES_COLORS } from './constants';
+	import type { Series } from '../types';
 
-	// now with tree-shaking
 	use([PieChart, GridComponent, TooltipComponent, LegendComponent, GridComponent, CanvasRenderer, TitleComponent]);
 
-  export let title = ''
+  export let title: string = ''
+  export let subtitle: string = ''
+  export let category: string[] | null = null
+  export let series: Series[]
 
 	let options = {
     grid: {
