@@ -16,6 +16,12 @@
     	"emitDecoratorMetadata": true,
 		"paths": {
 			"$schema": ["./src/schema.ts"],
+			"$repo": ["./src/lib/server/repo"],
+			"$repo/*": ["./src/lib/server/repo/*"],
+			"$client": ["./src/lib/client"],
+			"$client/*": ["./src/lib/client/*"],
+			"$server": ["./src/lib/server"],
+			"$server/*": ["./src/lib/server/*"]
 		}
 	}
 	// Path aliases are handled by https://kit.svelte.dev/docs/configuration#alias
