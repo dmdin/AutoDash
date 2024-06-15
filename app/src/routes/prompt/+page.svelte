@@ -4,6 +4,7 @@
 	import { rpc} from '$root/routes'
 	import Dice from '~icons/fad/random-1dice'
 	import Spark from '~icons/streamline/ai-generate-variation-spark'
+	import Play from '~icons/solar/play-broken';
 
 	function randomTopic(params: type) {
 		topic = 'Отчет по рынку BI систем'
@@ -59,7 +60,8 @@
 		bind:value={description}
 	></textarea>
 
-	<button class="btn btn-sm btn-primary mt-1" on:click={generateDashboard}>
+	<button class="self-end btn text-md btn-primary mt-4" on:click={generateDashboard}>
+		<Play/>
 		Сгенерировать отчет
 	</button>
 </div>

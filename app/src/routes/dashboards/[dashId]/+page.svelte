@@ -19,6 +19,8 @@
     loading = false
   })
 </script>
+
+
 {#if loading}
   <div class="absolute w-full h-full flex justify-center items-center">
     <Circle color="oklch(var(--p))" size="80" />
@@ -26,7 +28,7 @@
 {:else}
   <div class="w-full h-full grid grid-cols-8">
     <div class="col-span-1"></div>
-    <div class="mx-auto h-screen col-span-6">
+    <div class="col-span-6">
       <h2>Отчет</h2>
       <Block/>
     </div>
