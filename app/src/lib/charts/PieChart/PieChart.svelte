@@ -43,7 +43,7 @@
 	style:width="{CHART_WIDTH}px"
 	style:height="{CHART_HEIGHT}px"
 >
-	<h3 class="text-base-content text-[16px] font-semibold leading-5">Overview Data</h3>
+	<h3 class="text-base-content text-[16px] font-semibold leading-5">{title}</h3>
 	<div class="w-full h-full">
 		{#if options}
 			<Chart x={0} {init} {options} />
