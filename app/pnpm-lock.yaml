@@ -14,6 +14,9 @@ importers:
       '@xyflow/svelte':
         specifier: ^0.1.6
         version: 0.1.6(postcss-load-config@4.0.2(postcss@8.4.35))(postcss@8.4.35)(svelte@4.2.11)(typescript@5.0.2)
+      dotenv:
+        specifier: ^16.4.5
+        version: 16.4.5
       drizzle-orm:
         specifier: ^0.29.3
         version: 0.29.3(@neondatabase/serverless@0.8.1)(@types/pg@8.6.6)(postgres@3.4.3)
@@ -1747,8 +1750,8 @@ packages:
   dompurify@2.5.5:
     resolution: {integrity: sha512-FgbqnEPiv5Vdtwt6Mxl7XSylttCC03cqP5ldNT2z+Kj0nLxPHJH4+1Cyf5Jasxhw93Rl4Oo11qRoUV72fmya2Q==}
 
-  dotenv@16.4.4:
-    resolution: {integrity: sha512-XvPXc8XAQThSjAbY6cQ/9PcBXmFoWuw1sQ3b8HqUCR6ziGXjkTi//kB9SWa2UwqlgdAIuRqAa/9hVljzPehbYg==}
+  dotenv@16.4.5:
+    resolution: {integrity: sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==}
     engines: {node: '>=12'}
 
   dreamopt@0.8.0:
@@ -4558,7 +4561,7 @@ snapshots:
   auri@1.0.2:
     dependencies:
       '@actions/core': 1.10.1
-      dotenv: 16.4.4
+      dotenv: 16.4.5
       front-matter: 4.0.2
       nanoid: 4.0.2
       oslo: 1.1.2
@@ -4865,7 +4868,7 @@ snapshots:
   dompurify@2.5.5:
     optional: true
 
-  dotenv@16.4.4: {}
+  dotenv@16.4.5: {}
 
   dreamopt@0.8.0:
     dependencies:
