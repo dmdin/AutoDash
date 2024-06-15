@@ -122,6 +122,116 @@ export class Prompt {
                 ]
               }
             ]
+          },
+          {
+            "type":
+              "pie"
+            ,
+            "title":
+              "Traffic by Location"
+            ,
+            "subtitle":
+              ""
+            ,
+            "category": [],
+            "series": [
+              {
+                "name":
+                  ""
+                ,
+                "type":
+                  "pie"
+                ,
+                "unit":
+                  "%"
+                ,
+                "data": [
+                  {
+                    "name":
+                      "United States"
+                    ,
+                    "value":
+                      "38.6"
+                  },
+                  {
+                    "name":
+                      "Canada"
+                    ,
+                    "value":
+                      "22.5"
+                  },
+                  {
+                    "name":
+                      "Mexico"
+                    ,
+                    "value":
+                      "30.8"
+                  },
+                  {
+                    "name":
+                      "other"
+                    ,
+                    "value":
+                      "30.8"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type":
+              "pie"
+            ,
+            "title":
+              "Traffic by Location"
+            ,
+            "subtitle":
+              ""
+            ,
+            "category": [],
+            "series": [
+              {
+                "name":
+                  ""
+                ,
+                "type":
+                  "pie"
+                ,
+                "unit":
+                  "%"
+                ,
+                "data": [
+                  {
+                    "name":
+                      "United States"
+                    ,
+                    "value":
+                      "38.6"
+                  },
+                  {
+                    "name":
+                      "Canada"
+                    ,
+                    "value":
+                      "22.5"
+                  },
+                  {
+                    "name":
+                      "Mexico"
+                    ,
+                    "value":
+                      "30.8"
+                  },
+                  {
+                    "name":
+                      "other"
+                    ,
+                    "value":
+                      "30.8"
+                  }
+                ]
+              }
+            ]
           }
         ]
       }

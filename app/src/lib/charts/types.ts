@@ -1,10 +1,5 @@
 export enum ChartType {
   Pie = 'pie',
-  Custom = 'custom',
-}
-
-export enum SeriesType {
-  Pie = 'pie',
   Bar = 'bar',
   Line = 'line',
 }
@@ -16,7 +11,6 @@ export interface SeriesData {
 
 export interface Series {
   name: string,
-  type: SeriesType,
   unit: string,
   data: SeriesData[],
 }

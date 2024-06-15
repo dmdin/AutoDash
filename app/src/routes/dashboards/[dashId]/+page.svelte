@@ -26,10 +26,9 @@
     <Circle color="oklch(var(--p))" size="80" />
   </div>
 {:else}
-  <div class="w-full h-full grid grid-cols-8">
+  <div class="w-full flex-1 grid grid-cols-8">
     <div class="col-span-1"></div>
-    <div class="col-span-6">
-      <h2>Отчет</h2>
+    <div class="mx-auto h-full col-span-6">
       <Block/>
     </div>
     <div class="col-span-1 pt-4">

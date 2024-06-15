@@ -2,7 +2,8 @@
 	import type { Chart } from "svelte-echarts";
 	import { ChartType } from "./types";
 	import PieChart from "./PieChart/PieChart.svelte";
-	import CustomChart from "./CustomChart/CustomChart.svelte";
+	import BarChart from "./BarChart/BarChart.svelte";
+	import LineChart from "./LineChart/LineChart.svelte";
 
   export let chart: Chart
 </script>
@@ -11,6 +12,10 @@
   <PieChart {...chart} />
 {/if}
 
-{#if chart.type === ChartType.Custom}
-  <CustomChart {...chart} />
+{#if chart.type === ChartType.Bar}
+  <BarChart {...chart} />
+{/if}
+
+{#if chart.type === ChartType.Line}
+  <LineChart {...chart} />
 {/if}
