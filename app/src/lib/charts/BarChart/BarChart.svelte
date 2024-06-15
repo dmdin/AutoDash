@@ -33,7 +33,7 @@
 		TitleComponent
 	]);
 
-	let options = null
+	let options = null;
 
 	onMount(() => {
 		options = configureOptions(BAR_VIEW_CONFIGURATION, BAR_SERIES, series, category);
@@ -46,9 +46,11 @@
 	style:height="{CHART_HEIGHT}px"
 >
 	<h3 class="text-base-content text-[16px] font-semibold leading-5">{title}</h3>
-	{#if options}
-		<div class="w-full h-full">
-			<Chart {init} {options} />
-		</div>
-	{/if}
+	{#key options}
+		{#if options}
+			<div class="w-full h-full">
+				<Chart {init} {options} />
+			</div>
+		{/if}
+	{/key}
 </div>
