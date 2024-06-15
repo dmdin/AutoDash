@@ -17,7 +17,10 @@ const config = {
 			$stores: 'src/lib/client/stores',
 			$auth: 'src/routes/auth',
 			$module: 'src/routes/test',
-			$schema: 'src/schema'
+			$schema: 'src/schema',
+			$repo: 'src/lib/server/repo',
+			$client: 'src/lib/client',
+			$server: 'src/lib/server',
 		}
 	},
 };

@@ -19,12 +19,22 @@ export const dashboards = pgTable('dashboards', {
   templateId: uuid('templateId').references(() => templates.id).notNull()
 })
 
+export const dashboardsRelations = relations(dashboards, ({ one, many }) => ({
+  template: one(templates, {fields: [dashboards.templateId], references: [templates.id]}),
+  blocks: many(blocks)
+}))
+
 export const blocks = pgTable('blocks', {
   id: uuid('id').primaryKey().defaultRandom(),
   dashboardId: uuid('dashboardId').references(() => dashboards.id).notNull(),
   order: integer('order').notNull(),
   name: text('name')
 })
+
+export const blocksRelations = relations(blocks, ({ many, one }) => ({
+  dashboard: one(dashboards, { fields: [blocks.dashboardId], references: [dashboards.id]}),
+  widgets: many(widgets)
+}))
 
 export const widgets = pgTable('widgets', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -36,8 +46,17 @@ export const widgets = pgTable('widgets', {
   height: integer('height')
 })
 
+export const widgetsRelations = relations(widgets, ({ many, one}) => ({
+  block: one(blocks, { fields: [widgets.blockId], references: [blocks.id]}),
+  prompts: many(prompts)
+}))
+
 export const prompts = pgTable('prompts', {
   id: uuid('id').primaryKey().defaultRandom(),
   widgetId: uuid('widgetId').references(() => widgets.id).notNull(),
   text: text('text')
 })
+
+export const promptsRelations = relations(prompts, ({ one }) => ({
+  widget: one(widgets, {fields: [prompts.widgetId], references: [widgets.id]})
+}))
