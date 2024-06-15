@@ -5,51 +5,32 @@
 	import { BADGES } from './constants';
 
 	const barChart = {
-		title: 'Traffic by Device',
-		subtitle: '',
 		type: 'pie',
-		categories: null,
+		title: 'Smartphone Revenue Growth Q1 2024',
+		subtitle: 'Year-on-Year Revenue Growth by Vendor',
+		category: ['Samsung', 'Apple', 'Xiaomi', 'TRANSSION', 'OPPO'],
 		series: [
 			{
-				name: '',
-				unit: '',
+				name: 'Revenue Growth',
+				unit: '%',
 				data: [
-					{
-						name: 'Linux',
-						value: '10000000'
-					},
-					{
-						name: 'Mac',
-						value: '21000000'
-					},
-					{
-						name: 'IOS',
-						value: '20500000'
-					},
-					{
-						name: 'Windows',
-						value: '25000000'
-					},
-					{
-						name: 'Android',
-						value: '10000000'
-					},
-					{
-						name: 'Other',
-						value: '22000000'
-					}
+					{ name: 'Samsung', value: 5 },
+					{ name: 'Apple', value: 21 },
+					{ name: 'Xiaomi', value: 33 },
+					{ name: 'TRANSSION', value: 86 },
+					{ name: 'OPPO', value: 10 }
 				]
 			}
 		]
 	};
 
-  // setTimeout(() => {
-  //   barChart.type = 'bar'
-  // }, 3000)
+	// setTimeout(() => {
+	//   barChart.type = 'bar'
+	// }, 3000)
 
-  // setTimeout(() => {
-  //   barChart.type = 'line'
-  // }, 7000)
+	// setTimeout(() => {
+	//   barChart.type = 'line'
+	// }, 7000)
 </script>
 
 <div
