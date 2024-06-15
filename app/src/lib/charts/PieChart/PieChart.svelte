@@ -34,7 +34,7 @@
 	let options = null;
 
 	onMount(() => {
-		options = configureOptions(PIE_VIEW_CONFIG, PIE_SERIES, series, category);
+		options = configureOptions(PIE_VIEW_CONFIG, PIE_SERIES, series.slice(0, 1), null);
 	});
 </script>
 
@@ -45,8 +45,10 @@
 >
 	<h3 class="text-base-content text-[16px] font-semibold leading-5">Overview Data</h3>
 	<div class="w-full h-full">
-		{#if options}
-			<Chart x={0} {init} {options} />
-		{/if}
+		{#key options}
+			{#if options}
+				<Chart x={0} {init} {options} />
+			{/if}
+		{/key}
 	</div>
 </div>
