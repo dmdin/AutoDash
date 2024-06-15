@@ -21,7 +21,9 @@
 			"$client": ["./src/lib/client"],
 			"$client/*": ["./src/lib/client/*"],
 			"$server": ["./src/lib/server"],
-			"$server/*": ["./src/lib/server/*"]
+			"$server/*": ["./src/lib/server/*"],
+			"$root": ["./src"],
+			"$root/*": ["./src/*"]
 		}
 	}
 	// Path aliases are handled by https://kit.svelte.dev/docs/configuration#alias

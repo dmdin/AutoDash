@@ -40,6 +40,7 @@ export const widgets = pgTable('widgets', {
   id: uuid('id').primaryKey().defaultRandom(),
   blockId: uuid('blockId').references(() => blocks.id).notNull(),
   data: json('data').notNull(),
+  order: integer('order'),
   xPos: integer('xPos'),
   yPos: integer('yPos'),
   width: integer('width'),

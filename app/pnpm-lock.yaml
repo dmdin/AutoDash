@@ -11,6 +11,9 @@ importers:
       '@auth/sveltekit':
         specifier: ^1.2.0
         version: 1.2.0(@sveltejs/kit@2.5.0(@sveltejs/vite-plugin-svelte@3.0.0(svelte@4.2.11)(vite@5.0.3(@types/node@20.11.19)))(svelte@4.2.11)(vite@5.0.3(@types/node@20.11.19)))(svelte@4.2.11)
+      '@chord-ts/rpc':
+        specifier: ^0.2.8
+        version: 0.2.8(zod@3.22.4)
       '@xyflow/svelte':
         specifier: ^0.1.6
         version: 0.1.6(postcss-load-config@4.0.2(postcss@8.4.35))(postcss@8.4.35)(svelte@4.2.11)(typescript@5.0.2)
@@ -36,9 +39,6 @@ importers:
         specifier: ^3.4.3
         version: 3.4.3
     devDependencies:
-      '@chord-ts/rpc':
-        specifier: ^0.2.6
-        version: 0.2.6(zod@3.22.4)
       '@iconify/json':
         specifier: ^2.2.219
         version: 2.2.219
@@ -211,8 +211,8 @@ packages:
     resolution: {integrity: sha512-UwgBRMjJP+xv857DCngvqXI3Iq6J4v0wXmwc6sapg+zyhbwmQX67LUEFrkK5tbyJ30jGuG3ZvWpBiB9LCy1kWw==}
     engines: {node: '>=6.9.0'}
 
-  '@chord-ts/rpc@0.2.6':
-    resolution: {integrity: sha512-qtSCeecENlYFhbyozpp3yg9BNuKF+L7Ql9jyBQNnI1SRSdVKQJihVvB1NVIU8j5FP5TJDSRVSXIRjRBj8hLemA==}
+  '@chord-ts/rpc@0.2.8':
+    resolution: {integrity: sha512-Yfn/7Ak5X8iW2pf0aUkFwjrG+b598SZyDxePMAsYQhfFC9NgKhHhiEUX19RRurCMC2NC0fNgDBKMu4Vm4+lZvA==}
 
   '@drizzle-team/studio@0.0.39':
     resolution: {integrity: sha512-c5Hkm7MmQC2n5qAsKShjQrHoqlfGslB8+qWzsGGZ+2dHMRTNG60UuzalF0h0rvBax5uzPXuGkYLGaQ+TUX3yMw==}
@@ -3436,10 +3436,10 @@ packages:
     resolution: {integrity: sha512-9bnSc/HEW2uRy67wc+T8UwauLuPJVn28jb+GtJY16iiKWyvmYJRXVT4UamsAEGQfPohgr2q4Tq0sQbQlxTfi1g==}
     engines: {node: '>=12.20'}
 
-  zod-to-json-schema@3.22.4:
-    resolution: {integrity: sha512-2Ed5dJ+n/O3cU383xSY28cuVi0BCQhF8nYqWU5paEpl7fVdqdAmiLdqLyfblbNdfOFwFfi/mqU4O1pwc60iBhQ==}
+  zod-to-json-schema@3.23.0:
+    resolution: {integrity: sha512-az0uJ243PxsRIa2x1WmNE/pnuA05gUq/JB8Lwe1EDCCL/Fz9MgjYQ0fPlyc2Tcv6aF2ZA7WM5TWaRZVEFaAIag==}
     peerDependencies:
-      zod: ^3.22.4
+      zod: ^3.23.3
 
   zod@3.22.4:
     resolution: {integrity: sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==}
@@ -3500,10 +3500,10 @@ snapshots:
     dependencies:
       regenerator-runtime: 0.14.1
 
-  '@chord-ts/rpc@0.2.6(zod@3.22.4)':
+  '@chord-ts/rpc@0.2.8(zod@3.22.4)':
     dependencies:
       reflect-metadata: 0.1.14
-      zod-to-json-schema: 3.22.4(zod@3.22.4)
+      zod-to-json-schema: 3.23.0(zod@3.22.4)
     transitivePeerDependencies:
       - zod
 
@@ -6582,7 +6582,7 @@ snapshots:
 
   yocto-queue@1.0.0: {}
 
-  zod-to-json-schema@3.22.4(zod@3.22.4):
+  zod-to-json-schema@3.23.0(zod@3.22.4):
     dependencies:
       zod: 3.22.4
 

@@ -1,11 +1,13 @@
 <script lang="ts">
   import { toPng } from 'html-to-image';
   // import html2pdf from 'html2pdf.js'
+  import PhFilePdf from '~icons/ph/file-pdf'
+  import PhMicrosoftExcelLogoFill from '~icons/ph/microsoft-excel-logo-fill'
+  import PhMicrosoftWordLogoFill from '~icons/ph/microsoft-word-logo-fill'
   import html2canvas from 'html2canvas-pro'
   import { Panel, getNodesBounds, getViewportForBounds, useNodes } from '@xyflow/svelte';
   import { jsPDF } from "jspdf"
-
-  const nodes = useNodes();
+  import { nodes } from '../controller'
 
   const imageWidth = 1920;
   const imageHeight = 1080;
@@ -48,6 +50,11 @@
   }
 </script>
 
-<Panel position="top-right">
-  <button on:click={handleClick}>Download Image</button>
-</Panel>
+<details class="dropdown">
+  <summary class="m-1 btn btn-primary">Загрузить отчет</summary>
+  <div class="w-full mx-auto p-2 shadow bg-base-100 rounded-box flex gap-0.5">
+    <button class="btn btn-sm text-lg" on:click={handleClick}><PhFilePdf/></button>
+    <button class="btn btn-sm text-lg"><PhMicrosoftExcelLogoFill/></button>
+    <button class="btn btn-sm text-lg"><PhMicrosoftWordLogoFill/></button>
+  </div>
+</details>
