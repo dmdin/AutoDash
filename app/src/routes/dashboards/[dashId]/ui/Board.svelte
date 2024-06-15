@@ -1,4 +1,6 @@
 <script>
+  import { CHART_HEIGHT, CHART_WIDTH } from '$lib/charts/constants'
+  import { ChartType } from '$lib/charts/types'
   import { rpc } from '$root/routes'
   import { WIDGET_SHIFT_X, WIDGET_SHIFT_Y } from '$root/routes/dashboards/[dashId]/constants'
   import TextNode from '$root/routes/dashboards/[dashId]/ui/TextNode.svelte'
@@ -18,7 +20,6 @@
   import PlotNode from './PlotNode.svelte'
   import { nodes, edges, dashboard, reservedPlace, dashId } from '../controller'
 
-  const PLOT_SIZE = { width: 400, height: 200 }
   const TEXT_NODE_SIZE = { height: 25 }
 
   let menu
@@ -58,13 +59,12 @@
 
       for (const widget of block.widgets) {
         let position
-        position = calcPos()
-        // if (widget.xPos === null || widget.yPos === null) {
-        //   position = calcPos()
-        //   await rpc.Dashboard.updateWidget(widget.id, { xPos: position.x, yPos: position.y })
-        // } else {
-        //   position = { x: widget.xPos, y: widget.yPos }
-        // }
+        if (widget.xPos === null || widget.yPos === null) {
+          position = calcPos()
+          await rpc.Dashboard.updateWidget(widget.id, { xPos: position.x, yPos: position.y })
+        } else {
+          position = { x: widget.xPos, y: widget.yPos }
+        }
 
         const node = {
           id: widget.id,
@@ -73,7 +73,7 @@
           data: widget
         }
 
-        $reservedPlace = { x: position.x, y: position.y, endX: position.x + PLOT_SIZE.width, endY: position.y + PLOT_SIZE.height }
+        $reservedPlace = { x: position.x, y: position.y, endX: position.x + CHART_WIDTH, endY: position.y + CHART_HEIGHT }
         $nodes = [...$nodes, node]
       }
     }
@@ -82,7 +82,7 @@
   function calcPos() {
     if (!$reservedPlace) return { x: WIDGET_SHIFT_X, y: 0 }
 
-    if ($reservedPlace.endX + PLOT_SIZE.width > width)
+    if ($reservedPlace.endX + CHART_WIDTH > width)
       return { x: WIDGET_SHIFT_X, y: $reservedPlace.endY + WIDGET_SHIFT_Y }
     else
       return { x: $reservedPlace.endX + WIDGET_SHIFT_X, y: $reservedPlace.y }
