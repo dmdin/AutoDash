@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { scale, fly } from 'svelte/transition'
+
 	import Dice from '~icons/fad/random-1dice';
 	import Spark from '~icons/streamline/ai-generate-variation-spark';
 
@@ -10,6 +12,7 @@
 </script>
 
 <div
+	in:fly={{x: 50}}
 	class="self-center grow mt-2 w-full max-h-[90vh] border border-neutral/40 rounded-md p-5 max-w-4xl"
 >
 	<h1 class="text-2xl font-[600] mb-4">План отчета:</h1>
