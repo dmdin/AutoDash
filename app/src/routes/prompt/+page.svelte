@@ -1,29 +1,26 @@
 <script lang="ts">
-	import { goto } from '$app/navigation'
-	import { scale, fly } from 'svelte/transition'
-	import { rpc} from '$root/routes'
-	import Dice from '~icons/fad/random-1dice'
-	import Spark from '~icons/streamline/ai-generate-variation-spark'
+	import { goto } from '$app/navigation';
+	import { scale, fly, fade } from 'svelte/transition';
+	import { rpc } from '$root/routes';
+	import Dice from '~icons/fad/random-1dice';
+	import Spark from '~icons/streamline/ai-generate-variation-spark';
 	import Play from '~icons/solar/play-broken';
+	import Save from '~icons/material-symbols/save-outline';
 
 	function randomTopic(params: type) {
-		topic = 'Отчет по рынку BI систем'
+		topic = 'Отчет по рынку BI систем';
 	}
 
-	let topic = ''
-	let description = ''
+	let topic = '';
+	let description = '';
 	async function generateDashboard() {
-		await rpc.Prompt.createDashboard(topic, description)
-			.then(dashboard => {
-				window.location.href = '/dashboards/' + dashboard.id
-			})
+		await rpc.Prompt.createDashboard(topic, description).then((dashboard) => {
+			window.location.href = '/dashboards/' + dashboard.id;
+		});
 	}
 </script>
 
-<div
-	in:fly={{x: 50}}
-	class="self-center grow mt-2 w-full border border-neutral/40 rounded-md p-5 max-w-4xl"
->
+<div in:fade class="self-center grow mt-2 w-full border border-neutral/40 rounded-md p-5 max-w-4xl">
 	<h1 class="text-2xl font-[600] mb-4">План отчета:</h1>
 	<label class="input input-bordered flex items-center gap-2 pr-1.5 text-md">
 		Тема:
@@ -60,8 +57,15 @@
 		bind:value={description}
 	></textarea>
 
-	<button class="self-end btn text-md btn-primary mt-4" on:click={generateDashboard}>
-		<Play/>
-		Сгенерировать отчет
-	</button>
+	<div class="flex gap-5">
+		<button class="self-end btn text-md btn-primary mt-4" on:click={generateDashboard}>
+			<Play />
+			Сгенерировать отчет
+		</button>
+
+		<button class="self-end btn text-md btn-secondary mt-4">
+			<Save width="20" height="20"/>
+			Сохранить шаблон
+		</button>
+	</div>
 </div>

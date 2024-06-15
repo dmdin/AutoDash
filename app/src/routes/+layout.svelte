@@ -2,12 +2,14 @@
 	import { onMount } from 'svelte';
 	import { scale, fly } from 'svelte/transition';
 	import { signIn, signOut } from '@auth/sveltekit/client';
+	import { page } from '$app/stores';
 
 	import Enter from '~icons/iconamoon/enter';
 	import Exit from '~icons/iconamoon/exit';
 	import Moon from '~icons/ph/moon';
 	import Sun from '~icons/ph/sun';
 	import Robot from '~icons/mdi/robot-outline';
+	import Plus from '~icons/ic/round-plus';
 
 	import '../app.css';
 	import { theme, model, type Themes } from '$stores';
@@ -27,15 +29,37 @@
 >
 	<header class="m-2 border-b border-neutral/10">
 		<div class="navbar">
-			<div class="flex-1">
+			<div class="flex-1 gap-10">
 				<a
 					href="/"
 					class="p-0 btn btn-ghost bg-gradient-to-r from-accent to-secondary inline-block text-transparent bg-clip-text text-xl font-black"
 					><i class="text-3xl">AutoDash</i></a
 				>
+
+				<div class="flex gap-6 p-2 px-8 rounded-xl">
+					<a
+						href="/dashboards"
+						class:bg-primary={$page.url.href.endsWith('dashboards')}
+						class:text-primary-content={$page.url.href.endsWith('dashboards')}
+						class="rounded-md px-2 py-1 transition-colors"
+					>
+						Отчеты
+					</a>
+
+					<div class="tooltip tooltip-bottom" data-tip="Создать новый отчет">
+						<a class:btn-primary={$page.url.href.endsWith('prompt')}
+						
+						class="btn btn-sm btn-square" href="/prompt">
+							<Plus />
+						</a>
+					</div>
+				</div>
 			</div>
+
 			<div class="flex gap-4">
-				<div class="flex items-center gap-3 bg-primary px-4 py-0.5 rounded-xl cursor-pointer text-primary-content">
+				<div
+					class="flex items-center gap-3 bg-primary px-4 py-0.5 rounded-xl cursor-pointer text-primary-content"
+				>
 					<Robot width="30" height="30" />
 
 					<select bind:value={$model} class="cursor-pointer bg-transparent w-full h-full">
