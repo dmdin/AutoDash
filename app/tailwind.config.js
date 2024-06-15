@@ -2,21 +2,6 @@
 export default {
 	content: ['./src/**/*.{html,js,svelte,ts}'],
 	theme: {
-		extend: {
-			colors: {
-				primary: '#E3F5FF',
-				secondary: '#E5ECF6',
-				tertiary: '#95A4FC',
-				base: {
-					DEFAULT: '#A4A4A4',
-          200: '#F7F9FB',
-					content: '#1C1C1C'
-				},
-				success: {
-					DEFAULT: '#BAEDBD'
-				}
-			}
-		},
 		screens: {
 			xl: { max: '1279px' },
 			// => @media (max-width: 1279px) { ... }
@@ -30,6 +15,31 @@ export default {
 			sm: { max: '639px' }
 			// => @media (max-width: 639px) { ... }
 		}
+	},
+
+	daisyui: {
+		themes: [
+			{
+				light: {
+					primary: '#E3F5FF',
+					secondary: '#E5ECF6',
+					accent: '#95A4FC',
+					'base-100': '#ffffff',
+					'base-200': '#f7f9fb',
+					'base-300':  '#e5ecf6'					
+				}
+			},
+			{
+				dark: {
+					primary: '#E3F5FF',
+					secondary: '#E5ECF6',
+					accent: '#95A4FC',
+					'base-100': '#1c1c1c',
+					'base-200': '#282828',
+					'base-300':  '#e5ecf6'					
+				}
+			}
+		]
 	},
 	plugins: [
 		require('daisyui'),
