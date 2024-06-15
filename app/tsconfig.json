@@ -1,6 +1,7 @@
 {
 	"extends": "./.svelte-kit/tsconfig.json",
 	"compilerOptions": {
+		"target": "esnext",
 		"allowJs": true,
 		"checkJs": true,
 		"esModuleInterop": true,
@@ -12,7 +13,10 @@
 		"moduleResolution": "bundler",
 		
 		"experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    	"emitDecoratorMetadata": true,
+		"paths": {
+			"$schema": ["./src/schema.ts"],
+		}
 	}
 	// Path aliases are handled by https://kit.svelte.dev/docs/configuration#alias
 	//

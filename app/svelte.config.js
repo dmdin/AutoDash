@@ -16,7 +16,8 @@ const config = {
 		alias: {
 			$stores: 'src/lib/client/stores',
 			$auth: 'src/routes/auth',
-			$module: 'src/routes/test'
+			$module: 'src/routes/test',
+			$schema: 'src/schema'
 		}
 	},
 };
