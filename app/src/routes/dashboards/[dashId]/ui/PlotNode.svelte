@@ -1,16 +1,19 @@
 <script lang="ts">
-  import { PieChart } from '$lib/charts'
-  import { onMount, SvelteComponent } from 'svelte'
+  import { PieChart, Chart } from '$lib/charts'
   import GgChart from '~icons/gg/chart'
   import LucideLineChart from '~icons/lucide/line-chart'
   import MageChartFill from '~icons/mage/chart-fill'
 
   export let data: {
-    component: typeof SvelteComponent,
+    data: object,
     name: string,
     id: string
   }
   export let selected
+
+  async function changePlot(type) {
+
+  }
 </script>
 
 <div class="border-2 rounded-md p-2 bg-base-100 group {selected ? 'border-primary' : ''}">
@@ -19,5 +22,5 @@
     <button class="bg-primary rounded p-1"><LucideLineChart/></button>
     <button class="bg-primary rounded p-1"><MageChartFill/></button>
   </div>
-  <PieChart />
+  <Chart chart={data.data}/>
 </div>
