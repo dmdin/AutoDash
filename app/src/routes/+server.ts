@@ -1,10 +1,12 @@
+import { Dashboard } from '$root/routes/dashboards/[dashId]/rpc'
 import { Prompt } from '$root/routes/prompt/rpc'
 import { Composer } from '@chord-ts/rpc'
 import { sveltekitMiddleware } from '@chord-ts/rpc/middlewares'
 import { json, RequestEvent } from '@sveltejs/kit'
 
 const composer = Composer.init({
-  Prompt: new Prompt()
+  Prompt: new Prompt(),
+  Dashboard: new Dashboard()
 })
 export type Client = typeof composer.clientType
 composer.use(sveltekitMiddleware())

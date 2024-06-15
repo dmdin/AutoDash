@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation'
 	import { scale, fly } from 'svelte/transition'
 	import { rpc} from '$root/routes'
 	import Dice from '~icons/fad/random-1dice'
@@ -12,6 +13,9 @@
 	let description = ''
 	async function generateDashboard() {
 		await rpc.Prompt.createDashboard(topic, description)
+			.then(dashboard => {
+				window.location.href = '/dashboards/' + dashboard.id
+			})
 	}
 </script>
 

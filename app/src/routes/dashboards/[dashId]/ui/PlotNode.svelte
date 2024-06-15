@@ -1,5 +1,5 @@
 <script lang="ts">
-  import PieChart from '$lib/widgets/PieChart/PieChart.svelte'
+  import { PieChart } from '$lib/charts'
   import { onMount, SvelteComponent } from 'svelte'
   import GgChart from '~icons/gg/chart'
   import LucideLineChart from '~icons/lucide/line-chart'
@@ -8,8 +8,7 @@
   export let data: {
     component: typeof SvelteComponent,
     name: string,
-    id: string,
-
+    id: string
   }
   export let selected
 </script>

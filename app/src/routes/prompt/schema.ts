@@ -1,6 +1,6 @@
 import { relations } from 'drizzle-orm'
 import { pgTable, text, uuid } from 'drizzle-orm/pg-core'
-import { dashboards } from '../dashboards/[dash_id]/schema'
+import { dashboards } from '../dashboards/[dashId]/schema'
 
 export const templates = pgTable('templates', {
   id: uuid('id').primaryKey().defaultRandom(),
