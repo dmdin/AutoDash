@@ -4,6 +4,8 @@
   import PhFilePdf from '~icons/ph/file-pdf'
   import PhMicrosoftExcelLogoFill from '~icons/ph/microsoft-excel-logo-fill'
   import PhMicrosoftWordLogoFill from '~icons/ph/microsoft-word-logo-fill'
+  import PhExport from '~icons/ph/export';
+
   import html2canvas from 'html2canvas-pro'
   import { Panel, getNodesBounds, getViewportForBounds, useNodes } from '@xyflow/svelte';
   import { jsPDF } from "jspdf"
@@ -51,7 +53,7 @@
 </script>
 
 <details class="dropdown">
-  <summary class="m-1 btn btn-primary">Загрузить отчет</summary>
+  <summary class="m-1 btn btn-secondary"><PhExport/> Экспорт</summary>
   <div class="w-full mx-auto p-2 shadow bg-base-100 rounded-box flex gap-0.5">
     <button class="btn btn-sm text-lg" on:click={handleClick}><PhFilePdf/></button>
     <button class="btn btn-sm text-lg"><PhMicrosoftExcelLogoFill/></button>

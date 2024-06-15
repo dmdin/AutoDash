@@ -25,7 +25,7 @@
 	data-theme={$theme}
 	class="w-full h-full min-h-[100vh] flex flex-col transition-colors"
 >
-	<header class="m-2 border-b border-neutral/40">
+	<header class="m-2 border-b border-neutral/10">
 		<div class="navbar">
 			<div class="flex-1">
 				<a
