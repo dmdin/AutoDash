@@ -8,6 +8,13 @@
       "when": 1718449796925,
       "tag": "0000_jittery_doctor_strange",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1718457521046,
+      "tag": "0001_tough_spirit",
+      "breakpoints": true
     }
   ]
 }

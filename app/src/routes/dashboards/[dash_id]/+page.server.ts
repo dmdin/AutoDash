@@ -15,7 +15,7 @@ export async function load({ params }) {
     }
   })
 
-  if (!dashboard) throw error(404, 'Такой отчет не найден(')
+  // if (!dashboard) throw error(404, 'Такой отчет не найден(')
 
   return dashboard
 }

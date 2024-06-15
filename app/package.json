@@ -17,7 +17,6 @@
 		"db:generate": "pnpm drizzle-kit generate:pg"
 	},
 	"devDependencies": {
-		"@chord-ts/rpc": "^0.2.6",
 		"@iconify/json": "^2.2.219",
 		"@iconify/svelte": "^3.1.6",
 		"@lottiefiles/svelte-lottie-player": "^0.3.1",
@@ -58,6 +57,7 @@
 	"type": "module",
 	"dependencies": {
 		"@auth/sveltekit": "^1.2.0",
+		"@chord-ts/rpc": "^0.2.8",
 		"@xyflow/svelte": "^0.1.6",
 		"dotenv": "^16.4.5",
 		"drizzle-orm": "^0.29.3",

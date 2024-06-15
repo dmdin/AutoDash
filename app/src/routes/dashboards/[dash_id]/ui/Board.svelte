@@ -12,30 +12,13 @@
   import '@xyflow/svelte/dist/style.css';
   import BlockNode from './BlockNode.svelte'
   import ContextMenu from './ContextMenu.svelte'
-  import DownloadButton from './DownloadButton.svelte'
   import PlotNode from './PlotNode.svelte'
+  import { nodes, edges } from '../controller'
 
   let menu
   let boardDom
   let height
   let width
-
-  const nodes = writable([
-    {
-      id: '1',
-      type: 'plot-node',
-      data: { label: 'Input Node' },
-      position: { x: 0, y: 0 }
-    },
-    {
-      id: '2a',
-      type: 'plot-node',
-      position: { x: 0, y: 150 },
-    }
-  ]);
-
-  // same for edges
-  const edges = writable([]);
 
   const snapGrid = [25, 25];
 
@@ -78,7 +61,6 @@
     on:paneclick={handlePaneClick}
   >
     <Background variant={BackgroundVariant.Dots} />
-    <DownloadButton />
     {#if menu}
       <ContextMenu
         onClick={handlePaneClick}
