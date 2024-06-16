@@ -1,4 +1,4 @@
-import { db } from '$repo/db'
+import { db, takeUniqueOrThrow } from '$repo/db'
 import type { TableType } from '$repo/db/utils'
 import { blocks, dashboards, widgets } from '$schema'
 import { rpc } from '@chord-ts/rpc'
@@ -27,5 +27,14 @@ export class Dashboard {
       .update(widgets)
       .set(data)
       .where(eq(widgets.id, id))
+  }
+
+  @rpc()
+  async createWidget({blockId, data, order, xPos, yPos, width, height}: {blockId: string, data: object, order: number, xPos?: number, yPos?: number, width?:number, height?: number} ) {
+    return await db
+      .insert(widgets)
+      .values({blockId, data, order, xPos, yPos, width, height})
+      .returning()
+      .then(takeUniqueOrThrow)
   }
 }
