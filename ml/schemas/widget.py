@@ -46,13 +46,19 @@ class Widget(CamelizedBaseModel):
         description='группа данных, объединённых одной тематикой, зачастую содержит только одну группу с пустым именем, так как каждый виджет зачастую описывает только одну группу данных'
     )
 
+class Block(CamelizedBaseModel):
+    block_name: str
+    widgets: list[Widget] = Field(description="Все виджеты, которые принадлежат данному блоку")
 
 class LLMReportOutput(CamelizedBaseModel):
     widgets: list[Widget] = Field(
-        description='список всех виджетов, используемых в отчёте'
+        description='список всех виджетов'
     )
-
 
 class ReportOutput(CamelizedBaseModel):
     collection_index_name: str
     widgets: list[Widget]
+
+class ReportOutputV2(CamelizedBaseModel):
+    collection_index_name: str
+    blocks: list[Block]

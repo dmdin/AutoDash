@@ -12,23 +12,25 @@
 		session: { user }
 	} = data;
 
+	let search = '';
 	let deleteId: string | undefined;
 
+	$: filteredDashboards = dashboards.filter(d => (d.template.topic + d.template.description).toLowerCase().includes(search.toLowerCase()))
 	async function deleteDash() {
 		if (!deleteId) return
 		const res = await rpc.Dashboard.delete(deleteId).catch(e => console.error(e))
 		console.log(res)
 		deleteId = undefined
 	}
-	
-	console.log(data.dashboards);
+
+
 </script>
 
 <div in:fade class="self-center grow mt-2 w-full border border-neutral/40 rounded-md p-5 max-w-4xl">
 	<div class="flex justify-between mb-2">
 		<h1 class="text-2xl font-[600] mb-4">Сохраненные отчеты:</h1>
 		<label class="input input-bordered flex items-center gap-2">
-			<input type="text" class="grow" placeholder="Поиск по отчетам" />
+			<input type="text" class="grow" placeholder="Поиск по отчетам" bind:value={search}/>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				viewBox="0 0 16 16"
@@ -51,7 +53,8 @@
 					<th>Тема</th>
 					<th>Описание</th>
 					<th>Автор</th>
-					<th>Дата создания</th>
+					<th>Время создания</th>
+					<th>Действия</th>
 				</tr>
 			</thead>
 			<colgroup>
@@ -63,11 +66,11 @@
 				<col style="width: 100px;" />
 			</colgroup>
 			<tbody>
-				{#each dashboards as dash, i}
+				{#each filteredDashboards as dash, i}
 					<tr>
 						<th>{i + 1}</th>
 						<td>{dash.template.topic}</td>
-						<td><p>{dash.template.description}</p> </td>
+						<td><p class="truncate max-w-[300px]">{dash.template.description}</p> </td>
 						<td>
 							<div
 								class="tooltip tooltip-top"
@@ -88,11 +91,7 @@
 						</td>
 						<td>
 							<span
-								>{dash.createdAt?.toLocaleString(undefined, {
-									year: 'numeric',
-									month: 'short',
-									day: 'numeric'
-								})}</span
+								>{dash.createdAt?.toLocaleString()}</span
 							>
 						</td>
 						<td>
