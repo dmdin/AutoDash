@@ -18,39 +18,72 @@ services:
   #     - db
 
   redis:
-    image: redis:latest
-    container_name: redis-container
+    image: redis:7.2.3-bookworm
     restart: always
-    entrypoint: redis-server --appendonly yes --requirepass $REDIS_PASS --maxmemory 512mb --maxmemory-policy allkeys-lru
-    networks:
-      - default
-    ports:
-      - 6379:6379
+    labels:
+      - "autoheal=true"
+    command: redis-server --save 20 1 --loglevel warning
     volumes:
-      - /tmp/appdata/redis/data:/data
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
+      - ./volumes/redis:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 2m
+      timeout: 20s
+      retries: 3
+      start_period: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 1000M
 
-  # nginx:
-  #   image: nginx
-  #   container_name: nginx
-  #   ports:
-  #     - 80:80
-  #     - 443:443
-  #   restart: always
-  #   volumes:
-  #     - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-  #     - ./certbot/conf:/etc/letsencrypt
-  #     - ./certbot/www:/var/www/certbot
+  ml:
+    restart: always
+    environment:
+      _UVICORN_HOST: "0.0.0.0"
+      _UVICORN_PORT: 8000
+      _uvicorn_log_level: "debug"  # Corrected to lowercase
+      _REDIS_HOST: "redis"
 
-  # certbot:
-  #   image: certbot/certbot:latest
-  #   #docker-compose run --rm certbot certonly --webroot --webroot-path /var/www/certbot/ --dry-run -d domain_name -
-  #   #docker-compose run --rm certbot certonly --webroot --webroot-path /var/www/certbot/ -d domain_name
-  #   volumes:
-  #     - "./certbot/conf:/etc/letsencrypt"
-  #     - "./certbot/www:/var/www/certbot"
+    ports:
+      - "8001:8000"
+
+    build:
+      context: ./ml
+      dockerfile: Dockerfile
+    depends_on:
+      - redis
+    volumes:
+      - ./ml:/app
+    deploy:
+      resources:
+        limits:
+          cpus: '2.00'
+          memory: 10000M
   
+  search:
+    build:
+      context: ./search
+      dockerfile: Dockerfile
+    ports:
+      - "8002:8000"
+    depends_on:
+      - redis
+    environment:
+      UVICORN_HOST: "0.0.0.0"
+      UVICORN_PORT: 8000
+      UVICORN_LOG_LEVEL: "debug"  # Corrected to lowercase
+      REDIS_HOST: "redis"
+    volumes:
+      - ./search:/app
+    deploy:
+      resources:
+        limits:
+          cpus: '1.00'
+          memory: 2000M
+
   postgres:
     image: postgres:14.1-alpine
     container_name: postgres
@@ -81,6 +114,27 @@ services:
     restart: always
     ports:
       - 8080:7000
+  
+
+  # nginx:
+  #   image: nginx
+  #   container_name: nginx
+  #   ports:
+  #     - 80:80
+  #     - 443:443
+  #   restart: always
+  #   volumes:
+  #     - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+  #     - ./certbot/conf:/etc/letsencrypt
+  #     - ./certbot/www:/var/www/certbot
+
+  # certbot:
+  #   image: certbot/certbot:latest
+  #   #docker-compose run --rm certbot certonly --webroot --webroot-path /var/www/certbot/ --dry-run -d domain_name -
+  #   #docker-compose run --rm certbot certonly --webroot --webroot-path /var/www/certbot/ -d domain_name
+  #   volumes:
+  #     - "./certbot/conf:/etc/letsencrypt"
+  #     - "./certbot/www:/var/www/certbot"
 # networks:
   # ldt:
     # driver: bridge

@@ -20,8 +20,9 @@ class AppSettings(BaseSettings):
     redis_port: int = 6379
 
     uvicorn_host: str = 'localhost'
-    uvicorn_port: int = 8000
-    uvicorn_workers: int = mp.cpu_count()
+    uvicorn_port: int = 7000
+    # uvicorn_workers: int = mp.cpu_count()
+    uvicorn_workers: int = 1
     uvicorn_log_level: str = 'WARNING'
 
     class Config:
