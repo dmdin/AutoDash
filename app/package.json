@@ -61,6 +61,7 @@
 		"@auth/sveltekit": "^1.2.0",
 		"@chord-ts/rpc": "^0.2.8",
 		"@esbuild-plugins/node-globals-polyfill": "^0.2.3",
+		"@tanstack/svelte-virtual": "^3.5.1",
 		"@xyflow/svelte": "^0.1.6",
 		"buffer": "^6.0.3",
 		"docx": "^8.5.0",
@@ -75,6 +76,7 @@
 		"jspdf": "^2.5.1",
 		"postgres": "^3.4.3",
 		"sharp": "^0.33.4",
-		"svelte-loading-spinners": "^0.3.6"
+		"svelte-loading-spinners": "^0.3.6",
+		"tailwind-merge": "^2.3.0"
 	}
 }

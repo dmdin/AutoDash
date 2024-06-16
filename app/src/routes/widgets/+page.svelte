@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Table from '$root/lib/widgets/Table/Table.svelte';
 	import { Chart } from '../../lib/charts';
 	import { ChartType } from '../../lib/charts/types';
 	import Badge from '../../lib/widgets/Badge.svelte';
@@ -40,4 +41,5 @@
 		<Badge class={i % 2 ? 'bg-primary' : 'bg-secondary'} {...badge} />
 	{/each}
 	<Chart chart={barChart} />
+  <Table table={barChart} />
 </div>
