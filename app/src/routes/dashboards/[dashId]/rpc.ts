@@ -4,7 +4,7 @@ import { blocks, dashboards, widgets } from '$schema';
 import { rpc } from '@chord-ts/rpc';
 import { asc, desc, eq } from 'drizzle-orm';
 import { ExportType, type ExportData } from './types';
-import { getExcelFile } from '$root/lib/utils/export';
+import { getExcelFile, changeFormat } from '$root/lib/utils/export';
 
 export class Dashboard {
 	@rpc()
@@ -51,4 +51,9 @@ export class Dashboard {
       .returning()
       .then(takeUniqueOrThrow)
   }
+
+	@rpc()
+	async getImageBuffer(svgUrl: string) {
+		return changeFormat(svgUrl)
+	}
 }

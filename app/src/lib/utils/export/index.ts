@@ -3,7 +3,7 @@ import { text } from '@sveltejs/kit';
 import ExcelJS from 'ExcelJS';
 import sharp from 'sharp';
 
-async function changeFormat(encodedSVG: string) {
+export async function changeFormat(encodedSVG: string) {
 	const svgData = encodedSVG.split(',')[1];
 	const decodedSVG = decodeURIComponent(svgData);
 	const svgBuffer = Buffer.from(decodedSVG);

@@ -60,10 +60,13 @@
 	"dependencies": {
 		"@auth/sveltekit": "^1.2.0",
 		"@chord-ts/rpc": "^0.2.8",
+		"@esbuild-plugins/node-globals-polyfill": "^0.2.3",
 		"@xyflow/svelte": "^0.1.6",
+		"buffer": "^6.0.3",
 		"docx": "^8.5.0",
 		"dotenv": "^16.4.5",
 		"drizzle-orm": "^0.29.3",
+		"exceljs": "^4.4.0",
 		"file-saver": "^2.0.5",
 		"html-to-docx": "^1.8.0",
 		"html-to-image": "^1.11.11",

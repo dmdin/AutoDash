@@ -1,0 +1,48 @@
+[tool.poetry]
+name        = "lct_ml"
+version     = "0.1.0"
+description = ""
+authors     = ["Your Name <you@example.com>"]
+readme      = "README.md"
+
+[tool.poetry.dependencies]
+python              = "^3.11"
+fastapi-cache2      = { extras = ["redis"], version = "^0.2.1" }
+langchain           = "^0.2.5"
+langchain-anthropic = "^0.1.15"
+langchain-community = "^0.2.5"
+langchain-openai    = "^0.1.8"
+loguru              = "^0.7.2"
+pydantic            = "^1.10.16"
+pyhumps             = "^3.8.0"
+python-dotenv       = "^1.0.1"
+redis               = "^4.6.0"
+requests            = "^2.32.3"
+ujson               = "^5.10.0"
+ulid                = "^1.1"
+ulid-py             = "^1.1.0"
+uvicorn             = "^0.23.2"
+websockets          = "^12.0"
+
+
+[tool.poetry.group.dev.dependencies]
+langchain-cli = ">=0.0.15"
+pre-commit    = "^3.7.1"
+ruff          = "^0.4.9"
+jupyterlab    = "^4.2.2"
+
+[tool.ruff.lint]
+select    = ["E4", "E7", "E9", "F", "B"]
+ignore    = []
+unfixable = []
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py"             = ["E402"]
+"**/{tests,docs,tools}/*" = ["E402"]
+
+[tool.ruff.format]
+quote-style = "single"
+
+[build-system]
+requires      = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
