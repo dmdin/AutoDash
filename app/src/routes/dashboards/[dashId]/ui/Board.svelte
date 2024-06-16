@@ -20,6 +20,7 @@
   import PlotNode from './PlotNode.svelte'
   import { nodes, edges, dashboard, reservedPlace, dashId } from '../controller'
   import { useNodesInitialized } from '@xyflow/svelte'
+  import { useSvelteFlow } from '@xyflow/svelte'
 
   const TEXT_NODE_SIZE = { height: 25 }
 
@@ -60,13 +61,13 @@
 
       for (const widget of block.widgets.sort((a, b) => a.order - b.order)) {
         let position
-        position = calcPos()
-        // if (widget.xPos === null || widget.yPos === null) {
-        //   position = calcPos()
-        //   await rpc.Dashboard.updateWidget(widget.id, { xPos: position.x, yPos: position.y })
-        // } else {
-        //   position = { x: widget.xPos, y: widget.yPos }
-        // }
+        // position = calcPos()
+        if (widget.xPos === null || widget.yPos === null) {
+          position = calcPos()
+          await rpc.Dashboard.updateWidget(widget.id, { xPos: position.x, yPos: position.y })
+        } else {
+          position = { x: widget.xPos, y: widget.yPos }
+        }
 
         const nodeType = widget.data.type === 'text' ? 'text-node' : 'plot-node'
         console.log(widget)
@@ -135,6 +136,42 @@
       ...nodes.map(node => rpc.Dashboard.updateWidget.batch(node.id, { xPos: node.position.x, yPos: node.position.y }))
     )
   }
+
+  const { screenToFlowPosition } = useSvelteFlow()
+  const onDragOver = (event) => {
+    event.preventDefault();
+
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = 'move';
+    }
+  };
+
+  const onDrop = async (event) => {
+    event.preventDefault();
+
+    if (!event.dataTransfer) {
+      return null;
+    }
+
+    const type = event.dataTransfer.getData('application/svelteflow');
+
+    const position = screenToFlowPosition({
+      x: event.clientX,
+      y: event.clientY
+    });
+
+    const widget = await rpc.Dashboard.createWidget({ blockId: $dashboard?.blocks[0].id, data: { type: 'text', text: 'Введите текст'},
+    xPos: position.x, yPos: position.y, order: 100000})
+    const newNode = {
+      id: widget.id,
+      type,
+      position,
+      data: { data: { type: 'text', text: 'Введите текст' }},
+    }
+
+    $nodes.push(newNode);
+    $nodes = $nodes;
+  };
 </script>
 
 <div class="w-full h-full relative" bind:clientWidth={width} bind:clientHeight={height} bind:this={boardDom}>
@@ -149,6 +186,7 @@
     initialViewport={{x: 0, y: 0, zoom: 1}}
     minZoom="1"
     maxZoom="1"
+    on:dragover={onDragOver} on:drop={onDrop}
     on:nodeclick={(event) => console.log('on node click', event.detail.node)}
     on:selectionclick={() => console.log('on:selectionclick')}
     on:selectioncontextmenu={handleContextMenu}

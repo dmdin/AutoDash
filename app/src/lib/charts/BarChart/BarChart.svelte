@@ -1,7 +1,5 @@
 <script lang="ts">
-	import { SERIES_COLORS } from '../PieChart/constants';
 	import { init, use } from 'echarts/core';
-	import { Axis, color, format, type EChartsOption } from 'echarts';
 	import { BarChart, LineChart } from 'echarts/charts';
 	import {
 		GridComponent,
@@ -22,6 +20,12 @@
 	export let series: SeriesData[] = [];
 	export let category: string[] | null = null;
 
+	let options = null;
+
+	onMount(() => {
+		options = configureOptions(BAR_VIEW_CONFIGURATION, BAR_SERIES, series, category);
+	});
+
 	use([
 		BarChart,
 		LineChart,
@@ -32,12 +36,6 @@
 		CanvasRenderer,
 		TitleComponent
 	]);
-
-	let options = null;
-
-	onMount(() => {
-		options = configureOptions(BAR_VIEW_CONFIGURATION, BAR_SERIES, series, category);
-	});
 </script>
 
 <div

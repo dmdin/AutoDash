@@ -9,7 +9,7 @@ export function getSeries(data: Array<SeriesData>, series: SeriesModel) {
 }
 
 export function configureOptions(viewConfig: unknown, seriesSample: SeriesModel, series: Series[], category: string[] | null) {
-	const viewOptions = viewConfig;
+	const viewOptions = JSON.parse(JSON.stringify(viewConfig));
 
 	series.forEach((s) => {
     const series = getSeries(s.data, seriesSample)

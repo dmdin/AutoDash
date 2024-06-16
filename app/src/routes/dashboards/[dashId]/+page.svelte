@@ -1,4 +1,5 @@
 <script>
+  import Toolbar from '$root/routes/dashboards/[dashId]/ui/Toolbar.svelte'
   import { onMount } from 'svelte'
   import { Board } from './ui'
   import Block from './ui/Block.svelte'
@@ -27,7 +28,7 @@
   </div>
 {:else}
   <div class="w-full flex-1 grid grid-cols-8">
-    <div class="col-span-1"></div>
+    <div class="col-span-1"><Toolbar/></div>
     <div class="mx-auto h-full col-span-6">
       <Block/>
     </div>
