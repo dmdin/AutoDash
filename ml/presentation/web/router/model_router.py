@@ -102,7 +102,7 @@ async def create_report(
     prompt_template = ChatPromptTemplate.from_messages([
         (
             'system',
-            'Ты - умный помощник в составлении шаблонов отчётов по выбранной тематике, ты умеешь правильно делать JSON выводы по заданной структуре.',
+            'Ты - умный помощник в составлении шаблонов отчётов по выбранной тематике, ты умеешь правильно делать JSON выводы по заданной структуре. ПИШИ ВСЮ ИНФОРМАЦИЮ НА РУССКОМ ЯЗЫКЕ (кроме структуры JSON)',
         ),
         (
             'user',
@@ -110,11 +110,11 @@ async def create_report(
         ),
         (
             'ai',
-            'Хорошо, я внимательно изучил шаблон и буду стараться следовать ему, а именно правильно выбирать нужные виджеты!',
+            'Хорошо, я внимательно изучил шаблон и буду стараться следовать ему, а именно правильно выбирать нужные виджеты! Я буду следовать инструкциям и не отвечать напрямую на вопросы, предоставленные в отчёте!',
         ),
         (
             'user',
-            'Подготовь, пожалуйста, для меня отчёт по выбранной теме: {report_theme}. Используй информацию отсюда:\n{context}\n. Для создания отчёта напшии мне JSON с правильной схемой, для этого ознакомься со структурой виджетов:\n{format_instructions}\nПожалуйста, верни только виджеты! Сделай это на самом профессиональном уровне!',
+            'Подготовь, пожалуйста, для меня отчёт по выбранной теме: {report_theme}. Используй информацию отсюда:\n{context}\n. Для создания отчёта напшии мне JSON с правильной схемой, для этого ознакомься со структурой виджетов:\n{format_instructions}\n. Пример для генерации виджета с bar chart:\n{bar_chart}\n, пример генерации виджета с line chart:\n{line_chart}\n, пример генерации виджета с pie chart:\n{pie_chart}\n. Пожалуйста, верни только виджеты! Сделай это на самом профессиональном уровне!',
         ),
     ])
 
@@ -135,6 +135,9 @@ async def create_report(
                 'report_template': report_item.report_text,
                 'context': retrieved_documents_string,
                 'format_instructions': parser.get_format_instructions(),
+                'bar_chart': container.openai_supplier.get_few_shot["bar_chart"],
+                'line_chart': container.openai_supplier.get_few_shot["line_chart"],
+                'pie_chart': container.openai_supplier.get_few_shot["pie_chart"],
             })
 
             print(response)
@@ -187,7 +190,7 @@ async def create_reportv2(
         prompt_template = ChatPromptTemplate.from_messages([
             (
                 'system',
-                'Ты - умный помощник в составлении шаблонов отчётов по выбранной тематике, ты умеешь правильно делать JSON выводы по заданной структуре.',
+                'Ты - умный помощник в составлении шаблонов отчётов по выбранной тематике, ты умеешь правильно делать JSON выводы по заданной структуре. ПИШИ ВСЮ ИНФОРМАЦИЮ НА РУССКОМ ЯЗЫКЕ (кроме структуры JSON)!',
             ),
             (
                 'user',
@@ -199,7 +202,7 @@ async def create_reportv2(
             ),
             (
                 'user',
-                'Подготовь, пожалуйста, для меня отчёт по выбранной теме:\n{report_theme}\n, используя план:\n{report_template}\n. Используй информацию для извлечения фактов отсюда:\n{context}\n. Для создания отчёта напшии мне JSON с правильной схемой, для этого ознакомься со структурой виджетов:\n{format_instructions}\nПожалуйста, верни только виджеты! Сделай это на самом профессиональном уровне!',
+                'Подготовь, пожалуйста, для меня отчёт по выбранной теме:\n{report_theme}\n, используя план:\n{report_template}\n. Используй информацию для извлечения фактов отсюда:\n{context}\n. Для создания отчёта напшии мне JSON с правильной схемой, для этого ознакомься со структурой виджетов:\n{format_instructions}\n. Пример для генерации виджета с bar chart:\n{bar_chart}\n, пример генерации виджета с line chart:\n{line_chart}\n, пример генерации виджета с pie chart:\n{pie_chart}\n. Пожалуйста, верни только виджеты! Сделай это на самом профессиональном уровне!',
             ),
         ])
 
@@ -221,6 +224,9 @@ async def create_reportv2(
                     'report_template': block,
                     'context': retrieved_documents_string,
                     'format_instructions': parser.get_format_instructions(),
+                    'bar_chart': container.openai_supplier.get_few_shot["bar_chart"],
+                    'line_chart': container.openai_supplier.get_few_shot["line_chart"],
+                    'pie_chart': container.openai_supplier.get_few_shot["pie_chart"],
                 })
                 print(response)
                 response['block_name'] = all_block_names[idx]
