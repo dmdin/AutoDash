@@ -7,9 +7,9 @@ from shared.settings import app_settings
 
 @dataclass
 class OpenAISupplier:
-    async def generate_template(input_theme: str, model_name: str = 'gpt-4o'):
+    async def generate_template(self, input_theme: str, model_name: str = 'gpt-4o'):
         chat = ChatOpenAI(
-            openai_proxy=app_settings.openai_api_url,
+            base_url=app_settings.openai_api_url,
             api_key=app_settings.openai_api_key,
             model=model_name,
             streaming=True,
@@ -84,4 +84,5 @@ class OpenAISupplier:
 7) инновационные проекты и т.д.
 """
         prompt = prompt_template.format_messages(few_shot_theme=few_shot_theme, few_shot_text=few_shot_text, input_theme=input_theme)
-        yield chat.ainvoke(prompt)
+        async for chunk in chat.astream(prompt):
+            yield chunk

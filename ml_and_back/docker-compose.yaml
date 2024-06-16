@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   ml:
     restart: always
@@ -14,9 +12,7 @@ services:
     depends_on:
       - redis
     volumes:
-      - /home/user1/Lct_Llm/ml:/app
-    ports:
-      - "9002:8000"  # Add this line
+      - ./ml:/app
     deploy:
       resources:
         limits:
@@ -30,7 +26,7 @@ services:
       - "autoheal=true"
     command: redis-server --save 20 1 --loglevel warning
     volumes:
-      - /home/user1/Lct_Llm/volumes/redis:/data
+      - ./volumes/redis:/data
     ports:
       - "6379:6379"
     healthcheck:
@@ -59,7 +55,7 @@ services:
       UVICORN_LOG_LEVEL: "debug"  # Corrected to lowercase
       REDIS_HOST: "redis"
     volumes:
-      - /home/user1/Lct_Llm/back:/app
+      - ./back:/app
     deploy:
       resources:
         limits:
