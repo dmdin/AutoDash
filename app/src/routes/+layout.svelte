@@ -23,7 +23,6 @@
 		const savedTheme = localStorage.getItem('theme') ?? 'light';
 		theme.set(savedTheme as Themes);
 	});
-
 </script>
 
 {#if $showLayout}
@@ -120,25 +119,28 @@
 						</button>
 					{:else}
 						<div class="ml-7 flex gap-2">
-							<button class="btn btn-outline btn-sm" on:click={() => signOut({redirect: '/'})}>
-								<Exit />
-								Выйти
-							</button>
-							<div >
-								<div class="tooltip tooltip-left" data-tip={`${$page.data.session?.user?.name} - ${$page.data.session?.user?.email}`}>
+							<div class="flex items-center gap-3">
+								<div
+									class="tooltip tooltip-left"
+									data-tip={`${$page.data.session?.user?.name} - ${$page.data.session?.user?.email}`}
+								>
 									<div class="w-8 rounded-xl">
-									<a href="/user">
-										<img
-											alt="User avatar"
-											src={$page.data?.session?.user?.image ??
-												'https://source.boringavatars.com/marble/120'}
-											class="avatar"
-										/>
-									</a>
+										<a href="/user">
+											<img
+												alt="User avatar"
+												src={$page.data?.session?.user?.image ??
+													'https://source.boringavatars.com/marble/120'}
+												class="avatar rounded-md"
+											/>
+										</a>
+									</div>
 								</div>
+								<button class="btn btn-outline btn-sm" on:click={() => signOut({ redirect: '/' })}>
+									<Exit />
+									Выйти
+								</button>
 							</div>
 						</div>
-					</div>
 					{/if}
 				</div>
 			</div>
