@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  ml:
+    restart: always
+    environment:
+      _UVICORN_HOST: "0.0.0.0"
+      _UVICORN_PORT: 8000
+      _uvicorn_log_level: "debug"  # Corrected to lowercase
+      _REDIS_HOST: "redis"
+    build:
+      context: ./ml
+      dockerfile: Dockerfile
+    depends_on:
+      - redis
+    volumes:
+      - /home/user1/Lct_Llm/ml:/app
+    ports:
+      - "9002:8000"  # Add this line
+    deploy:
+      resources:
+        limits:
+          cpus: '2.00'
+          memory: 10000M
+
+  redis:
+    image: redis:7.2.3-bookworm
+    restart: always
+    labels:
+      - "autoheal=true"
+    command: redis-server --save 20 1 --loglevel warning
+    volumes:
+      - /home/user1/Lct_Llm/volumes/redis:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 2m
+      timeout: 20s
+      retries: 3
+      start_period: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 1000M
+
+  api:
+    build:
+      context: ./back
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8000"
+    depends_on:
+      - redis
+    environment:
+      UVICORN_HOST: "0.0.0.0"
+      UVICORN_PORT: 8000
+      UVICORN_LOG_LEVEL: "debug"  # Corrected to lowercase
+      REDIS_HOST: "redis"
+    volumes:
+      - /home/user1/Lct_Llm/back:/app
+    deploy:
+      resources:
+        limits:
+          cpus: '1.00'
+          memory: 2000M

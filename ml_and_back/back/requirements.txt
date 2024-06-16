@@ -1,0 +1,7 @@
+fastapi
+uvicorn[standard]
+requests
+aiohttp
+asyncio
+beautifulsoup4
+pydantic
