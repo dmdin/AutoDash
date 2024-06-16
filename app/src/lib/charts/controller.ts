@@ -17,8 +17,9 @@ export function configureOptions(viewConfig: unknown, seriesSample: SeriesModel,
 		viewOptions!.series.push(series);
 	});
 
+  console.log(category)
 	if (category && category.length) {
-		viewOptions.yAxis.data = category;
+		viewOptions.xAxis.data = category;
 	}
 
 	return viewOptions;

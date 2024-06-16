@@ -3,8 +3,8 @@ export const SERIES_COLORS = ['#95A4FC', '#BAEDBD', '#1C1C1C', '#B1E3FF', '#A8C5
 export const PIE_SERIES = {
 	width: 350,
 	height: 350,
-  top: 10,
-  left: 10,
+	top: 10,
+	left: 10,
 	type: 'pie',
 	center: ['25%', '35%'],
 	radius: ['40%', '50%'],
@@ -38,11 +38,14 @@ export const PIE_VIEW_CONFIG = {
 		borderWidth: 1
 	},
 	title: {
-    textStyle: {
-      fontSize: 16,
-      color: '#1C1C1C',
-      fontFamily: 'system-ui'
-    },
+		textStyle: {
+			fontSize: 16,
+			color: '#1C1C1C',
+			fontFamily: 'system-ui',
+			width: 520, // Максимальная ширина текста в пикселях
+			overflow: 'truncate', // Указание на усечение текста
+			ellipsis: '...' // Символы, добавляемые в конец усечённого текста
+		}
 	},
 	tooltip: {
 		trigger: 'item'

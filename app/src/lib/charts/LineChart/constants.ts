@@ -24,8 +24,12 @@ export const LINE_VIEW_CONFIG = {
 		textStyle: {
 			fontSize: 16,
 			color: '#1C1C1C',
-			fontFamily: 'system-ui'
-		}
+			fontFamily: 'system-ui',
+			width: 520, // Максимальная ширина текста в пикселях
+			overflow: 'truncate', // Указание на усечение текста
+			ellipsis: '...' // Символы, добавляемые в конец усечённого текста
+		},
+		overflow: 'truncate'
 	},
 	xAxis: {
 		type: 'category',

@@ -19,11 +19,17 @@ export const BAR_SERIES = {
 
 export const BAR_VIEW_CONFIGURATION = {
 	title: {
+    left: 0,
+    right: 0,
 		textStyle: {
 			fontSize: 16,
 			color: '#1C1C1C',
-			fontFamily: 'system-ui'
-		}
+			fontFamily: 'system-ui',
+      width: 520, // Максимальная ширина текста в пикселях
+      overflow: 'truncate', // Указание на усечение текста
+      ellipsis: '...' // Символы, добавляемые в конец усечённого текста
+		},
+    overflow: 'truncate',
 	},
 	xAxis: {
 		type: 'category',
@@ -33,7 +39,8 @@ export const BAR_VIEW_CONFIGURATION = {
 		},
 		axisTick: {
 			show: false
-		}
+		},
+    data: [],
 	},
 	yAxis: {
 		type: 'value',
