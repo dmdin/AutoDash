@@ -42,7 +42,9 @@
   })
 
   async function createNodes() {
+    console.log('enter')
     if (!$dashboard) return
+    console.log('proceed')
 
     if ($dashboard.template.topic) {
       const topicNode = {
@@ -51,22 +53,24 @@
         position: { x: WIDGET_SHIFT_X, y: WIDGET_SHIFT_Y },
         data: { name: $dashboard.template.topic}
       }
-      await addNode(topicNode)
+      await addNode(topicNode, width)
     }
 
     for (const block of $dashboard.blocks) {
-      let position = { x: WIDGET_SHIFT_X, y: WIDGET_SHIFT_Y }
-      if ($reservedPlace) {
-        position = { x: WIDGET_SHIFT_X, y: $reservedPlace.y + TEXT_NODE_SIZE.height + WIDGET_SHIFT_Y }
-      }
-      const textNode = {
-        id: block.id,
-        type: 'block-node',
-        position: position,
-        data: block
-      }
+      if (block.name !== '') {
+        let position = { x: WIDGET_SHIFT_X, y: WIDGET_SHIFT_Y }
+        if ($reservedPlace) {
+          position = { x: WIDGET_SHIFT_X, y: $reservedPlace.y + TEXT_NODE_SIZE.height + WIDGET_SHIFT_Y }
+        }
+        const textNode = {
+          id: block.id,
+          type: 'block-node',
+          position: position,
+          data: block
+        }
 
-      await addNode(textNode, width) // Тут добавляем extra bound, чтобы виджеты не заходили на эту же линиюy
+        await addNode(textNode, width) // Тут добавляем extra bound, чтобы виджеты не заходили на эту же линиюy
+      }
 
       for (const widget of block.widgets.sort((a, b) => a.order - b.order)) {
         let position
@@ -89,11 +93,15 @@
         await addNode(node, nodeType === 'text-node' ? width : 0) // 🤪🤪🤪🤪🤪
       }
     }
+
+    console.log($nodes)
   }
 
   async function addNode(node, extraBoundX = 0, extraBoundY = 0) {
     $nodes = [...$nodes, node]
+    console.log($nodes)
     const bounds = await getNodeBounds($nodes.length - 1)
+    console.log(bounds)
     $reservedPlace = { x: bounds.x, y: bounds.y, endX: bounds.x + bounds.width + extraBoundX,
       endY: bounds.y + bounds.height + extraBoundY }
   }
@@ -102,6 +110,7 @@
     return new Promise((resolve) => {
       const timer = setInterval(() => {
         const bounds = getNodesBounds([$nodes[ind]])
+        console.log(bounds)
         if (bounds.width !== 0) {
           clearInterval(timer)
           resolve(bounds)

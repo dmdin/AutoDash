@@ -10,6 +10,7 @@
   export let selected
   export let id
   export let dragHandle
+  let text = ''
   let focused = false
   let textarea
   $: console.log(data)
@@ -46,7 +47,7 @@
 
 <div class="relative box-content {selected ? 'shadow-lg' : ''}" on:dblclick={editText}>
 <!--  <textarea bind:value={data.data.text} class="border-l border-neutral pl-2 max-w-[900px] bg-base-100 resize-y"/>-->
-  <p class="border-l border-neutral pl-2 pr-5 max-w-[900px] bg-base-100">{@html data.data.text.replaceAll('\n', '<br/>') || 'Введите текст'}</p>
+  <p class="border-l border-neutral pl-2 pr-5 max-w-[900px] bg-base-100">{@html data?.data?.text.replaceAll('\n', '<br/>') || 'Введите текст'}</p>
   {#if focused}
     <textarea use:init class="absolute top-0 left-0 min-h-1 w-full h-full pl-2 resize-none {focused ? 'cursor-text' : 'cursor-grab outline-none select-none'}" rows="1" placeholder='Введите текст' bind:value={data.data.text} bind:this={textarea} readonly={focused ? '' : 'readonly'}
               on:input={handleInput}

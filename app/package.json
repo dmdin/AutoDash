@@ -64,6 +64,7 @@
 		"@esbuild-plugins/node-globals-polyfill": "^0.2.3",
 		"@tanstack/svelte-virtual": "^3.5.1",
 		"@xyflow/svelte": "^0.1.6",
+		"axios": "^1.7.2",
 		"buffer": "^6.0.3",
 		"docx": "^8.5.0",
 		"dotenv": "^16.4.5",
