@@ -15,7 +15,7 @@
 	import Plus from '~icons/ic/round-plus';
 
 	import '../app.css';
-	import { theme, model, type Themes } from '$stores';
+	import { theme, model, avaliableModels, type Themes } from '$stores';
 	import { showLayout } from './index';
 	export let data;
 
@@ -23,6 +23,7 @@
 		const savedTheme = localStorage.getItem('theme') ?? 'light';
 		theme.set(savedTheme as Themes);
 	});
+
 </script>
 
 {#if $showLayout}
@@ -37,7 +38,7 @@
 					<h1 class="text-2xl font-bold mb-5 text-neutral">Войти с помощью SSO</h1>
 					<div class="flex flex-col gap-2">
 						<button class="btn" on:click={() => signIn('github')}><Github /> GitHub</button>
-						<button class="btn" on:click={() => signIn('github')}><Google /> Google</button>
+						<button class="btn" on:click={() => signIn('google')}><Google /> Google</button>
 					</div>
 				</div>
 			</div>
@@ -90,9 +91,9 @@
 							<Robot width="30" height="30" />
 
 							<select bind:value={$model} class="cursor-pointer bg-transparent w-full h-full">
-								<option class="">ChatGPT 3.5</option>
-								<option class="">ChatGPT 4o</option>
-								<option class="">GigaChat</option>
+								{#each avaliableModels as value}
+									<option {value}>{value}</option>
+								{/each}
 							</select>
 						</div>
 					</div>

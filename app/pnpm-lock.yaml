@@ -17,6 +17,9 @@ importers:
       '@esbuild-plugins/node-globals-polyfill':
         specifier: ^0.2.3
         version: 0.2.3(esbuild@0.19.12)
+      '@tanstack/svelte-virtual':
+        specifier: ^3.5.1
+        version: 3.5.1(svelte@4.2.11)
       '@xyflow/svelte':
         specifier: ^0.1.6
         version: 0.1.6(postcss-load-config@4.0.2(postcss@8.4.35))(postcss@8.4.35)(svelte@4.2.11)(typescript@5.0.2)
@@ -62,6 +65,9 @@ importers:
       svelte-loading-spinners:
         specifier: ^0.3.6
         version: 0.3.6
+      tailwind-merge:
+        specifier: ^2.3.0
+        version: 2.3.0
     devDependencies:
       '@auth/drizzle-adapter':
         specifier: ^1.2.0
@@ -102,6 +108,9 @@ importers:
       '@types/eslint':
         specifier: 8.56.0
         version: 8.56.0
+      '@types/ws':
+        specifier: ^8.5.10
+        version: 8.5.10
       '@typescript-eslint/eslint-plugin':
         specifier: ^6.0.0
         version: 6.0.0(@typescript-eslint/parser@6.0.0(eslint@8.56.0)(typescript@5.0.2))(eslint@8.56.0)(typescript@5.0.2)
@@ -1408,6 +1417,14 @@ packages:
     peerDependencies:
       tailwindcss: '>=3.0.0 || insiders'
 
+  '@tanstack/svelte-virtual@3.5.1':
+    resolution: {integrity: sha512-QQ0W+CZL6rX0zRiu3yL3+b9LLMbaKWU1jcd+vU/jpglaQC9R0AWPn5fBURLkLURFkIslFbA/i5mz0lF5RQ05FQ==}
+    peerDependencies:
+      svelte: ^3.48.0 || ^4.0.0
+
+  '@tanstack/virtual-core@3.5.1':
+    resolution: {integrity: sha512-046+AUSiDru/V9pajE1du8WayvBKeCvJ2NmKPy/mR8/SbKKrqmSbj7LJBfXE+nSq4f5TBXvnCzu0kcYebI9WdQ==}
+
   '@tybys/wasm-util@0.8.1':
     resolution: {integrity: sha512-GSsTwyBl4pIzsxAY5wroZdyQKyhXk0d8PCRZtrSZ2WEB1cBdrp2EgGBwHOGCZtIIPun/DL3+AykCv+J6fyRH4Q==}
 
@@ -1461,6 +1478,9 @@ packages:
 
   '@types/semver@7.5.7':
     resolution: {integrity: sha512-/wdoPq1QqkSj9/QOeKkFquEuPzQbHTWAMPH/PaUMB+JuR31lXhlWXRZ52IpfDYVlDOUBvX09uBrPwxGT1hjNBg==}
+
+  '@types/ws@8.5.10':
+    resolution: {integrity: sha512-vmQSUcfalpIq0R9q7uTo2lXs6eGIpt9wtnLdMv9LVpIjCA/+ufZRozlVoVelIYixx1ugCBKDhn89vnsEGOCx9A==}
 
   '@typescript-eslint/eslint-plugin@6.0.0':
     resolution: {integrity: sha512-xuv6ghKGoiq856Bww/yVYnXGsKa588kY3M0XK7uUW/3fJNNULKRfZfSBkMTSpqGG/8ZCXCadfh8G/z/B4aqS/A==}
@@ -3618,6 +3638,9 @@ packages:
   tabbable@6.2.0:
     resolution: {integrity: sha512-Cat63mxsVJlzYvN51JmVXIgNoUokrIaT2zLclCXjRd8boZ0004U4KCs/sToJ75C6sdlByWxpYnb5Boif1VSFew==}
 
+  tailwind-merge@2.3.0:
+    resolution: {integrity: sha512-vkYrLpIP+lgR0tQCG6AP7zZXCTLc1Lnv/CCRT3BqJ9CZ3ui2++GPaGb1x/ILsINIMSYqqvrpqjUFsMNLlW99EA==}
+
   tailwindcss@3.4.1:
     resolution: {integrity: sha512-qAYmXRfk3ENzuPBakNK0SRrUDipP8NQnEY6772uDhflcQz5EhRdD7JNZxyrFHVQNCwULPBn6FNPp9brpO7ctcA==}
     engines: {node: '>=14.0.0'}
@@ -4973,6 +4996,13 @@ snapshots:
       postcss-selector-parser: 6.0.10
       tailwindcss: 3.4.1
 
+  '@tanstack/svelte-virtual@3.5.1(svelte@4.2.11)':
+    dependencies:
+      '@tanstack/virtual-core': 3.5.1
+      svelte: 4.2.11
+
+  '@tanstack/virtual-core@3.5.1': {}
+
   '@tybys/wasm-util@0.8.1':
     dependencies:
       tslib: 2.4.1
@@ -5031,6 +5061,10 @@ snapshots:
   '@types/resolve@1.20.2': {}
 
   '@types/semver@7.5.7': {}
+
+  '@types/ws@8.5.10':
+    dependencies:
+      '@types/node': 20.11.19
 
   '@typescript-eslint/eslint-plugin@6.0.0(@typescript-eslint/parser@6.0.0(eslint@8.56.0)(typescript@5.0.2))(eslint@8.56.0)(typescript@5.0.2)':
     dependencies:
@@ -7349,6 +7383,10 @@ snapshots:
   symbol-tree@3.2.4: {}
 
   tabbable@6.2.0: {}
+
+  tailwind-merge@2.3.0:
+    dependencies:
+      '@babel/runtime': 7.24.7
 
   tailwindcss@3.4.1:
     dependencies:
