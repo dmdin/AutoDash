@@ -10,8 +10,8 @@ class PureBaseModel(BaseModel):
         return _jsonable_encoder(self, **kwargs)
 
     class Config:
-        populate_by_name=True
-        from_attributes=True
+        populate_by_name = True
+        from_attributes = True
 
 
 # # * Camel alias generator model

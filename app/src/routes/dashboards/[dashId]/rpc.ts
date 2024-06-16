@@ -24,6 +24,11 @@ export class Dashboard {
 	}
 
 	@rpc()
+	async delete(dashId: string) {
+		return db.delete(dashboards).where(eq(dashboards.id, dashId)).returning()
+	}
+
+	@rpc()
 	async deleteWidget(id: string) {
 		await db.delete(widgets).where(eq(widgets.id, id))
 	}

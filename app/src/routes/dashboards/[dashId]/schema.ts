@@ -12,17 +12,19 @@ import {
   integer,
   json
 } from 'drizzle-orm/pg-core'
-import { templates } from '$schema'
+import { templates, users } from '$schema'
 
 export const dashboards = pgTable('dashboards', {
   id: uuid('id').primaryKey().defaultRandom(),
   templateId: uuid('templateId').references(() => templates.id).notNull(),
   createdAt: timestamp('createdAt').defaultNow(),
+  authorId: text('authorId').references(() => users.id).notNull()
 })
 
 export const dashboardsRelations = relations(dashboards, ({ one, many }) => ({
   template: one(templates, {fields: [dashboards.templateId], references: [templates.id]}),
-  blocks: many(blocks)
+  blocks: many(blocks),
+  author: one(users, {fields: [dashboards.authorId], references: [users.id]})
 }))
 
 export const blocks = pgTable('blocks', {

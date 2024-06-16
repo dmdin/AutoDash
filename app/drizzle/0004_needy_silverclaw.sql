@@ -1,1 +1,0 @@
-ALTER TABLE "savedTemplates" ALTER COLUMN "authorId" SET DATA TYPE text;

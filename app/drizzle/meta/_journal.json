@@ -5,57 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1718449796925,
-      "tag": "0000_jittery_doctor_strange",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1718457521046,
-      "tag": "0001_tough_spirit",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1718533190489,
-      "tag": "0002_clumsy_lionheart",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "5",
-      "when": 1718536598798,
-      "tag": "0003_equal_serpent_society",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "5",
-      "when": 1718536657203,
-      "tag": "0004_needy_silverclaw",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "5",
-      "when": 1718536807862,
-      "tag": "0005_eager_smiling_tiger",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "5",
-      "when": 1718537228787,
-      "tag": "0006_lazy_colonel_america",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "5",
-      "when": 1718537428707,
-      "tag": "0007_pale_storm",
+      "when": 1718555388497,
+      "tag": "0000_old_loki",
       "breakpoints": true
     }
   ]

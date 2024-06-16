@@ -1,8 +1,26 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
+	import {rpc} from '$root/routes'
+
+	import Trash from '~icons/ph/trash';
+	import Edit from '~icons/lucide/edit';
+	import Eye from '~icons/mdi/eye-outline';
 
 	export let data;
+	let {
+		dashboards,
+		session: { user }
+	} = data;
 
+	let deleteId: string | undefined;
+
+	async function deleteDash() {
+		if (!deleteId) return
+		const res = await rpc.Dashboard.delete(deleteId).catch(e => console.error(e))
+		console.log(res)
+		deleteId = undefined
+	}
+	
 	console.log(data.dashboards);
 </script>
 
@@ -33,32 +51,81 @@
 					<th>Тема</th>
 					<th>Описание</th>
 					<th>Автор</th>
-					<th>Дата</th>
+					<th>Дата создания</th>
 				</tr>
 			</thead>
+			<colgroup>
+				<col style="width: 10px;" />
+				<col style="width: 20%;" />
+				<col style="width: auto;" />
+				<col style="width: 50px;" />
+				<col style="width: 200px;" />
+				<col style="width: 100px;" />
+			</colgroup>
 			<tbody>
-				<!-- row 1 -->
-				<tr>
-					<th>1</th>
-					<td>Cy Ganderton</td>
-					<td>Quality Control Specialist</td>
-					<td>Blue</td>
-				</tr>
-				<!-- row 2 -->
-				<tr>
-					<th>2</th>
-					<td>Hart Hagerty</td>
-					<td>Desktop Support Technician</td>
-					<td>Purple</td>
-				</tr>
-				<!-- row 3 -->
-				<tr>
-					<th>3</th>
-					<td>Brice Swyre</td>
-					<td>Tax Accountant</td>
-					<td>Red</td>
-				</tr>
+				{#each dashboards as dash, i}
+					<tr>
+						<th>{i + 1}</th>
+						<td>{dash.template.topic}</td>
+						<td><p>{dash.template.description}</p> </td>
+						<td>
+							<div
+								class="tooltip tooltip-top"
+								data-tip={`${dash.author.name} - ${dash.author.email}`}
+							>
+								<div class="avatar">
+									<div class="w-8 rounded-xl">
+										<a href="/user">
+											<img
+												alt="User avatar"
+												src={dash.author.image ?? 'https://source.boringavatars.com/marble/120'}
+												class="avatar"
+											/>
+										</a>
+									</div>
+								</div>
+							</div>
+						</td>
+						<td>
+							<span
+								>{dash.createdAt?.toLocaleString(undefined, {
+									year: 'numeric',
+									month: 'short',
+									day: 'numeric'
+								})}</span
+							>
+						</td>
+						<td>
+							<div class="flex gap-2">
+								{#if user.id === dash.author.id}
+									<button
+										class="btn btn-sm btn-square transition-colors hover:text-error"
+										onclick="deleteDashboard.showModal()" on:click={() => deleteId = dash.id}><Trash /></button
+									>
+								{/if}
+								<a
+									class="btn btn-sm btn-square transition-colors hover:text-info"
+									href="/dashboards/{dash.id}"><Eye /></a
+								>
+							</div>
+						</td>
+					</tr>
+				{/each}
 			</tbody>
 		</table>
 	</div>
 </div>
+
+<dialog id="deleteDashboard" class="modal">
+	<div class="modal-box">
+		<h3 class="font-bold text-lg">Подтвердите действие</h3>
+		<p class="py-4">Вы уверены, что хотите удалить отчет?</p>
+		<div class="modal-action">
+			<form method="dialog" class=" flex gap-4">
+				<!-- if there is a button in form, it will close the modal -->
+				<button class="btn " on:click={() => deleteId = undefined}>Отмена</button>
+				<button class="btn btn-error btn-outline" on:click={deleteDash}>Удалить</button>
+			</form>
+		</div>
+	</div>
+</dialog>

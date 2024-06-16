@@ -1,0 +1,63 @@
+services:
+  redis:
+    image: redis/redis-stack-server:latest
+    restart: always
+    privileged: true
+    labels:
+      - "autoheal=true"
+    command: redis-server --save 20 1 --loglevel warning
+    volumes:
+      - ./volumes/redis:/data
+      - ./conf/redis.conf:/etc/redis-stack.conf
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 2m
+      timeout: 20s
+      retries: 3
+      start_period: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 1000M
+
+  ml:
+    restart: always
+    environment:
+      _UVICORN_HOST: "0.0.0.0"
+      _UVICORN_PORT: 8000
+
+    ports:
+      - "8001:8000"
+
+    build:
+      context: ./ml
+      dockerfile: Dockerfile
+    depends_on:
+      - redis
+      - search
+    volumes:
+      - ./ml:/app
+      - ./secrets/ml.env:/app/.env
+    deploy:
+      resources:
+        limits:
+          cpus: '2.00'
+          memory: 10000M
+
+  search:
+    build:
+      context: ./search
+      dockerfile: Dockerfile
+    ports:
+      - "8002:8000"
+    volumes:
+      - ./search:/app
+      - ./secrets/search.json:/app/config.json
+    deploy:
+      resources:
+        limits:
+          cpus: '1.00'
+          memory: 2000M

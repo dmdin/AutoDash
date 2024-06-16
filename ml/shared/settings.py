@@ -1,4 +1,5 @@
 from typing import Optional
+import multiprocessing as mp
 from langchain.pydantic_v1 import BaseSettings
 
 
@@ -12,16 +13,15 @@ class AppSettings(BaseSettings):
     anthropic_api_key: Optional[str]
     anthropic_api_url: Optional[str]
 
-    parser_host: str
-    parser_port: int = 8000
+    parser_host: str = '127.0.0.1'
+    parser_port: int = 8002
 
-    redis_host: str = 'localhost'
+    redis_host: str = '127.0.0.1'
     redis_port: int = 6379
 
-    uvicorn_host: str = 'localhost'
+    uvicorn_host: str = '0.0.0.0'
     uvicorn_port: int = 7000
-    # uvicorn_workers: int = mp.cpu_count()
-    uvicorn_workers: int = 1
+    uvicorn_workers: int = mp.cpu_count()
     uvicorn_log_level: str = 'WARNING'
 
     class Config:

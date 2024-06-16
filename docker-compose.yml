@@ -1,5 +1,3 @@
-version: '3.3'
-
 services:
   # sveltekit:
   #   container_name: sveltekit-container
@@ -18,13 +16,15 @@ services:
   #     - db
 
   redis:
-    image: redis:7.2.3-bookworm
+    image: redis/redis-stack-server:latest
     restart: always
+    privileged: true
     labels:
       - "autoheal=true"
     command: redis-server --save 20 1 --loglevel warning
     volumes:
       - ./volumes/redis:/data
+      - ./conf/redis.conf:/etc/redis-stack.conf
     ports:
       - "6379:6379"
     healthcheck:
@@ -44,8 +44,6 @@ services:
     environment:
       _UVICORN_HOST: "0.0.0.0"
       _UVICORN_PORT: 8000
-      _uvicorn_log_level: "debug"  # Corrected to lowercase
-      _REDIS_HOST: "redis"
 
     ports:
       - "8001:8000"
@@ -55,10 +53,10 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - redis
+      - search
     volumes:
       - ./ml:/app
       - ./secrets/ml.env:/app/.env
-      
     deploy:
       resources:
         limits:
@@ -71,17 +69,9 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8002:8000"
-    depends_on:
-      - redis
-    environment:
-      UVICORN_HOST: "0.0.0.0"
-      UVICORN_PORT: 8000
-      UVICORN_LOG_LEVEL: "debug"  # Corrected to lowercase
-      REDIS_HOST: "redis"
     volumes:
       - ./search:/app
       - ./secrets/search.json:/app/config.json
-
     deploy:
       resources:
         limits:
@@ -100,22 +90,22 @@ services:
   #     retries: 10
 
 
-    volumes:
-      - db:/var/lib/postgresql/data
-    
+    # volumes:
+    #   - db:/var/lib/postgresql/data
+
   #   volumes:
   #     - db:/var/lib/postgresql/data
 
-    environment:
-      PGUSER: $DB_USER
-      POSTGRES_PASSWORD: $DB_PASS
+    # environment:
+    #   PGUSER: $DB_USER
+    #   POSTGRES_PASSWORD: $DB_PASS
 
-    ports:
-      - 5432:5432
+    # ports:
+    #   - 5432:5432
   #   environment:
   #     PGUSER: $DB_USER
   #     POSTGRES_PASSWORD: $DB_PASS
-      
+
   #   ports:
   #     - 5432:5432
     # networks:
