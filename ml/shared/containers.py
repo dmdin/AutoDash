@@ -20,5 +20,5 @@ def init_combat_container() -> Container:
     return Container(
         heath_service=heath_service,
         redis_repository=redis_repository,
-        openai_supplier=openai_supplier
+        openai_supplier=openai_supplier,
     )
