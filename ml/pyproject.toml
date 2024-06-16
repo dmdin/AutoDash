@@ -16,18 +16,17 @@ langchain-community = "^0.2.5"
 langchain-openai    = "^0.1.8"
 
 [tool.poetry.group.fastapi.dependencies]
-fastapi        = "^0.111.0"
-fastapi-cache2 = { extras = ["redis"], version = "^0.2.1" }
-loguru         = "^0.7.2"
-pydantic       = "^1.10.16"
-pyhumps        = "^3.8.0"
-python-dotenv  = "^1.0.1"
-redis          = "^4.6.0"
-requests       = "^2.32.3"
-ujson          = "^5.10.0"
-ulid-py        = "^1.1.0"
-uvicorn        = "^0.23.2"
-websockets     = "^12.0"
+fastapi       = "^0.111.0"
+redis         = "^5.0.6"
+loguru        = "^0.7.2"
+pydantic      = "^1.10.16"
+pyhumps       = "^3.8.0"
+python-dotenv = "^1.0.1"
+requests      = "^2.32.3"
+ujson         = "^5.10.0"
+ulid-py       = "^1.1.0"
+uvicorn       = "^0.23.2"
+websockets    = "^12.0"
 
 
 [tool.poetry.group.dev.dependencies]

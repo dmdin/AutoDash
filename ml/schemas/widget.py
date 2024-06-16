@@ -4,6 +4,11 @@ from pydantic import Field
 
 from .base import CamelizedBaseModel
 
+class TemplateReportInput(CamelizedBaseModel):
+    """Input for template report"""
+
+    report_text: str
+
 
 class ChartTypes(enum.StrEnum):
     PIE = 'pie'

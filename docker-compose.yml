@@ -16,13 +16,15 @@ services:
   #     - db
 
   redis:
-    image: redis:latest
+    image: redis/redis-stack-server:latest
     restart: always
+    privileged: true
     labels:
       - "autoheal=true"
     command: redis-server --save 20 1 --loglevel warning
     volumes:
       - ./volumes/redis:/data
+      - ./conf/redis.conf:/etc/redis-stack.conf
     ports:
       - "6379:6379"
     healthcheck:
@@ -42,7 +44,6 @@ services:
     environment:
       _UVICORN_HOST: "0.0.0.0"
       _UVICORN_PORT: 8000
-      _REDIS_HOST: "redis"
 
     ports:
       - "8001:8000"
