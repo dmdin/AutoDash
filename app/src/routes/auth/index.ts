@@ -8,6 +8,7 @@ import { db } from '$repo/db';
 export const { handle, signIn, signOut } = SvelteKitAuth({
 	debug: dev,
 	adapter: DrizzleAdapter(db),
+	trustHost: true,
 	providers: [GitHub, Google],
 	callbacks: {
 		async session({ session, token }) {
