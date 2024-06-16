@@ -4,7 +4,7 @@ import uuid
 
 from pydantic import ValidationError
 from schemas.parser import ParserDocument, SourceDocuments
-from schemas.widget import LLMReportOutput, ReportOutput, TemplateReportInput
+from schemas.widget import LLMReportOutput, ReportOutput, TemplateReportInput, ReportOutputV2, Block
 from presentation.dependencies import container
 from schemas.message import TemplateGeneratorInput
 from langchain.schema import BaseMessage
@@ -151,3 +151,90 @@ async def create_report(
             logger.debug('UNKOWN!')
             logger.debug(e)
             continue
+
+@router.post(
+    '/create_reportv2',
+    response_model=ReportOutputV2,
+    response_model_exclude_none=True,
+)
+async def create_reportv2(
+    urls: SourceDocuments,
+    report_item: TemplateReportInput,
+    model_name: str = 'gpt-4o',
+) -> ReportOutputV2:
+    all_documents_from_search_raw = await search_data_for_llm(
+        query=report_item.report_theme, urls=urls
+    )
+    logger.debug(f'Info: {all_documents_from_search_raw}')
+    langchain_documents = parse_documents_from_search(all_documents_from_search_raw)
+    collection_index_name = uuid.uuid4().hex
+    cds = Chroma.from_documents(
+        langchain_documents,
+        embedding=container.openai_supplier.embeddings,
+        collection_name=collection_index_name,
+    )
+    retriever = cds.as_retriever(search_kwargs={'k': 12})
+
+    all_blocks = ["Блок" + x for x in report_item.report_text.split("Блок")[1::]]
+    print(all_blocks)
+    all_block_names = [x.split("\n")[0] for x in all_blocks]
+    parser = JsonOutputParser(pydantic_object=LLMReportOutput)
+    model = container.openai_supplier.get_model(model_name)
+
+    all_returned_blocks: list[Block] = []
+
+    for idx, block in enumerate(all_blocks):
+        prompt_template = ChatPromptTemplate.from_messages([
+            (
+                'system',
+                'Ты - умный помощник в составлении шаблонов отчётов по выбранной тематике, ты умеешь правильно делать JSON выводы по заданной структуре.',
+            ),
+            (
+                'user',
+                'Изучи данный блок и тематику для создания релевантных виджетов для отчёта относительно плана, предоставленного в блоке. Тема: {report_theme}, сам текст блока из шаблона: {report_template}.',
+            ),
+            (
+                'ai',
+                'Хорошо, я внимательно изучил блок и буду стараться следовать ему, а именно правильно выбирать нужные виджеты!',
+            ),
+            (
+                'user',
+                'Подготовь, пожалуйста, для меня отчёт по выбранной теме:\n{report_theme}\n, используя план:\n{report_template}\n. Используй информацию для извлечения фактов отсюда:\n{context}\n. Для создания отчёта напшии мне JSON с правильной схемой, для этого ознакомься со структурой виджетов:\n{format_instructions}\nПожалуйста, верни только виджеты! Сделай это на самом профессиональном уровне!',
+            ),
+        ])
+
+        retrieved_documents = await retriever.ainvoke(
+            f'Тема:\n{report_item.report_theme}\n, план текущего отчёта:\n{block}\n'
+        )
+        retrieved_documents_string = format_docs(retrieved_documents)
+
+        rag_chain = RunnablePassthrough() | prompt_template | model | parser
+
+        counter = 0
+        while True:
+            counter += 1
+            if counter >= 10:
+                break
+            try:
+                response = await rag_chain.ainvoke({
+                    'report_theme': report_item,
+                    'report_template': block,
+                    'context': retrieved_documents_string,
+                    'format_instructions': parser.get_format_instructions(),
+                })
+                print(response)
+                response['block_name'] = all_block_names[idx]
+                print(response)
+                all_returned_blocks.append(response)
+                break
+            except ValidationError as e:
+                logger.debug(e)
+                continue
+            except Exception as e:
+                logger.debug("UNKNOWN!!!")
+                logger.debug(e)
+                continue
+
+    final_response = ReportOutputV2(collection_index_name=collection_index_name, blocks=all_returned_blocks)
+    print(final_response)
+    return final_response
