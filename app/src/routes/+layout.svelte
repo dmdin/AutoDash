@@ -26,7 +26,7 @@
 </script>
 
 {#if $showLayout}
-	<dialog id="my_modal_1" class="modal">
+	<dialog id="signinModal" class="modal">
 		<div class="modal-box !bg-base-100">
 			<div class="border rounded-md border-neutral/40 flex flex-col">
 				<form method="dialog" class="self-end p-2">
@@ -58,26 +58,28 @@
 						><i class="text-3xl">AutoDash</i></a
 					>
 
-					<div class="flex gap-6 p-2 px-8 rounded-xl">
-						<a
-							href="/dashboards"
-							class:bg-primary={$page.url.href.endsWith('dashboards')}
-							class:text-primary-content={$page.url.href.endsWith('dashboards')}
-							class="rounded-md px-2 py-1 transition-colors"
-						>
-							Отчеты
-						</a>
-
-						<div class="tooltip tooltip-bottom" data-tip="Создать новый отчет">
+					{#if $page.data.session}
+						<div class="flex gap-6 p-2 px-8 rounded-xl">
 							<a
-								class:btn-primary={$page.url.href.endsWith('prompt')}
-								class="btn btn-sm btn-square"
-								href="/prompt"
+								href="/dashboards"
+								class:bg-primary={$page.url.href.endsWith('dashboards')}
+								class:text-primary-content={$page.url.href.endsWith('dashboards')}
+								class="rounded-md px-2 py-1 transition-colors"
 							>
-								<Plus />
+								Отчеты
 							</a>
+
+							<div class="tooltip tooltip-bottom" data-tip="Создать новый отчет">
+								<a
+									class:btn-primary={$page.url.href.endsWith('prompt')}
+									class="btn btn-sm btn-square"
+									href="/prompt"
+								>
+									<Plus />
+								</a>
+							</div>
 						</div>
-					</div>
+					{/if}
 				</div>
 
 				<div class="flex gap-4">
@@ -111,13 +113,13 @@
 						</button>
 					</div>
 					{#if !data.session}
-						<button class="btn btn-primary btn-sm" onclick="my_modal_1.showModal()">
+						<button class="btn btn-primary btn-sm" onclick="signinModal.showModal()">
 							<Enter />
 							Войти
 						</button>
 					{:else}
 						<div class="ml-7 flex gap-2">
-							<button class="btn btn-outline btn-sm" on:click={signOut}>
+							<button class="btn btn-outline btn-sm" on:click={() => signOut({redirect: '/'})}>
 								<Exit />
 								Выйти
 							</button>
