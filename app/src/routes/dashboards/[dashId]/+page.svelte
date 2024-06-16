@@ -1,5 +1,10 @@
 <script>
+<<<<<<< HEAD
   import { onMount, setContext } from 'svelte'
+=======
+  import Toolbar from '$root/routes/dashboards/[dashId]/ui/Toolbar.svelte'
+  import { onMount } from 'svelte'
+>>>>>>> b00ee1657ffeb9254243dd3bbff3bda0d31370e4
   import { Board } from './ui'
   import Block from './ui/Block.svelte'
   import PhFilePdf from '~icons/ph/file-pdf'
@@ -31,7 +36,7 @@
   </div>
 {:else}
   <div class="w-full flex-1 grid grid-cols-8">
-    <div class="col-span-1"></div>
+    <div class="col-span-1"><Toolbar/></div>
     <div class="mx-auto h-full col-span-6">
       {#each $dashboard.blocks as block}
         <Block data={block} />

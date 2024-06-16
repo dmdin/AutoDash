@@ -4,6 +4,9 @@
 	import { signIn, signOut } from '@auth/sveltekit/client';
 	import { page } from '$app/stores';
 
+	import Github from '~icons/devicon/github';
+	import Google from '~icons/flat-color-icons/google';
+	import Cancel from '~icons/iconoir/cancel';
 	import Enter from '~icons/iconamoon/enter';
 	import Exit from '~icons/iconamoon/exit';
 	import Moon from '~icons/ph/moon';
@@ -21,6 +24,24 @@
 		theme.set(savedTheme as Themes);
 	});
 </script>
+
+<dialog id="my_modal_1" class="modal">
+	<div class="modal-box !bg-base-100">
+		<div class="border rounded-md border-neutral/40 flex flex-col">
+			<form method="dialog" class="self-end p-2">
+				<button class="btn btn-ghost btn-square btn-sm"><Cancel width="20" height="20" /></button>
+			</form>
+
+			<div class="w-fit self-center flex flex-col justify-between pb-10">
+				<h1 class="text-2xl font-bold mb-5 text-neutral">Войти с помощью SSO</h1>
+				<div class="flex flex-col gap-2">
+					<button class="btn" on:click={() => signIn('github')}><Github /> GitHub</button>
+					<button class="btn" on:click={() => signIn('github')}><Google /> Google</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</dialog>
 
 <div
 	id="theme-root"
@@ -47,9 +68,11 @@
 					</a>
 
 					<div class="tooltip tooltip-bottom" data-tip="Создать новый отчет">
-						<a class:btn-primary={$page.url.href.endsWith('prompt')}
-						
-						class="btn btn-sm btn-square" href="/prompt">
+						<a
+							class:btn-primary={$page.url.href.endsWith('prompt')}
+							class="btn btn-sm btn-square"
+							href="/prompt"
+						>
 							<Plus />
 						</a>
 					</div>
@@ -86,7 +109,8 @@
 				</button>
 
 				{#if !data.session}
-					<button class="btn btn-primary btn-sm" on:click={signIn}>
+					<button class="btn btn-primary btn-sm" onclick="my_modal_1.showModal()"
+						>
 						<Enter />
 						Войти
 					</button>
@@ -100,7 +124,7 @@
 		</div>
 	</header>
 
-	<main class="grow h-full @container/main flex flex-col px-2">
+	<main class="grow h-full flex flex-col px-2">
 		<slot />
 	</main>
 

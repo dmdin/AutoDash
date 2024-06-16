@@ -49,5 +49,6 @@ export default {
 		require('daisyui'),
 		require('@tailwindcss/container-queries'),
 		require('@tailwindcss/typography')
-	]
+	],
+	darkMode: ['class', '[data-theme="night"]']
 };
