@@ -37,22 +37,29 @@ async def get_page_content(url):
         }
         async with aiohttp.ClientSession() as session:
             async with session.get(url, headers=REQUEST_HEADERS) as response:
-                response.raise_for_status()
-                text = await response.text()
-                soup = BeautifulSoup(text, 'html.parser')
+                try:
+                    response.raise_for_status()
+                    text = await response.text()
+                    soup = BeautifulSoup(text, 'html.parser')
 
-                # Extract all text
-                texts = soup.stripped_strings
-                all_text = ' '.join(texts)
+                    # Extract all text
+                    texts = soup.stripped_strings
+                    all_text = ' '.join(texts)
 
-                # Extract title
-                title = soup.title.string if soup.title else 'No title found'
+                    # Extract title
+                    title = soup.title.string if soup.title else 'No title found'
 
-                return {
-                    "url": url,
-                    "all_text_from_page": all_text,
-                    "page_title": title
-                }
+                    return {
+                        "url": url,
+                        "all_text_from_page": all_text,
+                        "page_title": title
+                    }
+                except Exception as e:
+                    return {
+                        "url": url,
+                        "all_text_from_page": "",
+                        "page_title": 'No title found'
+                    }
     except aiohttp.ClientError as e:
         return {
             "url": url,
