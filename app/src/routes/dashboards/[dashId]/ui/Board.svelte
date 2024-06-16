@@ -42,8 +42,17 @@
   })
 
   async function createNodes() {
-    console.log('qwe')
     if (!$dashboard) return
+
+    if ($dashboard.template.topic) {
+      const topicNode = {
+        id: $dashboard.template.id,
+        type: 'block-node',
+        position: { x: WIDGET_SHIFT_X, y: WIDGET_SHIFT_Y },
+        data: { name: $dashboard.template.topic}
+      }
+      await addNode(topicNode)
+    }
 
     for (const block of $dashboard.blocks) {
       let position = { x: WIDGET_SHIFT_X, y: WIDGET_SHIFT_Y }
@@ -61,7 +70,6 @@
 
       for (const widget of block.widgets.sort((a, b) => a.order - b.order)) {
         let position
-        // position = calcPos()
         if (widget.xPos === null || widget.yPos === null) {
           position = calcPos()
           await rpc.Dashboard.updateWidget(widget.id, { xPos: position.x, yPos: position.y })
@@ -70,7 +78,6 @@
         }
 
         const nodeType = widget.data.type === 'text' ? 'text-node' : 'plot-node'
-        console.log(widget)
         const node = {
           id: widget.id,
           type: nodeType,
@@ -93,9 +100,8 @@
 
   async function getNodeBounds(ind) {
     return new Promise((resolve) => {
-      const timer = setInterval(() => { // 🤪🤪🤪🤪🤪
+      const timer = setInterval(() => {
         const bounds = getNodesBounds([$nodes[ind]])
-        console.log(bounds)
         if (bounds.width !== 0) {
           clearInterval(timer)
           resolve(bounds)
@@ -172,7 +178,13 @@
 
     $nodes.push(newNode);
     $nodes = $nodes;
-  };
+  }
+
+  async function deleteNode(params) {
+    for (const node of params.nodes) {
+      await rpc.Dashboard.deleteWidget(node.id)
+    }
+  }
 </script>
 
 <div class="w-full h-full relative" bind:clientWidth={width} bind:clientHeight={height} bind:this={boardDom}>
@@ -189,14 +201,15 @@
     minZoom="1"
     maxZoom="1"
     on:dragover={onDragOver} on:drop={onDrop}
-    on:nodeclick={(event) => console.log('on node click', event.detail.node)}
-    on:selectionclick={() => console.log('on:selectionclick')}
     on:selectioncontextmenu={handleContextMenu}
     on:nodecontextmenu={handleContextMenu}
     on:paneclick={handlePaneClick}
     on:nodedragstop={saveWidget}
+    ondelete={deleteNode}
   >
-    <Background variant={BackgroundVariant.Dots} />
+    {#if !$readonly}
+      <Background variant={BackgroundVariant.Dots} />
+    {/if}
     {#if menu}
       <ContextMenu
         onClick={handlePaneClick}

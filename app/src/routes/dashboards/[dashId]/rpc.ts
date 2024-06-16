@@ -12,6 +12,7 @@ export class Dashboard {
 		return await db.query.dashboards.findFirst({
 			where: eq(dashboards.id, dashId),
 			with: {
+				template: true,
 				blocks: {
 					with: {
 						widgets: true
@@ -20,6 +21,11 @@ export class Dashboard {
 			},
 			orderBy: [desc(blocks.order), desc(widgets.order)]
 		});
+	}
+
+	@rpc()
+	async deleteWidget(id: string) {
+		await db.delete(widgets).where(eq(widgets.id, id))
 	}
 
 	@rpc()

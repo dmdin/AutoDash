@@ -10,16 +10,18 @@
   import { dashboard } from './controller'
   import { Circle } from 'svelte-loading-spinners'
 	import { get, writable } from 'svelte/store';
+  import TdesignShare from '~icons/tdesign/share';
+  import { dashId } from './controller'
 
   export let data
   let loading = true
-  console.log(data)
   const blocksImages = writable([])
 
   onMount(() => {
     loading = true
     $dashboard = data.dashboard
     loading = false
+    console.log($dashboard)
   })
 </script>
 
@@ -36,7 +38,8 @@
         <Block data={block} />
       {/each}
     </div>
-    <div class="col-span-1 pt-4">
+    <div class="col-span-1 pt-4 flex flex-col gap-3 w-40">
+      <a class="btn btn-secondary" target="_blank" href={`/dashboards/${$dashId}/share`}><TdesignShare/> Поделиться</a>
       <DownloadButton/>
     </div>
   </div>

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from langchain.chat_models.openai import ChatOpenAI
+from langchain_community.chat_models.openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from shared.settings import app_settings
 
