@@ -23,9 +23,9 @@ export class Dashboard {
 	}
 
 	@rpc()
-	async exportFile(type: ExportType, data: ExportData) {
+	async exportFile(type: ExportType, nodes: unknown[]) {
 		if (type === ExportType.Excel) {
-			return await getExcelFile('Test', data.blocks, data.images);
+			return await getExcelFile('Test', nodes);
 		}
 
 		if (type === ExportType.Word) {

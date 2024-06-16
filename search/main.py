@@ -66,7 +66,7 @@ def search_func(query: str, sources: List[str]):
             encoded_query = ["site:" + urllib.parse.quote(url)+f"%20{encoded_query}" for url in sources.urls]
             encoded_query = "%20|%20".join(encoded_query)
 
-        yandex_url = f"https://yandex.ru/search/xml?folderid={config.yandex.folderid}&apikey={config.yandex.apikey}&query={encoded_query}"        
+        yandex_url = f"https://yandex.ru/search/xml?folderid={config.yandex.folderid}&apikey={config.yandex.apikey}&query={encoded_query}"
         response = requests.get(yandex_url)
         xml_data = response.text
         parsed_data = parse_yandex_xml(xml_data)
@@ -87,7 +87,7 @@ async def search(query: str, sources: Optional[UrlList]):
 ```
     '''
     return search_func(query, sources)
-    
+
 @app.post("/extract", response_model=List[dict])
 async def extract(url_list: UrlList):
     '''
