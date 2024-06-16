@@ -60,7 +60,7 @@ def parse_documents_from_search(documents: list[ParserDocument]) -> list[Documen
             doc['all_text_from_page'], page_title=doc['page_title'], url=doc['url']
         )
         langchain_documents.append(new_doc)
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=512, chunk_overlap=256)
     splitted_langchain_documents = text_splitter.split_documents(langchain_documents)
     return splitted_langchain_documents
 
@@ -90,7 +90,7 @@ async def create_report(
         embedding=container.openai_supplier.embeddings,
         collection_name=collection_index_name,
     )
-    retriever = cds.as_retriever(search_kwargs={'k': 12})
+    retriever = cds.as_retriever(search_kwargs={'k': 8})
     prompt_template = ChatPromptTemplate.from_messages([
         (
             'system',
