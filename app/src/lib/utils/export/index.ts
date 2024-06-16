@@ -1,6 +1,6 @@
 import { rpc } from '@chord-ts/rpc';
 import { text } from '@sveltejs/kit';
-import ExcelJS from 'ExcelJS';
+import ExcelJS from 'exceljs';
 import sharp from 'sharp';
 
 export async function changeFormat(encodedSVG: string) {

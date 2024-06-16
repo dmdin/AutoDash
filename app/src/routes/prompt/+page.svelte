@@ -25,6 +25,7 @@
 	let textarea: HTMLTextAreaElement;
 	let autoscroll = false;
 
+	$: selectTemplate(template)
 	beforeUpdate(() => {
 		if (textarea) {
 			const scrollableDistance = textarea.scrollHeight - textarea.offsetHeight;
@@ -67,8 +68,8 @@
 		topic = 'Отчет по рынку BI систем';
 	}
 
-	async function selectTemplate() {
-		await tick();
+	async function selectTemplate(template) {
+		if (!template?.body) return
 		description = template.body;
 	}
 

@@ -23,37 +23,167 @@ class OpenAISupplier:
         )
         return chat
 
-    async def generate_template(self, input_theme: str, model_name: str = 'gpt-4o'):
-        chat = ChatOpenAI(
-            base_url=app_settings.openai_api_url,
-            api_key=app_settings.openai_api_key,
-            model=model_name,
-            streaming=True,
-        )
-        prompt_template = ChatPromptTemplate.from_messages(
-            [
-                (
-                    'system',
-                    'Ты - умный помощник в составлении шаблонов отчётов по выбранной тематике.',
-                ),
-                (
-                    'user',
-                    'Изучи данный шаблон и используй его как пример для построения своих шаблонов. Тема: {few_shot_theme}, сам текст шаблона: {few_shot_text}.',
-                ),
-                (
-                    'ai',
-                    'Хорошо, я внимательно изучил шаблон и буду стараться следовать ему, а именно придумывать правильные направления по изучения выбранной тематики, описывать детально и полноценно каждый из блоков и выделать 5-8 блоков для каждой тематики, используя по 3-4 пункта в каждом блоке!',
-                ),
-                (
-                    'user',
-                    'Подготовь, пожалуйста, для меня шаблон по выбранной теме: {input_theme}, напиши только шаблон, не отвечай мне никак, не пиши ничего лишнего, только сам шаблон!',
-                ),
-            ]
-        )
-        few_shot_theme = (
-            'особенности в сфере цифровизации и новых технологических нововведениях'
-        )
-        few_shot_text = """
+    @property
+    def get_few_shot(self):
+        return {
+            'line_chart': """
+{
+  "title": "Total Users",
+  "subtitle": "",
+  "type": "line",
+  "categories": [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul"
+  ],
+  "series": [
+    {
+      "name": "Current Year",
+      "unit": "",
+      "data": [
+        {
+          "name": "",
+          "value": "15000000"
+        },
+        {
+          "name": "",
+          "value": "10000000"
+        },
+        {
+          "name": "",
+          "value": "10500000"
+        },
+        {
+          "name": "",
+          "value": "11200000"
+        },
+        {
+          "name": "",
+          "value": "19000000"
+        },
+        {
+          "name": "",
+          "value": "20000000"
+        },
+        {
+          "name": "",
+          "value": "20300000"
+        }
+      ]
+    },
+    {
+      "name": "Previous Year",
+      "unit": "",
+      "data": [
+        {
+          "name": "",
+          "value": "10000000"
+        },
+        {
+          "name": "",
+          "value": "19000000"
+        },
+        {
+          "name": "",
+          "value": "18500000"
+        },
+        {
+          "name": "",
+          "value": "11200000"
+        },
+        {
+          "name": "",
+          "value": "12500000"
+        },
+        {
+          "name": "",
+          "value": "13300000"
+        },
+        {
+          "name": "",
+          "value": "20300000"
+        }
+      ]
+    }
+  ]
+}
+""",
+            'pie_chart': """
+{
+  "type": "pie",
+  "title": "Traffic by Location",
+  "subtitle": "",
+  "category": [],
+  "series": [
+    {
+      "name": "",
+      "unit": "%",
+      "data": [
+        {
+          "name": "United States",
+          "value": "38.6"
+        },
+        {
+          "name": "Canada",
+          "value": "22.5"
+        },
+        {
+          "name": "Mexico",
+          "value": "30.8"
+        },
+        {
+          "name": "other",
+          "value": "30.8"
+        }
+      ]
+    }
+  ]
+}
+""",
+            'bar_chart': """{
+  "title": "Traffic by Device",
+  "subtitle": "",
+  "type": "bar",
+  "categories": [],
+  "series": [
+    {
+      "name": "",
+      "unit": "",
+      "data": [
+        {
+          "name": "Linux",
+          "value": "20000000"
+        },
+        {
+          "name": "Mac",
+          "value": "21000000"
+        },
+        {
+          "name": "IOS",
+          "value": "20500000"
+        },
+        {
+          "name": "Windows",
+          "value": "25000000"
+        },
+        {
+          "name": "Android",
+          "value": "10000000"
+        },
+        {
+          "name": "Other",
+          "value": "22000000"
+        }
+      ]
+    }
+  ]
+}""",
+            'theme_example': 'особенности в сфере цифровизации и новых технологических нововведениях',
+            'template_example': """
 Анализируем конкурентов в сфере металлургии в мире на их развитие в разных направлениях, в особенности в сфере цифровизации и новых технологических нововведениях.
 Для реализации данной задачи необходима обработка/выжимка релевантной информации о металлургических компаниях.
 1. Необходимо определиться с компанией-конкурентом
@@ -100,10 +230,37 @@ class OpenAISupplier:
 5) собственные внутренние образовательные программы,
 6) квалификационные программы,
 7) инновационные проекты и т.д.
-"""
+""",
+        }
+
+    async def generate_template(self, input_theme: str, model_name: str = 'gpt-4o'):
+        chat = ChatOpenAI(
+            base_url=app_settings.openai_api_url,
+            api_key=app_settings.openai_api_key,
+            model=model_name,
+            streaming=True,
+        )
+        prompt_template = ChatPromptTemplate.from_messages([
+            (
+                'system',
+                'Ты - умный помощник в составлении шаблонов отчётов по выбранной тематике. ПИШИ ВСЮ ИНФОРМАЦИЮ НА РУССКОМ ЯЗЫКЕ!',
+            ),
+            (
+                'user',
+                'Изучи данный шаблон и используй его как пример для построения своих шаблонов. Тема:\n{few_shot_theme}\n, сам текст шаблона:\n{few_shot_text}\n.',
+            ),
+            (
+                'ai',
+                'Хорошо, я внимательно изучил шаблон и буду стараться следовать ему, а именно придумывать правильные направления по изучения выбранной тематики, описывать детально и полноценно каждый из блоков и выделать 5-8 блоков для каждой тематики, используя по 3-4 пункта в каждом блоке! Я не буду повторять идеи, описанные в шаблоне дословно, а буду придумывать только релевантные идеи для выбранной темы!',
+            ),
+            (
+                'user',
+                'Подготовь, пожалуйста, для меня шаблон по выбранной теме:\n{input_theme}\n, напиши только шаблон, не отвечай мне никак, не пиши ничего лишнего, только сам шаблон!',
+            ),
+        ])
         prompt = prompt_template.format_messages(
-            few_shot_theme=few_shot_theme,
-            few_shot_text=few_shot_text,
+            few_shot_theme=self.get_few_shot['theme_example'],
+            few_shot_text=self.get_few_shot['template_example'],
             input_theme=input_theme,
         )
         async for chunk in chat.astream(prompt):

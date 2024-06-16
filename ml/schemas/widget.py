@@ -17,7 +17,7 @@ class ChartTypes(enum.StrEnum):
     BAR = 'bar'
     LINE = 'line'
     TEXT = 'text'
-    TABLE = 'table'
+    # TABLE = 'table'
 
 
 class ChartData(CamelizedBaseModel):
