@@ -2,7 +2,7 @@ from fastapi import APIRouter, WebSocket
 import httpx
 import ujson
 from schemas.parser import ParserDocument, SourceDocuments
-from schemas.widget import ReportOutput, Widget
+from schemas.widget import ReportOutput, Widget, TemplateReportInput
 from presentation.dependencies import container
 from schemas.message import TemplateGeneratorInput
 from langchain.schema import BaseMessage
@@ -17,14 +17,15 @@ router = APIRouter(prefix='/llm')
 
 
 async def search_data_for_llm(query: str, urls: SourceDocuments):
-    api_url = (
-        f'{app_settings.parser_host}:{app_settings.parser_port}/search_data_for_llm'
-    )
+    api_url = f'http://{app_settings.parser_host}:{app_settings.parser_port}/search_data_for_llm'
     async with httpx.AsyncClient() as client:
-        response: httpx.Response = await client.post(
-            api_url, params={'query': query}, data=urls.json()
-        )
-        all_documents: list[ParserDocument] = response.json()
+        try:
+            response: httpx.Response = await client.post(
+                api_url, params={'query': query}, data=urls.json()
+            )
+            all_documents: list[ParserDocument] = response.json()
+        except httpx.HTTPError:
+            all_documents: list[ParserDocument] = []
         return all_documents
 
 
@@ -52,7 +53,7 @@ def parse_documents_from_search(documents: list[ParserDocument]) -> list[Documen
     langchain_documents: list[Document] = []
     for doc in documents:
         new_doc = Document(
-            doc.all_text_from_page, page_title=doc.page_title, url=doc.url
+            doc['all_text_from_page'], page_title=doc['page_title'], url=doc['url']
         )
         langchain_documents.append(new_doc)
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
@@ -72,38 +73,39 @@ def format_docs(docs: list[Document]):
 async def create_report(
     report_theme: str,
     urls: SourceDocuments,
-    report_template: str,
+    report_template: TemplateReportInput,
     model_name: str = 'gpt-4o',
 ) -> ReportOutput:
     all_documents_from_search_raw = await search_data_for_llm(
         query=report_theme, urls=urls
     )
+    print(all_documents_from_search_raw)
     langchain_documents = parse_documents_from_search(all_documents_from_search_raw)
     rds = Redis.from_documents(
-        langchain_documents, embedding=container.openai_supplier.embeddings
+        langchain_documents,
+        embedding=container.openai_supplier.embeddings,
+        redis_url=f'redis://{app_settings.redis_host}:{app_settings.redis_port}',
     )
     index_name = rds.index_name
     retriever = rds.as_retriever(search_kwargs={'k': 12})
-    prompt_template = ChatPromptTemplate.from_messages(
-        [
-            (
-                'system',
-                'Ты - умный помощник в составлении шаблонов отчётов по выбранной тематике, ты умеешь правильно делать JSON выводы по заданной структуре.',
-            ),
-            (
-                'user',
-                'Изучи данный шаблон и проанализируй каждый блок, указанные в шаблоне для создания релевантных виджетов для отчёта относительно плана, предоставленного в шаблоне. Тема: {report_theme}, сам текст шаблона: {report_template}.',
-            ),
-            (
-                'ai',
-                'Хорошо, я внимательно изучил шаблон и буду стараться следовать ему, а именно правильно выбирать нужные виджеты !',
-            ),
-            (
-                'user',
-                'Подготовь, пожалуйста, для меня отчёт по выбранной теме: {report_theme}, для этого напшии мне JSON с правильной схемой, для этого ознакомься со структурой виджетов:\n{format_instructions}\nПожалуйста, верни только виджеты с отчётами! Сделай это на самом профессиональном уровне!',
-            ),
-        ]
-    )
+    prompt_template = ChatPromptTemplate.from_messages([
+        (
+            'system',
+            'Ты - умный помощник в составлении шаблонов отчётов по выбранной тематике, ты умеешь правильно делать JSON выводы по заданной структуре.',
+        ),
+        (
+            'user',
+            'Изучи данный шаблон и проанализируй каждый блок, указанные в шаблоне для создания релевантных виджетов для отчёта относительно плана, предоставленного в шаблоне. Тема: {report_theme}, сам текст шаблона: {report_template}.',
+        ),
+        (
+            'ai',
+            'Хорошо, я внимательно изучил шаблон и буду стараться следовать ему, а именно правильно выбирать нужные виджеты !',
+        ),
+        (
+            'user',
+            'Подготовь, пожалуйста, для меня отчёт по выбранной теме: {report_theme}, для этого напшии мне JSON с правильной схемой, для этого ознакомься со структурой виджетов:\n{format_instructions}\nПожалуйста, верни только виджеты с отчётами! Сделай это на самом профессиональном уровне!',
+        ),
+    ])
 
     parser = JsonOutputParser(pydantic_object=list[Widget])
     model = container.openai_supplier.get_model(model_name)

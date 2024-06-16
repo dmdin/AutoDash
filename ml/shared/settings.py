@@ -13,10 +13,10 @@ class AppSettings(BaseSettings):
     anthropic_api_key: Optional[str]
     anthropic_api_url: Optional[str]
 
-    parser_host: str = 'api'
-    parser_port: int = 8000
+    parser_host: str = '127.0.0.1'
+    parser_port: int = 8002
 
-    redis_host: str = 'redis'
+    redis_host: str = '127.0.0.1'
     redis_port: int = 6379
 
     uvicorn_host: str = '0.0.0.0'
