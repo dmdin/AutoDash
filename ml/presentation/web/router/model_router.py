@@ -56,10 +56,14 @@ async def generate_template(websocket: WebSocket) -> str:
 def parse_documents_from_search(documents: list[ParserDocument]) -> list[Document]:
     langchain_documents: list[Document] = []
     for doc in documents:
-        new_doc = Document(
-            doc['all_text_from_page'], page_title=doc['page_title'], url=doc['url']
-        )
-        langchain_documents.append(new_doc)
+        try:
+            new_doc = Document(
+                doc['all_text_from_page'], page_title=doc['page_title'], url=doc['url']
+            )
+            langchain_documents.append(new_doc)
+        except Exception as e:
+            logger.debug(e)
+            continue
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=512, chunk_overlap=256)
     splitted_langchain_documents = text_splitter.split_documents(langchain_documents)
     return splitted_langchain_documents
