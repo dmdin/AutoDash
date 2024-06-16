@@ -1,38 +1,60 @@
-# 🏆 Hackathon starter V2
+# Сервис для автоматической генерации отчётов
 
-[![SvelteIcon](https://img.shields.io/static/v1?label=&message=Svelte&color=white&style=flat&logo=svelte)](https://svelte.dev/)  [![FastAPIIcon](https://img.shields.io/static/v1?label=&message=FastAPI&color=white&style=flat&logo=fastapi)](https://fastapi.tiangolo.com/) [![SwaggerIcon](https://img.shields.io/static/v1?label=&message=Swagger&color=white&style=flat&logo=swagger)](https://swagger.io/) [![DockerIcon](https://img.shields.io/static/v1?label=&message=Docker&color=white&style=flat&logo=docker)](https://www.docker.com/) [![ElectronIcon](https://img.shields.io/static/v1?label=&message=Electron&color=white&style=flat&logo=electron)](https://www.electronjs.org/)
+## Решение команды: **Peach2Win МИСИС**
 
-The instant start for your project with ready to use template. Choose your own unique stack to beat a competitors. Build bots and full-stack application from the box
+### [Ссылка на прототип](http://87.242.103.101:8000) - <ins>Поменять!!!</ins>
 
-## 📦 What's included?
+![TempImage](https://github.com/dmdin/AutoDash/assets/32881349/ca2fd329-cde4-4616-a035-3a292003f199)
 
-* 💎 Chord - RPC framework for streamline development
-* 🟧 Svelte - the best DX and fastest prototyping
-* 🟢 Nginx - a classic reverse proxy server
+### ✍️ Описание решения
 
-## ⚙️ Install
+Наше решение является сервисом, который позволит легко и динамично собирать отчёты, используя всю мощь **LLM моделей**.
 
-Download template using _git clone_ or _degit_
+![TempImage](https://github.com/dmdin/AutoDash/assets/32881349/ca2fd329-cde4-4616-a035-3a292003f199)
 
-```bash
-git clone https://github.com/dmdin/hack-starter-v2
+## <ins>Сервис состоит из нескольких компонентов:</ins>
+
+**YandexParser** 📝
+
+Здесь происходит поиск интересующих данных по запросу и фильтрация источников выдачи. Этот сервис наполняет нашу **МЛ-модель** релевантными данными и делает её выдачи максимально точными, что гарантирует качество текста и правильность диаграмм.
+
+**ML-Core** 🧠
+
+Сервис занимается взаимодействием с Большими языковыми моделями и получает от них ответы и данные по нашему **YandexParser** датасету.
+
+**Веб-приложение** 🌐
+
+Сервис позволяет в удобном режиме создавать отчёты по интересующим темам, редактировать под свои нужды и экспортировать в популярных форматах.
+
+### 🐳 **Инструкция по развертыванию**
+
+Все сервисы хостятся на сервере в docker-контейнерах. Для того чтобы запустить наше решение локально, нужно выполнить следующие команды:
+
+Скачать репозиторий:
+
+```powershell
+git clone https://github.com/dmdin/AutoDash.git
 ```
 
-## 🚀 Startup
+Перейти в папку с docker-compose:
 
-Make sure you have installed _Docker_, then run
-
-```bash
-docker-compose up
+```powershell
+cd AutoDash
 ```
 
-## 🛠 Develop
+Запустить сервисы:
 
-Prepare your environment. Install packages inside _backend_ and _frontend_ modules. Both parts support __hot-reloading__ to
-maximize development speed
+```powershell
+docker-compose up -d
+```
 
-## 🥰 Support
+## 📦 Что используется
 
-You can always click on the ⭐️ of the repo and donate. I will be very glad for any support
-
-[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/Dikower)
+* 💎 Chord - RPC framework для упрощения разработки
+* 🟧 Svelte - отличный DX и быстрая разработка прототипов
+* 🐍 Python - универсальный язык программирования
+* 🟢 Nginx - классический сервер обратного прокси
+* 🔴 Redis - высокопроизводительное хранилище данных в памяти
+* 🐘 PostgreSQL - мощная реляционная база данных
+* 🤖 ChatGPT - большие языковые модели для диалоговых систем
+* 🌐 Yandex API - набор API от Яндекса для поиска данных
