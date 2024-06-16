@@ -17,6 +17,7 @@
 		"db:generate": "pnpm drizzle-kit generate:pg"
 	},
 	"devDependencies": {
+		"@auth/drizzle-adapter": "^1.2.0",
 		"@iconify/json": "^2.2.219",
 		"@iconify/svelte": "^3.1.6",
 		"@lottiefiles/svelte-lottie-player": "^0.3.1",
@@ -34,6 +35,7 @@
 		"autoprefixer": "^10.4.17",
 		"daisyui": "^4.7.2",
 		"drizzle-kit": "^0.20.14",
+		"drizzle-orm": "^0.29.3",
 		"echarts": "^5.5.0",
 		"eslint": "^8.56.0",
 		"eslint-config-prettier": "^9.1.0",
@@ -60,7 +62,6 @@
 		"@chord-ts/rpc": "^0.2.8",
 		"@xyflow/svelte": "^0.1.6",
 		"dotenv": "^16.4.5",
-		"drizzle-orm": "^0.29.3",
 		"html-to-image": "^1.11.11",
 		"html2canvas-pro": "^1.5.0",
 		"html2pdf.js": "^0.9.0",

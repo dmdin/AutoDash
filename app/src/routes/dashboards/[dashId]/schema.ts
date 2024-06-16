@@ -16,7 +16,8 @@ import { templates } from '$schema'
 
 export const dashboards = pgTable('dashboards', {
   id: uuid('id').primaryKey().defaultRandom(),
-  templateId: uuid('templateId').references(() => templates.id).notNull()
+  templateId: uuid('templateId').references(() => templates.id).notNull(),
+  createdAt: timestamp('createdAt').defaultNow(),
 })
 
 export const dashboardsRelations = relations(dashboards, ({ one, many }) => ({

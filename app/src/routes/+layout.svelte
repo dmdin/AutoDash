@@ -80,18 +80,21 @@
 			</div>
 
 			<div class="flex gap-4">
+				<div class="tooltip tooltip-left" data-tip="Выбор LLM модели">
+
 				<div
 					class="flex items-center gap-3 bg-primary px-4 py-0.5 rounded-xl cursor-pointer text-primary-content"
 				>
 					<Robot width="30" height="30" />
 
 					<select bind:value={$model} class="cursor-pointer bg-transparent w-full h-full">
-						<option class="" selected>Модель</option>
 						<option class="">ChatGPT 3.5</option>
 						<option class="">ChatGPT 4o</option>
 						<option class="">GigaChat</option>
 					</select>
 				</div>
+				</div>
+				<div class="tooltip tooltip-bottom" data-tip="Поменять тему">
 
 				<button
 					class="btn btn-square btn-sm flex items-center gap-4 transition hover:text-primary"
@@ -107,18 +110,28 @@
 						</span>
 					{/if}
 				</button>
-
+				</div>
 				{#if !data.session}
-					<button class="btn btn-primary btn-sm" onclick="my_modal_1.showModal()"
-						>
+					<button class="btn btn-primary btn-sm" onclick="my_modal_1.showModal()">
 						<Enter />
 						Войти
 					</button>
 				{:else}
+				<div class="ml-7 flex gap-2">
 					<button class="btn btn-outline btn-sm" on:click={signOut}>
 						<Exit />
 						Выйти
 					</button>
+					<div class="avatar">
+						<div class="w-8 rounded-xl">
+							<img
+								alt="User avatar"
+								src={$page.data?.session?.user?.image ?? 'https://source.boringavatars.com/marble/120'}
+								class="avatar"
+							/>
+						</div>
+					</div>
+				</div>
 				{/if}
 			</div>
 		</div>

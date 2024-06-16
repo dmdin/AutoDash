@@ -15,13 +15,15 @@ const config = {
 		adapter: adapter(),
 		alias: {
 			$root: 'src',
-			$stores: 'src/lib/client/stores',
-			$auth: 'src/routes/auth',
-			$module: 'src/routes/test',
 			$schema: 'src/schema',
+			$stores: 'src/lib/client/stores',
 			$repo: 'src/lib/server/repo',
 			$client: 'src/lib/client',
 			$server: 'src/lib/server',
+
+			$auth: 'src/routes/auth',
+			$user: 'src/routes/user',
+			$module: 'src/routes/test',
 		}
 	},
 };

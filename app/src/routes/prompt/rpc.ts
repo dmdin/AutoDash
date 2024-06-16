@@ -1,8 +1,21 @@
 import { db, takeUniqueOrThrow } from '$repo/db'
-import { blocks, dashboards, templates, widgets } from '$schema'
-import { rpc } from '@chord-ts/rpc'
+import { blocks, dashboards, templates, savedTemplates, widgets } from '$schema'
+import { depends, rpc } from '@chord-ts/rpc'
 
 export class Prompt {
+  @depends()
+  ctx!: {user: {id: string}}
+
+  @rpc()
+  async saveTemplate({title, body}: {title: string, body: string}){
+    const authorId = this.ctx.user.id
+    const template = await db
+      .insert(savedTemplates)
+      .values({ title, authorId, body })
+      .returning()
+      .then(takeUniqueOrThrow)
+    return template
+  }
 
   @rpc()
   async createDashboard(topic: string, description: string){

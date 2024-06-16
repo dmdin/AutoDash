@@ -20,9 +20,6 @@ importers:
       dotenv:
         specifier: ^16.4.5
         version: 16.4.5
-      drizzle-orm:
-        specifier: ^0.29.3
-        version: 0.29.3(@neondatabase/serverless@0.8.1)(@types/pg@8.6.6)(postgres@3.4.3)
       html-to-image:
         specifier: ^1.11.11
         version: 1.11.11
@@ -42,6 +39,9 @@ importers:
         specifier: ^0.3.6
         version: 0.3.6
     devDependencies:
+      '@auth/drizzle-adapter':
+        specifier: ^1.2.0
+        version: 1.2.0
       '@iconify/json':
         specifier: ^2.2.219
         version: 2.2.219
@@ -93,6 +93,9 @@ importers:
       drizzle-kit:
         specifier: ^0.20.14
         version: 0.20.14
+      drizzle-orm:
+        specifier: ^0.29.3
+        version: 0.29.3(@neondatabase/serverless@0.8.1)(@types/pg@8.6.6)(postgres@3.4.3)
       echarts:
         specifier: ^5.5.0
         version: 5.5.0
@@ -193,6 +196,9 @@ packages:
         optional: true
       nodemailer:
         optional: true
+
+  '@auth/drizzle-adapter@1.2.0':
+    resolution: {integrity: sha512-95LHWlgtR4rQeHy4bACiVgTZdWkkEpVXYJim1IqbF1Hy0MnnMalmfGuIlNcOi64+6iC17j5FkDsMchqGwvj2Dg==}
 
   '@auth/sveltekit@1.2.0':
     resolution: {integrity: sha512-S2IbKK4pxc7YTN8GrE6/4+z7P0QysreEKmE9Dy6lAIkvwh4F3EEwcRu6S8rgnuAJrs3YZN4gdrum3eLoXE9fmg==}
@@ -3494,6 +3500,14 @@ snapshots:
       oauth4webapi: 2.10.4
       preact: 10.11.3
       preact-render-to-string: 5.2.3(preact@10.11.3)
+
+  '@auth/drizzle-adapter@1.2.0':
+    dependencies:
+      '@auth/core': 0.32.0
+    transitivePeerDependencies:
+      - '@simplewebauthn/browser'
+      - '@simplewebauthn/server'
+      - nodemailer
 
   '@auth/sveltekit@1.2.0(@sveltejs/kit@2.5.0(@sveltejs/vite-plugin-svelte@3.0.0(svelte@4.2.11)(vite@5.0.3(@types/node@20.11.19)))(svelte@4.2.11)(vite@5.0.3(@types/node@20.11.19)))(svelte@4.2.11)':
     dependencies:
