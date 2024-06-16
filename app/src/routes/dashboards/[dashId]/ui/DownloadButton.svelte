@@ -10,6 +10,7 @@
 	import PhMicrosoftExcelLogoFill from '~icons/ph/microsoft-excel-logo-fill';
 	import PhMicrosoftWordLogoFill from '~icons/ph/microsoft-word-logo-fill';
 	import PhExport from '~icons/ph/export';
+	import PhFilePngFill from '~icons/ph/file-png-fill';
 	import html2canvas from 'html2canvas-pro';
 	import { Panel, getNodesBounds, getViewportForBounds, useNodes } from '@xyflow/svelte';
 	import { jsPDF } from 'jspdf';
@@ -132,14 +133,43 @@
 				})
 			]});
 	}
+
+	function generateImage() {
+		const nodesBounds = getNodesBounds($nodes);
+		console.log(nodesBounds)
+		const viewport = getViewportForBounds(nodesBounds, nodesBounds.width, nodesBounds.height, 0.5, 2, 0.2);
+		console.log(viewport)
+		const viewportDomNode = document.querySelector<HTMLElement>('.svelte-flow__viewport')!;
+		imageWidth = nodesBounds.width
+		imageHeight = nodesBounds.height
+		if (viewport) {
+			toPng(viewportDomNode, {
+				backgroundColor: '#FFFFFF',
+				quality: 1,
+				width: imageWidth,
+				height: imageHeight,
+				style: {
+					width: `${imageWidth}px`,
+					height: `${imageHeight}px`,
+					transform: `scale(${viewport.zoom})`
+				}
+			}).then((dataUrl) => {
+				const a = document.createElement('a');
+				a.href = dataUrl;
+				a.download = 'report.png';
+				document.body.appendChild(a);
+				a.click();
+			});
+		}
+	}
 </script>
 
 <details class="dropdown">
 	<summary class="m-1 btn btn-secondary"><PhExport /> Экспорт</summary>
-	<div class="w-full mx-auto p-2 shadow bg-base-100 rounded-box flex gap-0.5">
+	<div class="mx-auto p-2 shadow bg-base-100 rounded-box grid grid-cols-2 grid-rows-2 gap-2">
+		<button class="btn btn-sm text-lg" on:click={generateImage}><PhFilePngFill/></button>
 		<button class="btn btn-sm text-lg" on:click={handleClick}><PhFilePdf /></button>
-		<button class="btn btn-sm text-lg" on:click={downloadExcel}><PhMicrosoftExcelLogoFill /></button
-		>
+		<button class="btn btn-sm text-lg" on:click={downloadExcel}><PhMicrosoftExcelLogoFill /></button>
 		<button class="btn btn-sm text-lg" on:click={generateWord}><PhMicrosoftWordLogoFill /></button>
 	</div>
 </details>
