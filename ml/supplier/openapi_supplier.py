@@ -19,6 +19,7 @@ class OpenAISupplier:
         chat = ChatOpenAI(
             base_url=app_settings.openai_api_url,
             api_key=app_settings.openai_api_key,
+            temperature=0.575,
             model=model_name,
         )
         return chat

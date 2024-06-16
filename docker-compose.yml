@@ -1,19 +1,18 @@
 services:
-  # sveltekit:
-  #   container_name: sveltekit-container
-  #   restart: unless-stopped
-  #   build:
-  #     context: ./app
-  #     dockerfile: ./app/Dockerfile
-  #   environment:
-  #     - PORT=3000
-  #   volumes:
-  #     - ./static:/app/static
-  #   ports:
-  #     - 3000:3000
-  #   depends_on:
-  #     - redis
-  #     - db
+  app:
+    container_name: app
+    restart: unless-stopped
+    build:
+      context: ./app
+    environment:
+      - PORT=3000
+
+    env_file:
+      - ./secrets/app.env
+    volumes:
+      - ./static:/app/static
+    ports:
+      - 80:3000
 
   # redis:
   #   image: redis/redis-stack-server:latest
