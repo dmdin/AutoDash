@@ -35,9 +35,7 @@
   <div class="w-full flex-1 grid grid-cols-8">
     <div class="col-span-1"><Toolbar/></div>
     <div class="mx-auto h-full col-span-6">
-      {#each $dashboard.blocks as block}
-        <Block data={block} />
-      {/each}
+      <Block />
     </div>
     <div class="col-span-1 pt-4 flex flex-col gap-3 w-40">
       <a class="btn btn-secondary" target="_blank" href={`/dashboards/${$dashId}/share`}><TdesignShare/> Поделиться</a>
