@@ -1,3 +1,4 @@
+import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill'
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vitest/config';
 import swc from 'unplugin-swc';
@@ -9,6 +10,9 @@ export default defineConfig({
 		swc.vite(),
 		Icons({
 			compiler: 'svelte'
+		}),
+		NodeGlobalsPolyfillPlugin({
+			buffer: true
 		})
 	],
 	test: {

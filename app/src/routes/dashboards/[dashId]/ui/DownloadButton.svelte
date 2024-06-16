@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { Packer, Paragraph, TextRun } from 'docx';
+	import { CHART_HEIGHT, CHART_WIDTH } from '$lib/charts/constants'
+	import { ImageRun, Packer, Paragraph, TextRun } from 'docx';
 	import pkg from 'file-saver';
 	const { saveAs } = pkg;
 	import * as docx from 'docx';
@@ -18,46 +19,46 @@
 	import { get } from 'svelte/store';
 	import { rpc } from '$root/routes';
 	import { ExportType } from '../types';
+	import { Buffer } from 'buffer'
 
-	const imageWidth = 1080 * 2;
-	const imageHeight = 662 * 2;
+	let imageWidth = 900 * 2;
+	let imageHeight = 662 * 3 * 2
 
 	async function handleClick() {
 		// const module = await import('html2pdf.js')
 		// const html2pdf = module.default
 		const nodesBounds = getNodesBounds($nodes);
-		const viewport = getViewportForBounds(nodesBounds, imageWidth, imageHeight, 0.5, 2.0, 0.2);
-
+		console.log(nodesBounds)
+		const viewport = getViewportForBounds(nodesBounds, nodesBounds.width, nodesBounds.height, 0.5, 2, 0.2);
+		console.log(viewport)
 		const viewportDomNode = document.querySelector<HTMLElement>('.svelte-flow__viewport')!;
-
-		if (viewport) {
-			await HTMLtoDOCX(viewportDomNode).then((res) => console.log(res));
-			// html2canvas(viewportDomNode).then(canvas => {
-			//   let imgData = canvas.toDataURL("image/jpeg", 1.0)
-			//   let pdf = new jsPDF('l', 'px', [imageHeight, imageWidth])
-			//
-			//   pdf.addImage(canvas, 'JPEG', 0, 0, imageWidth, imageHeight);
-			//   pdf.save("download.pdf")
-			// })
-			// toPng(viewportDomNode, {
-			//   backgroundColor: '#FFFFFF',
-			//   width: imageWidth,
-			//   height: imageHeight,
-			//   style: {
-			//     width: `${imageWidth}px`,
-			//     height: `${imageHeight}px`
-			//   }
-			// }).then((dataUrl) => {
-			//   // let pdf = new jsPDF('l', 'px', [imageHeight, imageWidth])
-			//   // pdf.addImage(dataUrl, 'PNG', 0, 0, imageWidth, imageHeight);
-			//   // pdf.save("download.pdf")
-			//   const link = document.createElement('a');
-			//   link.download = 'svelte-flow.png';
-			//   link.href = dataUrl;
-			//   link.click();
-			// });
-		}
-	}
+		imageWidth = nodesBounds.width
+		imageHeight = nodesBounds.height
+    if (viewport) {
+      // html2canvas(viewportDomNode).then(canvas => {
+      //   let imgData = canvas.toDataURL("image/jpeg", 1.0)
+      //   let pdf = new jsPDF('l', 'px', [imageHeight, imageWidth])
+      //
+      //   pdf.addImage(canvas, 'JPEG', 0, 0, imageWidth, imageHeight);
+      //   pdf.save("download.pdf")
+      // })
+      toPng(viewportDomNode, {
+        backgroundColor: '#FFFFFF',
+				quality: 1,
+        width: imageWidth,
+        height: imageHeight,
+        style: {
+          width: `${imageWidth}px`,
+          height: `${imageHeight}px`,
+					transform: `scale(${viewport.zoom})`
+        }
+      }).then((dataUrl) => {
+        let pdf = new jsPDF('p', 'px', [imageWidth, imageHeight])
+        pdf.addImage(dataUrl, 'PNG', 0, 0, imageWidth, imageHeight);
+        pdf.save("download.pdf")
+      });
+    }
+  }
 
 	const blocksImages = getContext('blocksImages') as SvelteStore<unknown[]>;
 	async function downloadExcel() {
@@ -88,35 +89,48 @@
 		URL.revokeObjectURL(url);
 	}
 
-	function generateWord() {
-		console.log($dashboard);
-		let children = [];
-		for (const block of $dashboard.blocks) {
-			const paragraph = genTextNode(block.name);
-			children = [...children, paragraph];
-			for (const widget of block.widgets) {
-				if (widget.data.type === 'text') {
-					children = [...children, genTextNode(widget.data.text)];
-				}
+  async function generateWord() {
+    let children = []
+		for (const node of $nodes) {
+			if (node.type === 'text-node')
+				children = [...children, genTextNode(node.data.data.text)]
+			else if (node.type === 'block-node') {
+				console.log(node)
+				children = [...children, genTextNode(node.data.name, true, 30)]
 			}
+			else if (node.type === 'plot-node' && node.svgUrl) {
+				children = [...children, await genPlotNode(node.svgUrl)]
+			}
+
 		}
-		const doc = new docx.Document({
-			sections: [
-				{
-					properties: {},
-					children
-				}
-			]
-		});
+    const doc = new docx.Document({
+      sections: [
+        {
+          properties: {},
+          children
+        }]
+    });
 
 		docx.Packer.toBlob(doc).then(async (blob) => {
-			console.log(blob);
-			saveAs(blob, 'example.docx');
+			saveAs(blob, 'report.docx');
 		});
 	}
 
-	function genTextNode(text) {
-		return new Paragraph({ children: [new TextRun({ text })] });
+	function genTextNode(text, bold = false, size=20) {
+		return new Paragraph({ alignment: 'both', children: [ new TextRun({text, bold, size})]})
+  }
+
+	async function genPlotNode(svgUrl) {
+		const buffer = await rpc.Dashboard.getImageBuffer(svgUrl)
+		return new Paragraph({ alignment: 'center', children: [
+				new ImageRun({
+					data: buffer.data,
+					transformation: {
+						width: 276,
+						height: 186,
+					},
+				})
+			]});
 	}
 </script>
 

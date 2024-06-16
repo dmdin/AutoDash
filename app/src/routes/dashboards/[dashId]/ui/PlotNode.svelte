@@ -8,6 +8,7 @@
 	import { dashboard, nodes } from '../controller';
 	import { getContext } from 'svelte';
 
+	export let id
 	export let data: {
 		data: object;
 		name: string;
@@ -22,6 +23,12 @@
 		data.data.type = type;
 		await rpc.Dashboard.updateWidget(data.id, { data: data.data });
 	}
+
+  // function setImageUrl() {
+	// 	const node = $nodes.find(node => node.id === id)
+	// 	node.svgUrl = svgUrl
+	// 	$nodes = $nodes
+  // }
 
 	$: type = data.data.type;
 </script>
