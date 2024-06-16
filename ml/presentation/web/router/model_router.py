@@ -41,16 +41,20 @@ async def generate_template(websocket: WebSocket) -> str:
     Returns all documents suitable for RAG
     """
     await websocket.accept()
-    raw_data = await websocket.receive_json()
-    data = TemplateGeneratorInput(
-        input_theme=raw_data['input_theme'], model_name=raw_data['model_name']
-    )
-    template: BaseMessage
-    async for template in container.openai_supplier.generate_template(
-        data.input_theme, data.model_name
-    ):
-        response = template.content
-        await websocket.send_text(response)
+    try:
+        raw_data = await websocket.receive_json()
+        data = TemplateGeneratorInput(
+            input_theme=raw_data['input_theme'], model_name=raw_data['model_name']
+        )
+        template: BaseMessage
+        async for template in container.openai_supplier.generate_template(
+            data.input_theme, data.model_name
+        ):
+            response = template.content
+            await websocket.send_text(response)
+    except Exception as e: # TODO: mb smth better
+        logger.debug(f"!!!!!!!!!!!!!!!!!! {e}")
+
 
 
 def parse_documents_from_search(documents: list[ParserDocument]) -> list[Document]:
