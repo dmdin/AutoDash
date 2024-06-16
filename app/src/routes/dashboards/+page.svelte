@@ -53,7 +53,8 @@
 					<th>Тема</th>
 					<th>Описание</th>
 					<th>Автор</th>
-					<th>Дата создания</th>
+					<th>Время создания</th>
+					<th>Действия</th>
 				</tr>
 			</thead>
 			<colgroup>
@@ -90,11 +91,7 @@
 						</td>
 						<td>
 							<span
-								>{dash.createdAt?.toLocaleString(undefined, {
-									year: 'numeric',
-									month: 'short',
-									day: 'numeric'
-								})}</span
+								>{dash.createdAt?.toLocaleString()}</span
 							>
 						</td>
 						<td>

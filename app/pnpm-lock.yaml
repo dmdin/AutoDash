@@ -103,8 +103,8 @@ importers:
         specifier: ^0.1.1
         version: 0.1.1(tailwindcss@3.4.1)
       '@tailwindcss/typography':
-        specifier: github:tailwindcss/typography
-        version: git+ssh://git@github.com/tailwindcss/typography.git#a86e6015694c3435ff6cef84f3dd61b81adf26e1(tailwindcss@3.4.1)
+        specifier: 0.5.13
+        version: 0.5.13(tailwindcss@3.4.1)
       '@types/eslint':
         specifier: 8.56.0
         version: 8.56.0
@@ -1411,9 +1411,8 @@ packages:
     peerDependencies:
       tailwindcss: '>=3.2.0'
 
-  '@tailwindcss/typography@git+ssh://git@github.com/tailwindcss/typography.git#a86e6015694c3435ff6cef84f3dd61b81adf26e1':
-    resolution: {commit: a86e6015694c3435ff6cef84f3dd61b81adf26e1, repo: git+ssh://git@github.com/tailwindcss/typography.git, type: git}
-    version: 0.5.10
+  '@tailwindcss/typography@0.5.13':
+    resolution: {integrity: sha512-ADGcJ8dX21dVVHIwTRgzrcunY6YY9uSlAHHGVKvkA+vLc5qLwEszvKts40lx7z0qc4clpjclwLeK5rVCV2P/uw==}
     peerDependencies:
       tailwindcss: '>=3.0.0 || insiders'
 
@@ -4988,7 +4987,7 @@ snapshots:
     dependencies:
       tailwindcss: 3.4.1
 
-  '@tailwindcss/typography@git+ssh://git@github.com/tailwindcss/typography.git#a86e6015694c3435ff6cef84f3dd61b81adf26e1(tailwindcss@3.4.1)':
+  '@tailwindcss/typography@0.5.13(tailwindcss@3.4.1)':
     dependencies:
       lodash.castarray: 4.4.0
       lodash.isplainobject: 4.0.6
