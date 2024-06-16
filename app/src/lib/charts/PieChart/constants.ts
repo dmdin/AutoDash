@@ -53,8 +53,10 @@ export const PIE_VIEW_CONFIG = {
 	series: [],
 	legend: {
 		orient: 'vertical',
-		top: 'middle',
+    type: 'scroll',
+		top: 70,
 		right: 90,
+    height: 140,
 		icon: 'circle',
 		textStyle: {
 			fontSize: 12,
