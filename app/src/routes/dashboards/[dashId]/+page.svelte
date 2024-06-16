@@ -1,6 +1,6 @@
 <script>
-  import Toolbar from '$root/routes/dashboards/[dashId]/ui/Toolbar.svelte'
   import { onMount, setContext } from 'svelte'
+  import Toolbar from '$root/routes/dashboards/[dashId]/ui/Toolbar.svelte'
   import { Board } from './ui'
   import Block from './ui/Block.svelte'
   import PhFilePdf from '~icons/ph/file-pdf'

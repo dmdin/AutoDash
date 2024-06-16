@@ -23,39 +23,6 @@ export class Dashboard {
 	}
 
 	@rpc()
-	async updateWidget(
-		id: string,
-		data: { data?: object; xPos?: number; yPos?: number; width?: number; height?: number }
-	) {
-		await db.update(widgets).set(data).where(eq(widgets.id, id));
-	}
-
-	@rpc()
-	async createWidget({
-		blockId,
-		data,
-		order,
-		xPos,
-		yPos,
-		width,
-		height
-	}: {
-		blockId: string;
-		data: object;
-		order: number;
-		xPos?: number;
-		yPos?: number;
-		width?: number;
-		height?: number;
-	}) {
-		return await db
-			.insert(widgets)
-			.values({ blockId, data, order, xPos, yPos, width, height })
-			.returning()
-			.then(takeUniqueOrThrow);
-	}
-
-	@rpc()
 	async exportFile(type: ExportType, data: ExportData) {
 		if (type === ExportType.Excel) {
 			return await getExcelFile('Test', data.blocks, data.images);
@@ -67,4 +34,21 @@ export class Dashboard {
 		if (type === ExportType.Pdf) {
 		}
 	}
+
+  @rpc()
+  async updateWidget(id: string, data: {data?: object, xPos?: number, yPos?: number, width?:number, height?: number}) {
+    await db
+      .update(widgets)
+      .set(data)
+      .where(eq(widgets.id, id))
+  }
+
+  @rpc()
+  async createWidget({blockId, data, order, xPos, yPos, width, height}: {blockId: string, data: object, order: number, xPos?: number, yPos?: number, width?:number, height?: number} ) {
+    return await db
+      .insert(widgets)
+      .values({blockId, data, order, xPos, yPos, width, height})
+      .returning()
+      .then(takeUniqueOrThrow)
+  }
 }
