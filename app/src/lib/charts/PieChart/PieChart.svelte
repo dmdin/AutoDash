@@ -15,6 +15,7 @@
 	import { onMount } from 'svelte';
 	import { configureOptions } from '../controller';
 	import { CHART_HEIGHT, CHART_WIDTH } from '../constants';
+	import type { EChartsType } from 'echarts';
 
 	use([
 		PieChart,
@@ -30,8 +31,15 @@
 	export let subtitle: string = '';
 	export let category: string[] | null = null;
 	export let series: Series[];
+  export let svgUrl: string | undefined
 
+  let self: EChartsTyДpe | undefined
+  const initOptions = { renderer: 'svg' }
 	let options = null;
+
+  function getSvgUrl() {
+    svgUrl = self?.getSvgDataURL()
+  }
 
 	onMount(() => {
 		options = configureOptions(PIE_VIEW_CONFIG, PIE_SERIES, series.slice(0, 1), null);
@@ -47,7 +55,7 @@
 	<div class="w-full h-full">
 		{#key options}
 			{#if options}
-				<Chart x={0} {init} {options} />
+				<Chart x={0} {init} {options} {initOptions} bind:chart={self} on:rendered={getSvgUrl} />
 			{/if}
 		{/key}
 	</div>

@@ -5,25 +5,32 @@
 	import GgChart from '~icons/gg/chart';
 	import LucideLineChart from '~icons/lucide/line-chart';
 	import MageChartFill from '~icons/mage/chart-fill';
+	import { dashboard } from '../controller';
+	import { getContext } from 'svelte';
 
 	export let data: {
 		data: object;
 		name: string;
 		id: string;
+    order: number;
 	};
+  console.log(data)
 	let type = data.data.type;
+  const widgetsImages = getContext('widgetsImages') as SvelteStore<string[]>
+  let svgUrl = '';
 	export let selected;
-
-	function checkPlotType(type: ChartType) {
-		return data.data.type === type;
-	}
 
 	async function changePlot(type) {
 		data.data.type = type;
 		await rpc.Dashboard.updateWidget(data.id, { data: data.data });
 	}
 
+  function setImageUrl() {
+    $widgetsImages[data.order] = svgUrl
+  }
+
 	$: type = data.data.type;
+  $: if (svgUrl) setImageUrl()
 </script>
 
 <div class="border-2 rounded-md p-2 bg-base-100 group {selected ? 'border-primary' : ''}">
@@ -50,5 +57,5 @@
 			<MageChartFill />
 		</button>
 	</div>
-	<Chart chart={data.data} />
+	<Chart chart={data.data} bind:svgUrl />
 </div>
