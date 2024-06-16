@@ -16,9 +16,6 @@ class AppSettings(BaseSettings):
     parser_host: str = '127.0.0.1'
     parser_port: int = 8002
 
-    redis_host: str = '127.0.0.1'
-    redis_port: int = 6379
-
     uvicorn_host: str = '0.0.0.0'
     uvicorn_port: int = 7000
     uvicorn_workers: int = mp.cpu_count()

@@ -4,6 +4,7 @@ from pydantic import Field
 
 from .base import CamelizedBaseModel
 
+
 class TemplateReportInput(CamelizedBaseModel):
     """Input for template report"""
 
@@ -22,12 +23,12 @@ class ChartData(CamelizedBaseModel):
     name: str = Field(
         description='название сущности, к которым принадлежит данная единица информации'
     )
-    value: float = Field(description='значение данных')
+    value: str | float | int = Field(description='значение данных, если это текстовые данные, то это представляет из себя один абзац')
 
 
 class ChartSeries(CamelizedBaseModel):
     name: str = Field(description='название данных')
-    unit: str = Field(description='единица измерения данных')
+    unit: str = Field(description='единица измерения данных, обычно пустая')
     data: list[ChartData] = Field(
         description='массив данных для отображения в виджете, все данные должны совпадать по тематике в выбранной группе'
     )
@@ -52,5 +53,5 @@ class LLMReportOutput(CamelizedBaseModel):
 
 
 class ReportOutput(CamelizedBaseModel):
-    redis_index_name: str
+    collection_index_name: str
     widgets: list[Widget]

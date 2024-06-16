@@ -1,17 +1,21 @@
 from fastapi import APIRouter, WebSocket
 import httpx
-import ujson
+import uuid
+
+from pydantic import ValidationError
 from schemas.parser import ParserDocument, SourceDocuments
-from schemas.widget import ReportOutput, Widget, TemplateReportInput
+from schemas.widget import LLMReportOutput, ReportOutput, TemplateReportInput
 from presentation.dependencies import container
 from schemas.message import TemplateGeneratorInput
 from langchain.schema import BaseMessage
-from langchain_community.vectorstores.redis import Redis
+from langchain_community.vectorstores.chroma import Chroma
 from langchain.docstore.document import Document
 from shared.settings import app_settings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.prompts import ChatPromptTemplate
+from shared.base import logger
+from langchain_core.runnables import RunnablePassthrough
 
 router = APIRouter(prefix='/llm')
 
@@ -79,15 +83,15 @@ async def create_report(
     all_documents_from_search_raw = await search_data_for_llm(
         query=report_theme, urls=urls
     )
-    print(all_documents_from_search_raw)
+    logger.debug(f"Info: {all_documents_from_search_raw}")
     langchain_documents = parse_documents_from_search(all_documents_from_search_raw)
-    rds = Redis.from_documents(
+    collection_index_name = uuid.uuid4().hex
+    cds = Chroma.from_documents(
         langchain_documents,
         embedding=container.openai_supplier.embeddings,
-        redis_url=f'redis://{app_settings.redis_host}:{app_settings.redis_port}',
+        collection_name=collection_index_name,
     )
-    index_name = rds.index_name
-    retriever = rds.as_retriever(search_kwargs={'k': 12})
+    retriever = cds.as_retriever(search_kwargs={'k': 12})
     prompt_template = ChatPromptTemplate.from_messages([
         (
             'system',
@@ -99,31 +103,44 @@ async def create_report(
         ),
         (
             'ai',
-            'Хорошо, я внимательно изучил шаблон и буду стараться следовать ему, а именно правильно выбирать нужные виджеты !',
+            'Хорошо, я внимательно изучил шаблон и буду стараться следовать ему, а именно правильно выбирать нужные виджеты!',
         ),
         (
             'user',
-            'Подготовь, пожалуйста, для меня отчёт по выбранной теме: {report_theme}, для этого напшии мне JSON с правильной схемой, для этого ознакомься со структурой виджетов:\n{format_instructions}\nПожалуйста, верни только виджеты с отчётами! Сделай это на самом профессиональном уровне!',
+            'Подготовь, пожалуйста, для меня отчёт по выбранной теме: {report_theme}. Используй информацию отсюда:\n{context}\n. Для создания отчёта напшии мне JSON с правильной схемой, для этого ознакомься со структурой виджетов:\n{format_instructions}\nПожалуйста, верни только виджеты! Сделай это на самом профессиональном уровне!',
         ),
     ])
 
-    parser = JsonOutputParser(pydantic_object=list[Widget])
+    parser = JsonOutputParser(pydantic_object=LLMReportOutput)
     model = container.openai_supplier.get_model(model_name)
 
-    rag_chain = (
-        {
-            'context': retriever | format_docs,
-            'report_theme': report_theme,
-            'report_template': report_template,
-            'format_instrucitons': parser.get_format_instructions(),
-        }
-        | prompt_template
-        | model
-        | parser
+    retrieved_documents = await retriever.ainvoke(
+        f'Тема: {report_theme}, части отчёта: {report_template.report_text}'
     )
+    retrieved_documents_string = format_docs(retrieved_documents)
 
-    response = await rag_chain.invoke()
-    response_content = ujson.loads(response.content)
+    rag_chain = RunnablePassthrough() | prompt_template | model | parser
 
-    final_response = ReportOutput(redis_index_name=index_name, widgets=response_content)
-    return final_response.json()
+    while True:
+        try:
+            response = await rag_chain.ainvoke({
+                'report_theme': report_theme,
+                'report_template': report_template.report_text,
+                'context': retrieved_documents_string,
+                'format_instructions': parser.get_format_instructions(),
+            })
+
+            print(response)
+
+            final_response = ReportOutput(
+                collection_index_name=collection_index_name, widgets=response['widgets']
+            )
+            print(final_response)
+            return final_response
+        except ValidationError as e:
+            logger.debug(e)
+            continue
+        except Exception as e:
+            logger.debug("UNKOWN!")
+            logger.debug(e)
+            continue
