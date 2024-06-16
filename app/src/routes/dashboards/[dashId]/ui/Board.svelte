@@ -75,7 +75,8 @@
           id: widget.id,
           type: nodeType,
           position: position,
-          data: widget
+          data: widget,
+          svgUrl: '',
         }
 
         await addNode(node, nodeType === 'text-node' ? width : 0) // 🤪🤪🤪🤪🤪

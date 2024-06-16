@@ -1,10 +1,6 @@
 <script>
-<<<<<<< HEAD
-  import { onMount, setContext } from 'svelte'
-=======
   import Toolbar from '$root/routes/dashboards/[dashId]/ui/Toolbar.svelte'
-  import { onMount } from 'svelte'
->>>>>>> b00ee1657ffeb9254243dd3bbff3bda0d31370e4
+  import { onMount, setContext } from 'svelte'
   import { Board } from './ui'
   import Block from './ui/Block.svelte'
   import PhFilePdf from '~icons/ph/file-pdf'
@@ -25,8 +21,6 @@
     $dashboard = data.dashboard
     loading = false
   })
-
-  setContext('blocksImages', blocksImages)
 </script>
 
 

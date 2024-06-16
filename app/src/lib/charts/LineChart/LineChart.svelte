@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { SERIES_COLORS } from '../PieChart/constants';
 	import { init, use } from 'echarts/core';
-	import { Axis, color, format, type EChartsOption } from 'echarts';
+	import { Axis, color, format, type EChartsOption, type EChartsType } from 'echarts';
 	import { BarChart, LineChart } from 'echarts/charts';
 	import {
 		GridComponent,
@@ -21,8 +21,15 @@
 	export let subtitle = '';
 	export let series: SeriesData[] = [];
 	export let category: string[] | null = null;
+  export let svgUrl: string | undefined
 
+  let self: EChartsType | undefined
+  const initOptions = { renderer: 'svg' }
 	let options = null;
+
+  function getSvgUrl() {
+    svgUrl = self?.getSvgDataURL()
+  }
 
 	use([
 		BarChart,
@@ -49,7 +56,7 @@
 	{#key options}
 		{#if options}
 			<div class="w-full h-full">
-				<Chart {init} {options} />
+				<Chart {init} {options} {initOptions} bind:chart={self} on:rendered={getSvgUrl} />
 			</div>
 		{/if}
 	{/key}

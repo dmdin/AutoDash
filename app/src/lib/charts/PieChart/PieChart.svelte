@@ -33,7 +33,7 @@
 	export let series: Series[];
   export let svgUrl: string | undefined
 
-  let self: EChartsTyДpe | undefined
+  let self: EChartsType | undefined
   const initOptions = { renderer: 'svg' }
 	let options = null;
 

@@ -14,13 +14,21 @@
 	import { BAR_SERIES, BAR_VIEW_CONFIGURATION } from './constants';
 	import { onMount } from 'svelte';
 	import { configureOptions } from '../controller';
+	import type { EChartsType } from 'echarts';
 
 	export let title = '';
 	export let subtitle = '';
 	export let series: SeriesData[] = [];
 	export let category: string[] | null = null;
+  export let svgUrl: string | undefined
 
+	let self: EChartsType | undefined;
+	const initOptions = { renderer: 'svg' };
 	let options = null;
+
+	function getSvgUrl() {
+		svgUrl = self?.getSvgDataURL();
+	}
 
 	onMount(() => {
 		options = configureOptions(BAR_VIEW_CONFIGURATION, BAR_SERIES, series, category);
@@ -47,7 +55,7 @@
 	{#key options}
 		{#if options}
 			<div class="w-full h-full">
-				<Chart {init} {options} />
+				<Chart {init} {options} {initOptions} bind:chart={self} on:rendered={getSvgUrl} />
 			</div>
 		{/if}
 	{/key}

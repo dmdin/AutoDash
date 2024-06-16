@@ -20,8 +20,8 @@ async function processWidgets(
 	blocksImages: SvelteStore<unknown[]>,
 	widgets: unknown[]
 ) {
-	const worksheet = workbook.getWorksheet('Блок 1.');
-  console.log(worksheet)
+	const worksheet = workbook?.getWorksheet(1);
+  console.log(blocksImages)
 	const widgetsImages = blocksImages[blockIndex];
 
 	await Promise.all(
