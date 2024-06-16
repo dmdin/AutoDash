@@ -24,10 +24,6 @@
 	}
 
 	$: type = data.data.type;
-
-  nodes.subscribe((v) => {
-    console.log(v)
-  })
 </script>
 
 <div class="border-2 rounded-md p-2 bg-base-100 group {selected ? 'border-primary' : ''}">
