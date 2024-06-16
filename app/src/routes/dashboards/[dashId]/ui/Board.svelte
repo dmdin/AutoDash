@@ -44,6 +44,16 @@
   async function createNodes() {
     if (!$dashboard) return
 
+    if ($dashboard.template.topic) {
+      const topicNode = {
+        id: $dashboard.template.id,
+        type: 'block-node',
+        position: { x: WIDGET_SHIFT_X, y: WIDGET_SHIFT_Y },
+        data: { name: $dashboard.template.topic}
+      }
+      await addNode(topicNode)
+    }
+
     for (const block of $dashboard.blocks) {
       let position = { x: WIDGET_SHIFT_X, y: WIDGET_SHIFT_Y }
       if ($reservedPlace) {
@@ -171,7 +181,6 @@
   }
 
   async function deleteNode(params) {
-    console.log(params)
     for (const node of params.nodes) {
       await rpc.Dashboard.deleteWidget(node.id)
     }

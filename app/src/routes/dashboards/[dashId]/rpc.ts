@@ -12,6 +12,7 @@ export class Dashboard {
 		return await db.query.dashboards.findFirst({
 			where: eq(dashboards.id, dashId),
 			with: {
+				template: true,
 				blocks: {
 					with: {
 						widgets: true

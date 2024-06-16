@@ -21,6 +21,7 @@
     loading = true
     $dashboard = data.dashboard
     loading = false
+    console.log($dashboard)
   })
 </script>
 

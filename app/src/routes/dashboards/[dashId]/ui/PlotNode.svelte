@@ -15,7 +15,6 @@
 		id: string;
     order: number;
 	};
-  console.log(data)
 	let type = data.data.type;
 	export let selected;
 
