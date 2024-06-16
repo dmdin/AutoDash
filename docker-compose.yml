@@ -62,7 +62,7 @@ services:
         limits:
           cpus: '2.00'
           memory: 10000M
-  
+
   search:
     build:
       context: ./search
@@ -95,26 +95,26 @@ services:
       timeout: 5s
       retries: 10
 
-    
+
     volumes:
       - db:/var/lib/postgresql/data
 
     environment:
       PGUSER: $DB_USER
       POSTGRES_PASSWORD: $DB_PASS
-      
+
     ports:
       - 5432:5432
     # networks:
       # - ldt
-  
+
   adminer:
     image: adminer
     container_name: adminer
     restart: always
     ports:
       - 8080:7000
-  
+
 
   # nginx:
   #   image: nginx
