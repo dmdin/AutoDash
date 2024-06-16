@@ -59,22 +59,17 @@
 		}
 	}
 
-	const blocksImages = getContext('blocksImages') as SvelteStore<unknown[]>;
+  function sortByCords(points) {
+    return points.sort((a, b) => {
+      const distanceA = Math.sqrt(a.position.x ** 2 + a.position.y ** 2);
+      const distanceB = Math.sqrt(b.position.x ** 2 + b.position.y ** 2);
+      return distanceA - distanceB;
+    });
+}
+
 	async function downloadExcel() {
-		const preparedBlockImages = $blocksImages.map((b) => {
-			const block = get(b);
-
-			return block.map((w) => {
-				return w;
-			});
-		});
-		const reqData = {
-			blocks: $dashboard.blocks,
-			images: preparedBlockImages
-		};
-		console.log(reqData);
-
-		const file = await rpc.Dashboard.exportFile(ExportType.Excel, reqData);
+    const sortedNodes = sortByCords(structuredClone($nodes))
+		const file = await rpc.Dashboard.exportFile(ExportType.Excel, sortedNodes);
 		const unit8 = new Uint8Array(file.data);
 		const url = URL.createObjectURL(new Blob([unit8], { type: 'application/vnd.ms-excel' }));
 		const a = document.createElement('a');
@@ -89,7 +84,6 @@
 	}
 
 	function generateWord() {
-		console.log($dashboard);
 		let children = [];
 		for (const block of $dashboard.blocks) {
 			const paragraph = genTextNode(block.name);
@@ -110,7 +104,6 @@
 		});
 
 		docx.Packer.toBlob(doc).then(async (blob) => {
-			console.log(blob);
 			saveAs(blob, 'example.docx');
 		});
 	}

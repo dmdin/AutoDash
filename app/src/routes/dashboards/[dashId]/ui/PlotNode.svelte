@@ -23,6 +23,7 @@
 		await rpc.Dashboard.updateWidget(data.id, { data: data.data });
 	}
 
+  const node = $nodes.find((n) => n.id === data.id)
 	$: type = data.data.type;
 </script>
 
@@ -50,5 +51,5 @@
 			<MageChartFill />
 		</button>
 	</div>
-	<Chart chart={data.data} bind:svgUrl={$nodes[data.order].svgUrl} />
+	<Chart chart={data.data} bind:svgUrl={node.svgUrl} />
 </div>
