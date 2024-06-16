@@ -1,8 +1,10 @@
 export const SERIES_COLORS = ['#95A4FC', '#BAEDBD', '#1C1C1C', '#B1E3FF', '#A8C5DA', '#E3A1CB'];
 
 export const PIE_SERIES = {
-  width: 350,
-  height: 350,
+	width: 350,
+	height: 350,
+  top: 10,
+  left: 10,
 	type: 'pie',
 	center: ['25%', '35%'],
 	radius: ['40%', '50%'],
@@ -35,14 +37,21 @@ export const PIE_VIEW_CONFIG = {
 		show: false,
 		borderWidth: 1
 	},
+	title: {
+    textStyle: {
+      fontSize: 16,
+      color: '#1C1C1C',
+      fontFamily: 'system-ui'
+    },
+	},
 	tooltip: {
 		trigger: 'item'
 	},
-  series: [],
+	series: [],
 	legend: {
 		orient: 'vertical',
 		top: 'middle',
-    right: 100,
+		right: 90,
 		icon: 'circle',
 		textStyle: {
 			fontSize: 12,

@@ -20,6 +20,13 @@ export const LINE_SERIES = {
 };
 
 export const LINE_VIEW_CONFIG = {
+	title: {
+		textStyle: {
+			fontSize: 16,
+			color: '#1C1C1C',
+			fontFamily: 'system-ui'
+		}
+	},
 	xAxis: {
 		type: 'category',
 		boundaryGap: false,
@@ -33,7 +40,7 @@ export const LINE_VIEW_CONFIG = {
 	yAxis: {
 		type: 'value'
 	},
-  series: [],
+	series: [],
 	grid: {
 		left: '3%',
 		right: '4%',

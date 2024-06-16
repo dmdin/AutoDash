@@ -8,9 +8,10 @@ export function getSeries(data: Array<SeriesData>, series: SeriesModel) {
 	};
 }
 
-export function configureOptions(viewConfig: unknown, seriesSample: SeriesModel, series: Series[], category: string[] | null) {
+export function configureOptions(viewConfig: unknown, seriesSample: SeriesModel, name: string, series: Series[], category: string[] | null) {
 	const viewOptions = JSON.parse(JSON.stringify(viewConfig));
 
+  viewOptions.title.text = name
 	series.forEach((s) => {
     const series = getSeries(s.data, seriesSample)
 		viewOptions!.series.push(series);

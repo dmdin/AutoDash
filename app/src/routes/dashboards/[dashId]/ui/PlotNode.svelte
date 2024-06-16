@@ -24,16 +24,7 @@
 		await rpc.Dashboard.updateWidget(data.id, { data: data.data });
 	}
 
-<<<<<<< HEAD
   const node = $nodes.find((n) => n.id === data.id)
-=======
-  // function setImageUrl() {
-	// 	const node = $nodes.find(node => node.id === id)
-	// 	node.svgUrl = svgUrl
-	// 	$nodes = $nodes
-  // }
-
->>>>>>> 9f2c255b6ca2093609b8da20e265a217e7226a04
 	$: type = data.data.type;
 </script>
 

@@ -43,7 +43,7 @@
 	]);
 
 	onMount(() => {
-		options = configureOptions(LINE_VIEW_CONFIG, LINE_SERIES, series, category);
+		options = configureOptions(LINE_VIEW_CONFIG, LINE_SERIES, title, series, category);
 	});
 </script>
 
@@ -52,7 +52,6 @@
 	style:width="{CHART_WIDTH}px"
 	style:height="{CHART_HEIGHT}px"
 >
-	<h3 class="text-base-content text-[16px] font-semibold leading-5">{title}</h3>
 	{#key options}
 		{#if options}
 			<div class="w-full h-full">

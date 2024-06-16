@@ -85,17 +85,6 @@
 		URL.revokeObjectURL(url);
 	}
 
-<<<<<<< HEAD
-	function generateWord() {
-		let children = [];
-		for (const block of $dashboard.blocks) {
-			const paragraph = genTextNode(block.name);
-			children = [...children, paragraph];
-			for (const widget of block.widgets) {
-				if (widget.data.type === 'text') {
-					children = [...children, genTextNode(widget.data.text)];
-				}
-=======
   async function generateWord() {
     let children = []
 		for (const node of $nodes) {
@@ -104,7 +93,6 @@
 			else if (node.type === 'block-node') {
 				console.log(node)
 				children = [...children, genTextNode(node.data.name, true, 30)]
->>>>>>> 9f2c255b6ca2093609b8da20e265a217e7226a04
 			}
 			else if (node.type === 'plot-node' && node.svgUrl) {
 				children = [...children, await genPlotNode(node.svgUrl)]
@@ -120,11 +108,7 @@
     });
 
 		docx.Packer.toBlob(doc).then(async (blob) => {
-<<<<<<< HEAD
-			saveAs(blob, 'example.docx');
-=======
 			saveAs(blob, 'report.docx');
->>>>>>> 9f2c255b6ca2093609b8da20e265a217e7226a04
 		});
 	}
 
