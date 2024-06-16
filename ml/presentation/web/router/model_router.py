@@ -68,7 +68,7 @@ def parse_documents_from_search(documents: list[ParserDocument]) -> list[Documen
         except Exception as e:
             logger.debug(e)
             continue
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=512, chunk_overlap=256)
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=256, chunk_overlap=64)
     splitted_langchain_documents = text_splitter.split_documents(langchain_documents)
     return splitted_langchain_documents
 
@@ -98,7 +98,7 @@ async def create_report(
         embedding=container.openai_supplier.embeddings,
         collection_name=collection_index_name,
     )
-    retriever = cds.as_retriever(search_kwargs={'k': 8})
+    retriever = cds.as_retriever(search_kwargs={'k': 32})
     prompt_template = ChatPromptTemplate.from_messages([
         (
             'system',
@@ -110,11 +110,11 @@ async def create_report(
         ),
         (
             'ai',
-            'Хорошо, я внимательно изучил шаблон и буду стараться следовать ему, а именно правильно выбирать нужные виджеты! Я буду следовать инструкциям и не отвечать напрямую на вопросы, предоставленные в отчёте! Я буду создавать РАЗВЁРНУТЫЕ и ПРАВИЛЬНЫЕ виджеты с обширной информацией и глубоким пониманием тематики. Мои ответы будут на самом профессиональном уровне!',
+            'Хорошо, я внимательно изучил шаблон и буду стараться следовать ему, а именно правильно выбирать нужные виджеты! Я буду следовать инструкциям, предоставленным в отчёте! Я буду создавать РАЗВЁРНУТЫЕ и ПРАВИЛЬНЫЕ виджеты с обширной информацией и глубоким пониманием тематики. Мои ответы будут на самом профессиональном уровне!',
         ),
         (
             'user',
-            'Подготовь, пожалуйста, для меня отчёт по выбранной теме: {report_theme}. Используй информацию отсюда:\n{context}\n. Для создания отчёта напшии мне JSON с правильной схемой, для этого ознакомься со структурой виджетов:\n{format_instructions}\n. Пример для генерации виджета с bar chart:\n{bar_chart}\n, пример генерации виджета с line chart:\n{line_chart}\n, пример генерации виджета с pie chart:\n{pie_chart}\n. Пожалуйста, верни только виджеты! Сделай это на самом профессиональном уровне!',
+            'Подготовь, пожалуйста, для меня отчёт по выбранной теме: {report_theme}. Используй информацию отсюда:\n{context}\n. Для создания отчёта напшии мне JSON с правильной схемой, для этого ознакомься со структурой виджетов:\n{format_instructions}\n. Пример для генерации виджета с bar chart:\n{bar_chart}\n, пример генерации виджета с line chart:\n{line_chart}\n, пример генерации виджета с pie chart:\n{pie_chart}\n. Постарйся не использовать очень много текстовых виджетов! Пожалуйста, верни только виджеты! Сделай это на самом профессиональном уровне!',
         ),
     ])
 
@@ -176,7 +176,7 @@ async def create_reportv2(
         embedding=container.openai_supplier.embeddings,
         collection_name=collection_index_name,
     )
-    retriever = cds.as_retriever(search_kwargs={'k': 12})
+    retriever = cds.as_retriever(search_kwargs={'k': 24})
 
     all_blocks = ["Блок" + x for x in report_item.report_text.split("Блок")[1::]]
     print(all_blocks)
@@ -198,7 +198,7 @@ async def create_reportv2(
             ),
             (
                 'ai',
-                'Хорошо, я внимательно изучил блок и буду стараться следовать ему, а именно правильно выбирать нужные виджеты! Я буду следовать инструкциям и не отвечать напрямую на вопросы, предоставленные в отчёте! Я буду создавать РАЗВЁРНУТЫЕ и ПРАВИЛЬНЫЕ виджеты с обширной информацией и глубоким пониманием тематики. Мои ответы будут на самом профессиональном уровне!',
+                'Хорошо, я внимательно изучил блок и буду стараться следовать ему, а именно правильно выбирать нужные виджеты! Я буду следовать инструкциям, предоставленным в отчёте! Я буду создавать РАЗВЁРНУТЫЕ и ПРАВИЛЬНЫЕ виджеты с обширной информацией и глубоким пониманием тематики. Мои ответы будут на самом профессиональном уровне!',
             ),
             (
                 'user',
