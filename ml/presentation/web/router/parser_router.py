@@ -23,6 +23,5 @@ async def get_data_for_llm(query: str, urls: SourceDocuments) -> list[ParserDocu
     )
     async with httpx.AsyncClient() as client:
         response: httpx.Response = await client.post(api_url, params={"query": query}, data=urls.json())
-        print(response)
         all_documents: list[ParserDocument] = response.json()
         return all_documents
