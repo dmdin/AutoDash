@@ -75,15 +75,14 @@ def format_docs(docs: list[Document]):
     response_model_exclude_none=True,
 )
 async def create_report(
-    report_theme: str,
     urls: SourceDocuments,
-    report_template: TemplateReportInput,
+    report_item: TemplateReportInput,
     model_name: str = 'gpt-4o',
 ) -> ReportOutput:
     all_documents_from_search_raw = await search_data_for_llm(
-        query=report_theme, urls=urls
+        query=report_item.report_theme, urls=urls
     )
-    logger.debug(f"Info: {all_documents_from_search_raw}")
+    logger.debug(f'Info: {all_documents_from_search_raw}')
     langchain_documents = parse_documents_from_search(all_documents_from_search_raw)
     collection_index_name = uuid.uuid4().hex
     cds = Chroma.from_documents(
@@ -115,7 +114,7 @@ async def create_report(
     model = container.openai_supplier.get_model(model_name)
 
     retrieved_documents = await retriever.ainvoke(
-        f'Тема: {report_theme}, части отчёта: {report_template.report_text}'
+        f'Тема: {report_item.report_theme}, части отчёта: {report_item.report_text}'
     )
     retrieved_documents_string = format_docs(retrieved_documents)
 
@@ -124,8 +123,8 @@ async def create_report(
     while True:
         try:
             response = await rag_chain.ainvoke({
-                'report_theme': report_theme,
-                'report_template': report_template.report_text,
+                'report_theme': report_item,
+                'report_template': report_item.report_text,
                 'context': retrieved_documents_string,
                 'format_instructions': parser.get_format_instructions(),
             })
@@ -141,6 +140,6 @@ async def create_report(
             logger.debug(e)
             continue
         except Exception as e:
-            logger.debug("UNKOWN!")
+            logger.debug('UNKOWN!')
             logger.debug(e)
             continue

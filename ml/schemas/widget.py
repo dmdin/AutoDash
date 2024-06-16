@@ -8,6 +8,7 @@ from .base import CamelizedBaseModel
 class TemplateReportInput(CamelizedBaseModel):
     """Input for template report"""
 
+    report_theme: str
     report_text: str
 
 
