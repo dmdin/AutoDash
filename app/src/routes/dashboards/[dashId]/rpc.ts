@@ -23,6 +23,11 @@ export class Dashboard {
 	}
 
 	@rpc()
+	async deleteWidget(id: string) {
+		await db.delete(widgets).where(eq(widgets.id, id))
+	}
+
+	@rpc()
 	async exportFile(type: ExportType, nodes: unknown[]) {
 		if (type === ExportType.Excel) {
 			return await getExcelFile('Test', nodes);

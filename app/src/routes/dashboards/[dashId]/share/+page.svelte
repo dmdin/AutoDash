@@ -13,7 +13,6 @@
 
   export let data
   let loading = true
-  console.log(data)
 
   onMount(() => {
     $showLayout = false

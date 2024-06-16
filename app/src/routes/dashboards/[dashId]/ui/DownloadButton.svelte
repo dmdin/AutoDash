@@ -10,7 +10,7 @@
 	import PhMicrosoftExcelLogoFill from '~icons/ph/microsoft-excel-logo-fill';
 	import PhMicrosoftWordLogoFill from '~icons/ph/microsoft-word-logo-fill';
 	import PhExport from '~icons/ph/export';
-	import PhFilePngFill from '~icons/ph/file-png-fill';
+	import PhFilePng from '~icons/ph/file-png'
 	import html2canvas from 'html2canvas-pro';
 	import { Panel, getNodesBounds, getViewportForBounds, useNodes } from '@xyflow/svelte';
 	import { jsPDF } from 'jspdf';
@@ -29,9 +29,7 @@
 		// const module = await import('html2pdf.js')
 		// const html2pdf = module.default
 		const nodesBounds = getNodesBounds($nodes);
-		console.log(nodesBounds)
 		const viewport = getViewportForBounds(nodesBounds, nodesBounds.width, nodesBounds.height, 0.5, 2, 0.2);
-		console.log(viewport)
 		const viewportDomNode = document.querySelector<HTMLElement>('.svelte-flow__viewport')!;
 		imageWidth = nodesBounds.width
 		imageHeight = nodesBounds.height
@@ -85,17 +83,7 @@
 		URL.revokeObjectURL(url);
 	}
 
-<<<<<<< HEAD
-	function generateWord() {
-		let children = [];
-		for (const block of $dashboard.blocks) {
-			const paragraph = genTextNode(block.name);
-			children = [...children, paragraph];
-			for (const widget of block.widgets) {
-				if (widget.data.type === 'text') {
-					children = [...children, genTextNode(widget.data.text)];
-				}
-=======
+
   async function generateWord() {
     let children = []
 		for (const node of $nodes) {
@@ -104,7 +92,6 @@
 			else if (node.type === 'block-node') {
 				console.log(node)
 				children = [...children, genTextNode(node.data.name, true, 30)]
->>>>>>> 9f2c255b6ca2093609b8da20e265a217e7226a04
 			}
 			else if (node.type === 'plot-node' && node.svgUrl) {
 				children = [...children, await genPlotNode(node.svgUrl)]
@@ -120,11 +107,7 @@
     });
 
 		docx.Packer.toBlob(doc).then(async (blob) => {
-<<<<<<< HEAD
-			saveAs(blob, 'example.docx');
-=======
-			saveAs(blob, 'report.docx');
->>>>>>> 9f2c255b6ca2093609b8da20e265a217e7226a04
+			saveAs(blob, 'report.docx')
 		});
 	}
 
@@ -176,9 +159,9 @@
 </script>
 
 <details class="dropdown">
-	<summary class="m-1 btn btn-secondary"><PhExport /> Экспорт</summary>
+	<summary class="btn btn-secondary w-full"><PhExport /> Экспорт</summary>
 	<div class="mx-auto p-2 shadow bg-base-100 rounded-box grid grid-cols-2 grid-rows-2 gap-2">
-		<button class="btn btn-sm text-lg" on:click={generateImage}><PhFilePngFill/></button>
+		<button class="btn btn-sm text-lg" on:click={generateImage}><PhFilePng/></button>
 		<button class="btn btn-sm text-lg" on:click={handleClick}><PhFilePdf /></button>
 		<button class="btn btn-sm text-lg" on:click={downloadExcel}><PhMicrosoftExcelLogoFill /></button>
 		<button class="btn btn-sm text-lg" on:click={generateWord}><PhMicrosoftWordLogoFill /></button>
