@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount, beforeUpdate, afterUpdate, tick } from 'svelte';
+	import { onMount, onDestroy, beforeUpdate, afterUpdate, tick } from 'svelte';
 	import { scale, fly, fade } from 'svelte/transition';
 
 	import { env } from '$env/dynamic/public';
@@ -29,7 +29,6 @@
 		if (textarea) {
 			const scrollableDistance = textarea.scrollHeight - textarea.offsetHeight;
 			autoscroll = textarea.scrollTop > scrollableDistance - 20;
-			console.log('autoscroll')
 		}
 	});
 
@@ -39,6 +38,9 @@
 		}
 	});
 
+	onDestroy(() => {
+		ws.close()
+	})
 	onMount(async () => {
 		ws = new WebSocket(env.PUBLIC_CHAT_ENDPOINT);
 		ws.onopen = function() {
