@@ -1,12 +1,28 @@
 from dataclasses import dataclass
 
-from langchain.chat_models.openai import ChatOpenAI
+from langchain_community.chat_models.openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_openai import OpenAIEmbeddings
 from shared.settings import app_settings
 
 
 @dataclass
 class OpenAISupplier:
+    def __post_init__(self):
+        self.embeddings: OpenAIEmbeddings = OpenAIEmbeddings(
+            base_url=app_settings.openai_api_url,
+            api_key=app_settings.openai_api_key,
+            model='text-embedding-3-large',
+        )
+
+    def get_model(self, model_name: str = 'gpt-4o'):
+        chat = ChatOpenAI(
+            base_url=app_settings.openai_api_url,
+            api_key=app_settings.openai_api_key,
+            model=model_name,
+        )
+        return chat
+
     async def generate_template(self, input_theme: str, model_name: str = 'gpt-4o'):
         chat = ChatOpenAI(
             base_url=app_settings.openai_api_url,
@@ -14,24 +30,26 @@ class OpenAISupplier:
             model=model_name,
             streaming=True,
         )
-        prompt_template = ChatPromptTemplate.from_messages([
-            (
-                'system',
-                'Ты - умный помощник в составлении шаблонов отчётов по выбранной тематике.',
-            ),
-            (
-                'user',
-                'Изучи данный шаблон и используй его как пример для построения своих шаблонов. Тема: {few_shot_theme}, сам текст шаблона: {few_shot_text}.',
-            ),
-            (
-                'ai',
-                'Хорошо, я внимательно изучил шаблон и буду стараться следовать ему, а именно придумывать правильные направления по изучения выбранной тематики, описывать детально и полноценно каждый из блоков и выделать 5-8 блоков для каждой тематики, используя по 3-4 пункта в каждом блоке!',
-            ),
-            (
-                'user',
-                'Подготовь, пожалуйста, для меня шаблон по выбранной теме: {input_theme}, напиши только шаблон, не отвечай мне никак, не пиши ничего лишнего, только сам шаблон!',
-            ),
-        ])
+        prompt_template = ChatPromptTemplate.from_messages(
+            [
+                (
+                    'system',
+                    'Ты - умный помощник в составлении шаблонов отчётов по выбранной тематике.',
+                ),
+                (
+                    'user',
+                    'Изучи данный шаблон и используй его как пример для построения своих шаблонов. Тема: {few_shot_theme}, сам текст шаблона: {few_shot_text}.',
+                ),
+                (
+                    'ai',
+                    'Хорошо, я внимательно изучил шаблон и буду стараться следовать ему, а именно придумывать правильные направления по изучения выбранной тематики, описывать детально и полноценно каждый из блоков и выделать 5-8 блоков для каждой тематики, используя по 3-4 пункта в каждом блоке!',
+                ),
+                (
+                    'user',
+                    'Подготовь, пожалуйста, для меня шаблон по выбранной теме: {input_theme}, напиши только шаблон, не отвечай мне никак, не пиши ничего лишнего, только сам шаблон!',
+                ),
+            ]
+        )
         few_shot_theme = (
             'особенности в сфере цифровизации и новых технологических нововведениях'
         )
@@ -83,6 +101,10 @@ class OpenAISupplier:
 6) квалификационные программы,
 7) инновационные проекты и т.д.
 """
-        prompt = prompt_template.format_messages(few_shot_theme=few_shot_theme, few_shot_text=few_shot_text, input_theme=input_theme)
+        prompt = prompt_template.format_messages(
+            few_shot_theme=few_shot_theme,
+            few_shot_text=few_shot_text,
+            input_theme=input_theme,
+        )
         async for chunk in chat.astream(prompt):
             yield chunk

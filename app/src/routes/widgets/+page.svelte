@@ -5,7 +5,7 @@
 	import { BADGES } from './constants';
 
 	const barChart = {
-		type: 'pie',
+		type: 'bar',
 		title: 'Smartphone Revenue Growth Q1 2024',
 		subtitle: 'Year-on-Year Revenue Growth by Vendor',
 		category: ['Samsung', 'Apple', 'Xiaomi', 'TRANSSION', 'OPPO'],

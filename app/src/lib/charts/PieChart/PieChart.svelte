@@ -42,7 +42,7 @@
   }
 
 	onMount(() => {
-		options = configureOptions(PIE_VIEW_CONFIG, PIE_SERIES, series.slice(0, 1), null);
+		options = configureOptions(PIE_VIEW_CONFIG, PIE_SERIES, title, series.slice(0, 1), null);
 	});
 </script>
 
@@ -51,7 +51,6 @@
 	style:width="{CHART_WIDTH}px"
 	style:height="{CHART_HEIGHT}px"
 >
-	<h3 class="text-base-content text-[16px] font-semibold leading-5">{title}</h3>
 	<div class="w-full h-full">
 		{#key options}
 			{#if options}

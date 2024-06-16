@@ -12,6 +12,7 @@ export class Dashboard {
 		return await db.query.dashboards.findFirst({
 			where: eq(dashboards.id, dashId),
 			with: {
+				template: true,
 				blocks: {
 					with: {
 						widgets: true
@@ -28,9 +29,14 @@ export class Dashboard {
 	}
 
 	@rpc()
-	async exportFile(type: ExportType, data: ExportData) {
+	async deleteWidget(id: string) {
+		await db.delete(widgets).where(eq(widgets.id, id))
+	}
+
+	@rpc()
+	async exportFile(type: ExportType, nodes: unknown[]) {
 		if (type === ExportType.Excel) {
-			return await getExcelFile('Test', data.blocks, data.images);
+			return await getExcelFile('Test', nodes);
 		}
 
 		if (type === ExportType.Word) {

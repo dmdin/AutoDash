@@ -1,7 +1,6 @@
 import { formatNumber } from '$root/lib/utils/utils';
 import { SERIES_COLORS } from '../PieChart/constants';
 
-
 export const BAR_SERIES = {
 	type: 'bar',
 	width: 200,
@@ -15,10 +14,17 @@ export const BAR_SERIES = {
 		},
 		borderRadius: [4, 4, 0, 0]
 	},
-	barWidth: '50%',
+	barWidth: '50%'
 };
 
 export const BAR_VIEW_CONFIGURATION = {
+	title: {
+		textStyle: {
+			fontSize: 16,
+			color: '#1C1C1C',
+			fontFamily: 'system-ui'
+		}
+	},
 	xAxis: {
 		type: 'category',
 		axisLabel: {
@@ -43,7 +49,7 @@ export const BAR_VIEW_CONFIGURATION = {
 		left: '3%',
 		right: '4%',
 		bottom: '3%',
-		top: '30',
+		top: '50',
 		containLabel: true
 	},
 	tooltip: {

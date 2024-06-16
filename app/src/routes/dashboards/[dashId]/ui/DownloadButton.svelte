@@ -10,7 +10,7 @@
 	import PhMicrosoftExcelLogoFill from '~icons/ph/microsoft-excel-logo-fill';
 	import PhMicrosoftWordLogoFill from '~icons/ph/microsoft-word-logo-fill';
 	import PhExport from '~icons/ph/export';
-	import PhFilePngFill from '~icons/ph/file-png-fill';
+	import PhFilePng from '~icons/ph/file-png'
 	import html2canvas from 'html2canvas-pro';
 	import { Panel, getNodesBounds, getViewportForBounds, useNodes } from '@xyflow/svelte';
 	import { jsPDF } from 'jspdf';
@@ -29,9 +29,7 @@
 		// const module = await import('html2pdf.js')
 		// const html2pdf = module.default
 		const nodesBounds = getNodesBounds($nodes);
-		console.log(nodesBounds)
 		const viewport = getViewportForBounds(nodesBounds, nodesBounds.width, nodesBounds.height, 0.5, 2, 0.2);
-		console.log(viewport)
 		const viewportDomNode = document.querySelector<HTMLElement>('.svelte-flow__viewport')!;
 		imageWidth = nodesBounds.width
 		imageHeight = nodesBounds.height
@@ -61,22 +59,17 @@
     }
   }
 
-	const blocksImages = getContext('blocksImages') as SvelteStore<unknown[]>;
+  function sortByCords(points) {
+    return points.sort((a, b) => {
+      const distanceA = Math.sqrt(a.position.x ** 2 + a.position.y ** 2);
+      const distanceB = Math.sqrt(b.position.x ** 2 + b.position.y ** 2);
+      return distanceA - distanceB;
+    });
+}
+
 	async function downloadExcel() {
-		const preparedBlockImages = $blocksImages.map((b) => {
-			const block = get(b);
-
-			return block.map((w) => {
-				return w;
-			});
-		});
-		const reqData = {
-			blocks: $dashboard.blocks,
-			images: preparedBlockImages
-		};
-		console.log(reqData);
-
-		const file = await rpc.Dashboard.exportFile(ExportType.Excel, reqData);
+    const sortedNodes = sortByCords(structuredClone($nodes))
+		const file = await rpc.Dashboard.exportFile(ExportType.Excel, sortedNodes);
 		const unit8 = new Uint8Array(file.data);
 		const url = URL.createObjectURL(new Blob([unit8], { type: 'application/vnd.ms-excel' }));
 		const a = document.createElement('a');
@@ -113,7 +106,7 @@
     });
 
 		docx.Packer.toBlob(doc).then(async (blob) => {
-			saveAs(blob, 'report.docx');
+			saveAs(blob, 'report.docx')
 		});
 	}
 
@@ -165,9 +158,9 @@
 </script>
 
 <details class="dropdown">
-	<summary class="m-1 btn btn-secondary"><PhExport /> Экспорт</summary>
+	<summary class="btn btn-secondary w-full"><PhExport /> Экспорт</summary>
 	<div class="mx-auto p-2 shadow bg-base-100 rounded-box grid grid-cols-2 grid-rows-2 gap-2">
-		<button class="btn btn-sm text-lg" on:click={generateImage}><PhFilePngFill/></button>
+		<button class="btn btn-sm text-lg" on:click={generateImage}><PhFilePng/></button>
 		<button class="btn btn-sm text-lg" on:click={handleClick}><PhFilePdf /></button>
 		<button class="btn btn-sm text-lg" on:click={downloadExcel}><PhMicrosoftExcelLogoFill /></button>
 		<button class="btn btn-sm text-lg" on:click={generateWord}><PhMicrosoftWordLogoFill /></button>

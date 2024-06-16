@@ -7,9 +7,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
-from presentation.web import health_router, model_router
+from presentation.web.router import health_router, model_router
 from presentation.dependencies import container
-from presentation.web import parser_router
 
 PARENT = Path(os.path.realpath(__file__)).parent
 with open(PARENT / 'rapidoc.html', 'r') as f:
@@ -25,7 +24,7 @@ async def lifespan(app: FastAPI):
 
 
 def create_app() -> FastAPI:
-    app = FastAPI(title='Amazing digital misis', lifespan=lifespan, root_path='/api')
+    app = FastAPI(title='LCT ML Backend Service', lifespan=lifespan, root_path='/api')
 
     app.add_middleware(
         CORSMiddleware,
@@ -35,7 +34,6 @@ def create_app() -> FastAPI:
         allow_headers=['*'],
     )
     app.include_router(health_router.router)
-    app.include_router(parser_router.router)
     app.include_router(model_router.router)
 
     @app.get('/rapidoc', response_class=HTMLResponse, include_in_schema=False)
