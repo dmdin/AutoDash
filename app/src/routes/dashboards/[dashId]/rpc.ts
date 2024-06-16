@@ -23,6 +23,11 @@ export class Dashboard {
 	}
 
 	@rpc()
+	async delete(dashId: string) {
+		return db.delete(dashboards).where(eq(dashboards.id, dashId)).returning()
+	}
+
+	@rpc()
 	async exportFile(type: ExportType, data: ExportData) {
 		if (type === ExportType.Excel) {
 			return await getExcelFile('Test', data.blocks, data.images);

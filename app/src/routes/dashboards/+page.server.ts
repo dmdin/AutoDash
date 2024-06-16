@@ -1,8 +1,9 @@
-import { db } from "$repo/db";
-
+import { db } from '$repo/db';
 
 export async function load() {
-  return {dashboards: await db.query.prompts.findMany({
-    
-  })}
+	return {
+		dashboards: await db.query.dashboards.findMany({
+			with: {template: true, author: true}
+		})
+	};
 }

@@ -13,7 +13,7 @@
 
   export let data
   let loading = true
-  console.log(data)
+
   const blocksImages = writable([])
 
   onMount(() => {
