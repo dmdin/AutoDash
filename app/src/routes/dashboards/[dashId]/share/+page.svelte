@@ -1,22 +1,23 @@
 <script>
-  import { onMount, setContext } from 'svelte'
   import Toolbar from '$root/routes/dashboards/[dashId]/ui/Toolbar.svelte'
-  import { Board } from './ui'
-  import Block from './ui/Block.svelte'
+  import { onMount } from 'svelte'
+  import { Board } from '../ui'
+  import Block from '../ui/Block.svelte'
   import PhFilePdf from '~icons/ph/file-pdf'
   import PhMicrosoftExcelLogoFill from '~icons/ph/microsoft-excel-logo-fill'
   import PhMicrosoftWordLogoFill from '~icons/ph/microsoft-word-logo-fill'
-  import DownloadButton from './ui/DownloadButton.svelte'
-  import { dashboard } from './controller'
+  import DownloadButton from '../ui/DownloadButton.svelte'
+  import { dashboard, readonly } from '../controller'
   import { Circle } from 'svelte-loading-spinners'
-	import { get, writable } from 'svelte/store';
+  import { showLayout } from '$root/routes'
 
   export let data
   let loading = true
   console.log(data)
-  const blocksImages = writable([])
 
   onMount(() => {
+    $showLayout = false
+    $readonly = true
     loading = true
     $dashboard = data.dashboard
     loading = false
@@ -30,11 +31,9 @@
   </div>
 {:else}
   <div class="w-full flex-1 grid grid-cols-8">
-    <div class="col-span-1"><Toolbar/></div>
+    <div class="col-span-1"></div>
     <div class="mx-auto h-full col-span-6">
-      {#each $dashboard.blocks as block}
-        <Block data={block} />
-      {/each}
+      <Block/>
     </div>
     <div class="col-span-1 pt-4">
       <DownloadButton/>

@@ -9,5 +9,5 @@ theme.subscribe(t => {
   localStorage.setItem('theme', t)
 })
 
-export type Models = 'ChatGPT 3.5' | 'ChatGPT 4o' 
+export type Models = 'ChatGPT 3.5' | 'ChatGPT 4o'
 export const model = writable<Models>('ChatGPT 3.5')

@@ -16,7 +16,7 @@
 
 	import '../app.css';
 	import { theme, model, type Themes } from '$stores';
-
+	import { showLayout } from './index'
 	export let data;
 
 	onMount(() => {
@@ -25,6 +25,7 @@
 	});
 </script>
 
+{#if $showLayout}
 <dialog id="my_modal_1" class="modal">
 	<div class="modal-box !bg-base-100">
 		<div class="border rounded-md border-neutral/40 flex flex-col">
@@ -154,3 +155,6 @@
 	<!--  </nav>-->
 	<!--</footer>-->
 </div>
+{:else}
+	<slot/>
+{/if}

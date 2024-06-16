@@ -18,7 +18,7 @@
   import BlockNode from './BlockNode.svelte'
   import ContextMenu from './ContextMenu.svelte'
   import PlotNode from './PlotNode.svelte'
-  import { nodes, edges, dashboard, reservedPlace, dashId } from '../controller'
+  import { nodes, edges, dashboard, reservedPlace, dashId, readonly } from '../controller'
   import { useNodesInitialized } from '@xyflow/svelte'
   import { useSvelteFlow } from '@xyflow/svelte'
 
@@ -75,7 +75,8 @@
           id: widget.id,
           type: nodeType,
           position: position,
-          data: widget
+          data: widget,
+          svgUrl: '',
         }
 
         await addNode(node, nodeType === 'text-node' ? width : 0) // 🤪🤪🤪🤪🤪
@@ -184,6 +185,7 @@
     colorMode={$theme}
     translateExtent={[[47, 0], [1000, 10000]]}
     initialViewport={{x: 0, y: 0, zoom: 1}}
+    nodesDraggable={!$readonly}
     minZoom="1"
     maxZoom="1"
     on:dragover={onDragOver} on:drop={onDrop}

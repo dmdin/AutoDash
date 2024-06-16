@@ -6,16 +6,17 @@
 	import LineChart from "./LineChart/LineChart.svelte";
 
   export let chart: Chart
+  export let svgUrl = ''
 </script>
 
 {#if chart.type === ChartType.Pie}
-  <PieChart {...chart} />
+  <PieChart {...chart} bind:svgUrl />
 {/if}
 
 {#if chart.type === ChartType.Bar}
-  <BarChart {...chart} />
+  <BarChart {...chart} bind:svgUrl />
 {/if}
 
 {#if chart.type === ChartType.Line}
-  <LineChart {...chart} />
+  <LineChart {...chart} bind:svgUrl />
 {/if}

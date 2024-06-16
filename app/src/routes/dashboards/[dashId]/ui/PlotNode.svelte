@@ -5,18 +5,18 @@
 	import GgChart from '~icons/gg/chart';
 	import LucideLineChart from '~icons/lucide/line-chart';
 	import MageChartFill from '~icons/mage/chart-fill';
+	import { dashboard, nodes } from '../controller';
+	import { getContext } from 'svelte';
 
 	export let data: {
 		data: object;
 		name: string;
 		id: string;
+    order: number;
 	};
+  console.log(data)
 	let type = data.data.type;
 	export let selected;
-
-	function checkPlotType(type: ChartType) {
-		return data.data.type === type;
-	}
 
 	async function changePlot(type) {
 		data.data.type = type;
@@ -50,5 +50,5 @@
 			<MageChartFill />
 		</button>
 	</div>
-	<Chart chart={data.data} />
+	<Chart chart={data.data} bind:svgUrl={$nodes[data.order].svgUrl} />
 </div>
