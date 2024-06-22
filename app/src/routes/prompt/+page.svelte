@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount, onDestroy, beforeUpdate, afterUpdate, tick } from 'svelte';
+	import { Circle } from 'svelte-loading-spinners'
 	import { scale, fly, fade } from 'svelte/transition';
 
 	import { env } from '$env/dynamic/public';
@@ -24,6 +25,7 @@
 	let ws: WebSocket;
 	let textarea: HTMLTextAreaElement;
 	let autoscroll = false;
+	let loading = false
 
 	$: selectTemplate(template)
 	beforeUpdate(() => {
@@ -40,7 +42,7 @@
 	});
 
 	onDestroy(() => {
-		ws.close()
+		// ws.close()
 	})
 	onMount(async () => {
 		ws = new WebSocket(env.PUBLIC_CHAT_ENDPOINT);
@@ -59,9 +61,11 @@
 	}
 
 	async function generateDashboard() {
+		loading = true
 		await rpc.Prompt.createDashboard(topic, description).then((dashboard) => {
 			window.location.href = '/dashboards/' + dashboard.id;
 		});
+		loading = false
 	}
 
 	function randomTopic(params: type) {
@@ -129,7 +133,11 @@
 
 	<div class="flex gap-5">
 		<button class="self-end btn text-md btn-primary mt-4" on:click={generateDashboard}>
-			<Play />
+			{#if loading}
+				<Circle size="20"/>
+			{:else}
+				<Play />
+			{/if}
 			Сгенерировать отчет
 		</button>
 
