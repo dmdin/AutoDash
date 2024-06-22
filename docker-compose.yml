@@ -6,6 +6,7 @@ services:
       context: ./app
     environment:
       - PORT=3000
+      - ORIGIN=http://87.242.103.101
 
     env_file:
       - ./secrets/app.env

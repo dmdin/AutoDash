@@ -37,7 +37,7 @@
 					<h1 class="text-2xl font-bold mb-5 text-neutral">Войти с помощью SSO</h1>
 					<div class="flex flex-col gap-2">
 						<button class="btn" on:click={() => signIn('github')}><Github /> GitHub</button>
-						<button class="btn" on:click={() => signIn('google')}><Google /> Google</button>
+						<!-- <button class="btn" on:click={() => signIn('google')}><Google /> Google</button> -->
 					</div>
 				</div>
 			</div>

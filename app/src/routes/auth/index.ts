@@ -6,7 +6,7 @@ import { DrizzleAdapter } from '@auth/drizzle-adapter';
 import { db } from '$repo/db';
 
 export const { handle, signIn, signOut } = SvelteKitAuth({
-	debug: dev,
+	debug: true,
 	adapter: DrizzleAdapter(db),
 	trustHost: true,
 	providers: [GitHub, Google],
