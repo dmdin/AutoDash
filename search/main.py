@@ -16,11 +16,14 @@ from bs4 import BeautifulSoup
 load_dotenv()
 app = FastAPI()
 
+
 class UrlList(BaseModel):
     urls: List[str]
 
+
 def clean_title(title):
     return ' '.join(title.split()).replace('\n', ' ').replace('|', '-').strip()
+
 
 def parse_yandex_xml(xml_data):
     root = ET.fromstring(xml_data)
@@ -34,6 +37,7 @@ def parse_yandex_xml(xml_data):
             cleaned_title = clean_title(title)
             results.append({"url": url, "title": cleaned_title})
     return results
+
 
 user_agents = [
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
@@ -209,11 +213,12 @@ async def parse_article(html_content: str, domain: str, return_html: bool, extra
     else:
         return await get_page_content(domain)
 
+
 def search_func(query: str, sources: List[str]):
     try:
         encoded_query = urllib.parse.quote(query)
-        if sources and sources.urls:
-            encoded_query = ["site:" + urllib.parse.quote(url)+f"%20{encoded_query}" for url in sources.urls]
+        if sources and sources:
+            encoded_query = ["site:" + urllib.parse.quote(url) + f"%20{encoded_query}" for url in sources]
             encoded_query = "%20|%20".join(encoded_query)
 
         yandex_url = f"https://yandex.ru/search/xml?folderid={os.getenv('yandex_folderid')}&apikey={os.getenv('yandex_apikey')}&query={encoded_query}"
@@ -224,32 +229,30 @@ def search_func(query: str, sources: List[str]):
     except requests.RequestException as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @app.post("/search")
 async def search(query: str, sources: Optional[UrlList]):
-    '''
-```
+    """
     You can choose which sources to use by changing body params
     {
       "urls": [
         "ru.wikipedia.org"
       ]
     }
-```
-    '''
-    return search_func(query, sources)
+     """
+    return search_func(query, sources.urls)
+
 
 @app.post("/extract", response_model=List[dict])
 async def extract(url_list: UrlList):
-    '''
-```
+    """
     Pass the urls for text extracting
     {
       "urls": [
         "ru.wikipedia.org"
       ]
     }
-```
-    '''
+    """
     if not isinstance(url_list.urls, list):
         raise HTTPException(status_code=400, detail="URLs should be provided as a list")
 
@@ -257,21 +260,20 @@ async def extract(url_list: UrlList):
     results = await asyncio.gather(*tasks)
     return results
 
+
 @app.post("/search_data_for_llm")
 async def search_data_for_llm(query: str, sources: Optional[UrlList]):
-    '''
-```
+    """
     You can choose which sources to use by changing body params
     {
       "urls": [
         "ru.wikipedia.org"
       ]
     }
-```
-    '''
+    """
     try:
         # Step 1: Perform the search
-        parsed_data = search_func(query, sources)
+        parsed_data = search_func(query, sources.urls)
 
         # Step 2: Extract content from the search results
         url_list = [item['url'] for item in parsed_data]
@@ -281,7 +283,6 @@ async def search_data_for_llm(query: str, sources: Optional[UrlList]):
         return extract_results
     except requests.RequestException as e:
         raise HTTPException(status_code=500, detail=str(e))
-
 
 
 @app.post("/parse")
@@ -319,6 +320,34 @@ async def parse_urls(item: URLListItem):
 
     return {"results": results, "errors": errors}
 
+
+@app.post("/search_data_for_llm_v2")
+async def search_data_for_llm_v2(query: str, sources: Optional[UrlList]):
+    """
+    You can choose which sources to use by changing body params
+    {
+      "urls": [
+        "ru.wikipedia.org"
+      ]
+    }
+    """
+    try:
+        # Step 1: Perform the search
+        parsed_data = search_func(query, sources.urls)
+
+        # Step 2: Extract content from the search results
+        url_list = [item['url'] for item in parsed_data]
+        url_list_item = URLListItem(urls=url_list, return_html=False, extra_data=True)
+
+        # Use parse_urls logic to fetch and parse content
+        parse_results = await parse_urls(url_list_item)
+
+        return parse_results
+    except requests.RequestException as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 if __name__ == '__main__':
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8000)
