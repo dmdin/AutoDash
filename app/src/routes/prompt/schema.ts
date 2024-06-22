@@ -20,3 +20,9 @@ export const savedTemplates = pgTable('savedTemplates', {
   body: text('body').notNull(),
   authorId: text('authorId').references(() => users.id).notNull()
 })
+
+export const sources = pgTable('sources', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  title: text('title').notNull(),
+  link: text('link').notNull(),
+})
