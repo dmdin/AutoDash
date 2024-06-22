@@ -40,7 +40,7 @@ services:
   #         memory: 1000M
 
   ml:
-    restart: always
+    restart: unless-stopped
     environment:
       _UVICORN_HOST: "0.0.0.0"
       _UVICORN_PORT: 8000
@@ -64,6 +64,7 @@ services:
           memory: 10000M
 
   search:
+    restart: unless-stopped
     build:
       context: ./search
       dockerfile: Dockerfile
@@ -114,7 +115,7 @@ services:
   adminer:
     image: adminer
     container_name: adminer
-    restart: always
+    restart: unless-stopped
     ports:
       - 8080:7000
 
