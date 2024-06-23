@@ -14,54 +14,63 @@ services:
       - ./static:/app/static
     ports:
       - 80:3000
-
-  # redis:
-  #   image: redis/redis-stack-server:latest
-  #   restart: always
-  #   privileged: true
-  #   labels:
-  #     - "autoheal=true"
-  #   command: redis-server
-  #   volumes:
-  #     - ./volumes/redis:/data
-  #     - ./conf/redis.conf:/etc/redis-stack.conf
-  #   ports:
-  #     - "6379:6379"
-  #   healthcheck:
-  #     test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
-  #     interval: 2m
-  #     timeout: 20s
-  #     retries: 3
-  #     start_period: 5s
-  #   deploy:
-  #     resources:
-  #       limits:
-  #         cpus: '0.50'
-  #         memory: 1000M
+  redis:
+    container_name: redis
+    image: redis:7.2.3-bookworm
+    restart: always
+    command: redis-server --save 20 1 --loglevel warning
+    volumes:
+      - ./volumes/redis/:/data
+    ports:
+      - "6379:6379"
+    deploy:
+      resources:
+        limits:
+          cpus: "1.00"
+          memory: 4G
 
   ml:
+    container_name: ml
     restart: unless-stopped
+    env_file:
+      - ./secrets/ml.env
     environment:
-      _UVICORN_HOST: "0.0.0.0"
-      _UVICORN_PORT: 8000
-
+      - _chroma_host=http://127.0.0.1
+      - _chroma_port=8003
     ports:
       - "8001:8000"
-
     build:
       context: ./ml
       dockerfile: Dockerfile
     depends_on:
-      # - redis
       - search
+      - chroma
+      - redis
     volumes:
-      - ./ml:/app
+      - ./ml/:/app/
       - ./secrets/ml.env:/app/.env
     deploy:
       resources:
         limits:
-          cpus: '2.00'
-          memory: 10000M
+          cpus: "2.00"
+          memory: 10G
+
+  chroma:
+    container_name: chromadb
+    restart: unless-stopped
+    image: ghcr.io/chroma-core/chroma:latest
+    environment:
+      - IS_PERSISTENT=TRUE
+      - ALLOW_RESET=TRUE
+    volumes:
+      - ./volumes/chroma_index_data:/chroma/.chroma/index
+    ports:
+      - 8003:8000
+    deploy:
+      resources:
+        limits:
+          cpus: "1.00"
+          memory: 4G
 
   search:
     restart: unless-stopped
@@ -71,46 +80,13 @@ services:
     ports:
       - "8002:8000"
     volumes:
-      - ./search:/app
+      - ./search/:/app/
       - ./secrets/search.json:/app/config.json
     deploy:
       resources:
         limits:
-          cpus: '1.00'
-          memory: 2000M
-
-  # postgres:
-  #   image: postgres:14.1-alpine
-  #   container_name: postgres
-  #   restart: always
-
-  #   healthcheck:
-  #     test: ["CMD-SHELL", "pg_isready"]
-  #     interval: 1s
-  #     timeout: 5s
-  #     retries: 10
-
-
-    # volumes:
-    #   - db:/var/lib/postgresql/data
-
-  #   volumes:
-  #     - db:/var/lib/postgresql/data
-
-    # environment:
-    #   PGUSER: $DB_USER
-    #   POSTGRES_PASSWORD: $DB_PASS
-
-    # ports:
-    #   - 5432:5432
-  #   environment:
-  #     PGUSER: $DB_USER
-  #     POSTGRES_PASSWORD: $DB_PASS
-
-  #   ports:
-  #     - 5432:5432
-    # networks:
-      # - ldt
+          cpus: "1.00"
+          memory: 2G
 
   adminer:
     image: adminer
@@ -118,30 +94,3 @@ services:
     restart: unless-stopped
     ports:
       - 8080:7000
-
-
-  # nginx:
-  #   image: nginx
-  #   container_name: nginx
-  #   ports:
-  #     - 80:80
-  #     - 443:443
-  #   restart: always
-  #   volumes:
-  #     - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-  #     - ./certbot/conf:/etc/letsencrypt
-  #     - ./certbot/www:/var/www/certbot
-
-  # certbot:
-  #   image: certbot/certbot:latest
-  #   #docker-compose run --rm certbot certonly --webroot --webroot-path /var/www/certbot/ --dry-run -d domain_name -
-  #   #docker-compose run --rm certbot certonly --webroot --webroot-path /var/www/certbot/ -d domain_name
-  #   volumes:
-  #     - "./certbot/conf:/etc/letsencrypt"
-  #     - "./certbot/www:/var/www/certbot"
-# networks:
-  # ldt:
-    # driver: bridge
-volumes:
-  db:
-    driver: local

@@ -1,13 +1,11 @@
 from .base import CamelizedBaseModel
 
 
-class ParserDocument(CamelizedBaseModel):
+class SearchParsedDocument(CamelizedBaseModel):
     """
-    ```
     Формат документа, с указанным url страницы
     В all_text_from_page содержится все полученные со страницы текстовые данные
     В page_title хранится имя страницы (при наличии)
-    ```
     """
 
     url: str
@@ -15,12 +13,10 @@ class ParserDocument(CamelizedBaseModel):
     page_title: str
 
 
-class SourceDocuments(CamelizedBaseModel):
+class SearchParsedSourceDocuments(CamelizedBaseModel):
     """
-    ```
     Описание источников для поиска
     urls содержит список нужных url-ов
-    ```
     """
 
     urls: list[str] = []

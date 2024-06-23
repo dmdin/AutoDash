@@ -1,38 +1,74 @@
 services:
-  ml:
+  redis:
+    container_name: redis
+    image: redis:7.2.3-bookworm
     restart: always
-    environment:
-      _UVICORN_HOST: "0.0.0.0"
-      _UVICORN_PORT: 8000
+    command: redis-server --save 20 1 --loglevel warning
+    volumes:
+      - ./volumes/redis/:/data
+    ports:
+      - "6379:6379"
+    deploy:
+      resources:
+        limits:
+          cpus: "1.00"
+          memory: 4G
 
+  ml:
+    container_name: ml
+    restart: unless-stopped
+    env_file:
+      - ./secrets/ml.env
+    environment:
+      - _chroma_host=http://127.0.0.1
+      - _chroma_port=8003
     ports:
       - "8001:8000"
-
     build:
       context: ./ml
       dockerfile: Dockerfile
     depends_on:
       - search
+      - chroma
+      - redis
     volumes:
-      - ./ml:/app
+      - ./ml/:/app/
       - ./secrets/ml.env:/app/.env
     deploy:
       resources:
         limits:
-          cpus: '2.00'
-          memory: 10000M
+          cpus: "2.00"
+          memory: 10G
+
+  chroma:
+    container_name: chromadb
+    restart: unless-stopped
+    image: ghcr.io/chroma-core/chroma:latest
+    environment:
+      - IS_PERSISTENT=TRUE
+      - ALLOW_RESET=TRUE
+    volumes:
+      - ./volumes/chroma_index_data:/chroma/.chroma/index
+    ports:
+      - 8003:8000
+    deploy:
+      resources:
+        limits:
+          cpus: "1.00"
+          memory: 4G
 
   search:
+    restart: unless-stopped
     build:
       context: ./search
       dockerfile: Dockerfile
     ports:
       - "8002:8000"
     volumes:
-      - ./search:/app
+      - ./search/:/app/
       - ./secrets/search.json:/app/config.json
     deploy:
       resources:
         limits:
-          cpus: '1.00'
-          memory: 2000M
+          cpus: "1.00"
+          memory: 2G

@@ -1,0 +1,68 @@
+// {
+//     "type": "text",
+//     "text": "string",
+//     "sources": [
+//         {
+//             "url": "string",
+//             "text": "string"
+//         }
+//     ]
+// }
+
+// {
+//     "type": "pie",
+//     "title": "string",
+//     "unit": "string",
+//     "data": [
+//         {
+//             "name": "string",
+//             "value": number
+//         }
+//     ],
+//     "sources": [
+//         {
+//             "url": "string",
+//             "text": "string"
+//         }
+//     ]
+// }
+
+// {
+//     "type": "bar",
+//     "title": "string",
+//     "categories": ["string"],
+//     "unit": "string",
+//     "data": [number],
+//     "sources": [
+//         {
+//             "url": "string",
+//             "text": "string"
+//         }
+//     ]
+// }
+
+// {
+//     "type": "line",
+//     "title": "string",
+//     "categories": ["string"],
+//     "unit": "string",
+//     "data": [number],
+//     "sources": [
+//         {
+//             "url": "string",
+//             "text": "string"
+//         }
+//     ]
+// }
+
+// {
+//     "type": "badge",
+//     "title": "string",
+//     "data": "number",
+//     "sources": [
+//         {
+//             "url": "string",
+//             "text": "string"
+//         }
+//     ]
+// }

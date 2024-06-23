@@ -7,6 +7,7 @@ readme      = "README.md"
 
 [tool.poetry.dependencies]
 python = "~3.11.9"
+redis = "^5.0.6"
 
 
 [tool.poetry.group.langchain.dependencies]
@@ -34,17 +35,26 @@ pre-commit = "^3.7.1"
 ruff       = "^0.4.9"
 jupyterlab = "^4.2.2"
 
+[tool.ruff]
+fix           = true
+output-format = "grouped"
+preview       = true
+
 [tool.ruff.lint]
-select    = ["E4", "E7", "E9", "F", "B"]
-ignore    = []
-unfixable = []
+extend-select = ["E4", "E7", "E9", "F", "B", "I", "TID"]
+ignore        = ["E501", "F722"]
+unfixable     = ["B"]
 
 [tool.ruff.lint.per-file-ignores]
-"__init__.py"             = ["E402"]
-"**/{tests,docs,tools}/*" = ["E402"]
+"__init__.py" = ["E402"]
 
 [tool.ruff.format]
 quote-style = "single"
+
+[tool.mypy]
+ignore_missing_imports = true
+check_untyped_defs     = true
+plugins                = ["numpy.typing.mypy_plugin"]
 
 [build-system]
 requires      = ["poetry-core"]

@@ -9,7 +9,6 @@ class CheckFailed(Exception): ...
 
 @dataclass
 class HealthService:
-
     def __post_init__(self) -> None:
         self.checks: dict[str, Callable[[], Awaitable]] = {}
 
