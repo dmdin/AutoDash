@@ -18,7 +18,6 @@ class OPENAI_MODELS(str, Enum):
 @dataclass
 class OpenAISupplier:
     def __post_init__(self):
-        assert app_settings.openai_api_key
         self.embeddings: OpenAIEmbeddings = OpenAIEmbeddings(
             base_url=app_settings.openai_api_url,
             api_key=app_settings.openai_api_key,

@@ -30,6 +30,7 @@ class SearchSupplier:
                 data = {
                     'query': query,
                     'urls': urls,
+                    'links_number': 2,
                 }
                 response: httpx.Response = await client.post(
                     self.search_data_for_llm_route,
