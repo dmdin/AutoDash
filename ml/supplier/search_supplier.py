@@ -51,10 +51,8 @@ class SearchSupplier:
         langchain_documents: list[Document] = []
         for doc in documents.results:
             try:
-                new_doc = Document(
-                    doc.text,
-                    page_title=doc.title,
-                    url=doc.url,
+                new_doc = Document.from_orm(
+                    doc.text, page_title=doc.title, metadata={'url': doc.url}
                 )
                 langchain_documents.append(new_doc)
             except Exception as e:
