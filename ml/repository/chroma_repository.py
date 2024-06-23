@@ -17,7 +17,7 @@ class ChromaRepository:
         self.langchain_chroma = None
 
     async def health(self) -> None:
-        if not await self.client.heartbeat():
+        if not self.client.heartbeat():
             raise Exception('non true ping')
 
     def setup_langchain_chroma(self, embedding_function: Embeddings):

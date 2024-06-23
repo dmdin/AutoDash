@@ -1,3 +1,4 @@
+import ujson as json
 from fastapi import APIRouter, WebSocket
 
 from llm.report import agent as report_agent
@@ -17,23 +18,6 @@ from shared.base import logger
 from supplier.openapi_supplier import OPENAI_MODELS
 
 router = APIRouter(prefix='/llm')
-
-
-@router.websocket(
-    '/generate_template',
-)
-async def generate_template_websocket(websocket: WebSocket) -> None:
-    """
-    Generate template
-    """
-    await websocket.accept()
-    try:
-        raw_data = await websocket.receive_json()
-        input_data = ReportTemplateGeneratorInput(**raw_data)
-        async for block in report_agent.generate_template(container, input_data):
-            await websocket.send_json(block.dict())
-    except Exception as e:  # TODO: mb smth better
-        logger.debug(e)
 
 
 @router.get(
@@ -56,6 +40,32 @@ async def generate_template(
     async for block in report_agent.generate_template(container, input_data):
         all_blocks.append(block)
     return ReportTemplate(blocks=all_blocks)
+
+
+@router.websocket(
+    '/generate_template',
+)
+async def generate_template_websocket(websocket: WebSocket) -> None:
+    """
+    Generate template
+    """
+    await websocket.accept()
+    try:
+        raw_data = await websocket.receive_json()
+        input_data = ReportTemplateGeneratorInput(**raw_data)
+        async for block in report_agent.generate_template(container, input_data):
+            await websocket.send_json(block.dict())
+        await websocket.send_text('finish')
+        await websocket.close()
+    except Exception as e:  # TODO: mb smth better
+        logger.debug(f'Error occured: {e}')
+        await websocket.close(
+            code=1011,
+            reason=json.dumps({
+                'code': 500,
+                'error': f'Error occured on server: {e}. Please contact administrator.',
+            }),
+        )
 
 
 @router.post(
@@ -118,5 +128,14 @@ async def create_report_websocket(websocket: WebSocket) -> None:
             container=container, input_data=input_data
         ):
             await websocket.send_json(block.dict())
+        await websocket.send_text('finish')
+        await websocket.close()
     except Exception as e:  # TODO: mb smth better
-        logger.debug(e)
+        logger.debug(f'Error occured: {e}')
+        await websocket.close(
+            code=1011,
+            reason=json.dumps({
+                'code': 500,
+                'error': f'Error occured on server: {e}. Please contact administrator.',
+            }),
+        )

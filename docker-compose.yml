@@ -24,6 +24,12 @@ services:
       - ./volumes/redis/:/data
     ports:
       - "6379:6379"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
     deploy:
       resources:
         limits:
@@ -37,6 +43,12 @@ services:
       - ./secrets/ml.env
     ports:
       - "8001:8000"
+    healthcheck:
+      test: curl --fail http://localhost:8000/health || exit 1
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
     build:
       context: ./ml
       dockerfile: Dockerfile
@@ -65,6 +77,12 @@ services:
       - ./volumes/chroma_index_data:/chroma/.chroma/index
     ports:
       - 8003:8000
+    healthcheck:
+      test: curl --fail localhost:8000/api/v1/heartbeat || exit 1
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
     deploy:
       resources:
         limits:
@@ -78,6 +96,12 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8002:8000"
+    healthcheck:
+      test: curl --fail localhost:8000/ping || exit 1
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
     volumes:
       - ./search/:/app/
       - ./secrets/search.json:/app/config.json

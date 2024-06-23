@@ -1,16 +1,34 @@
 from langchain.output_parsers import PydanticOutputParser
-from pydantic import Field
+from pydantic import Field, validator
 
 from schemas.base import CamelizedBaseModel
 
 
+class LLMTableRowWidget(CamelizedBaseModel):
+    data: list[str | int | float] = Field(
+        description='отдельная строка таблицы, каждый элемент должен соответствовать заголовку, каждый элемент представляет из себя единицу информации, которая указана в заголовке'
+    )
+
+
 class LLMTableWidget(CamelizedBaseModel):
-    title: str = Field(description='название бейджа')
-    data: int | float = Field(description='значение внутри бейджа')
+    categories: list[str] = Field(description='строка загаловка таблицы')
+    rows: list[LLMTableRowWidget] = Field(
+        description='массив строк таблицы, каждая строка должна совпадать по длине со строкой заголовка'
+    )
+
+    @validator('rows')
+    def lengths_rows_data_categories_match(cls, v, values, **kwargs):
+        if 'categories' in values:
+            for _v in v:
+                if len(_v) != len(values['categories']):
+                    raise ValueError(
+                        "data's row and categories are of different length"
+                    )
+        return v
 
 
-badge_widget_info = {
+table_widget_info = {
     'name': 'table',
-    'description': 'Наиболее подходящий виджет для отображения значимой цифры (например, средняя зарплата в компании)',
+    'description': 'Лучший для большого количества разной информации (например, сводная таблица по разным компаниям)',
     'parser': PydanticOutputParser(pydantic_object=LLMTableWidget),
 }

@@ -37,3 +37,14 @@ class RetrieverService:
             child_splitter=self.child_splitter,
             parent_splitter=self.parent_splitter,
         )
+
+    async def health(self) -> None:
+        try:
+            if self.retriever is not None:
+                pass
+            else:
+                raise AttributeError(
+                    'retriever is empty? a problem has occured somewhere'
+                )
+        except AttributeError as e:
+            raise e

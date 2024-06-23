@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
 
+import httpx
 import ujson as json
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 
@@ -23,6 +24,7 @@ class OpenAISupplier:
             api_key=app_settings.openai_api_key,
             model='text-embedding-3-large',
         )
+
         self._block_examples = json.load(
             open(app_settings.llm_data_path + 'llm_block_examples.json', 'r')
         )
@@ -53,3 +55,23 @@ class OpenAISupplier:
     @property
     def block_examples(self):
         return self._block_examples
+
+    async def health(self) -> None:
+        class OpenAICustomAuth(httpx.Auth):
+            def __init__(self, token):
+                self.token = token
+
+            def auth_flow(self, request):
+                request.headers['Authorization'] = f'Bearer {self.token}'
+                yield request
+
+        model_endpoint_response = httpx.get(
+            app_settings.openai_api_url + '/models',
+            auth=OpenAICustomAuth(app_settings.openai_api_key),
+        )
+
+        print(model_endpoint_response.headers)
+        print('-L-L-')
+        if model_endpoint_response.status_code != 200:
+            print(model_endpoint_response.content)
+            raise Exception('problem occured connecting to openai service')
