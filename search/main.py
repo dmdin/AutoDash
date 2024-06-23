@@ -201,7 +201,8 @@ def search_func(query: str, sources: List[str], to_page: int = 0) -> List[Dict[s
             encoded_query = "%20|%20".join([f"site:{url}%20{encoded_query}" for url in sources])
         parsed = []
         for page in range(to_page + 1):
-            yandex_url = f"https://yandex.ru/search/xml?folderid={os.getenv('yandex_folderid')}&apikey={os.getenv('yandex_apikey')}&query={encoded_query}&sortby=tm&page={page}"
+            yandex_url = f"https://yandex.ru/search/xml?folderid={os.getenv('yandex_folderid')}&apikey={os.getenv('yandex_apikey')}&query={encoded_query}"
+            print(f"{yandex_url = } {query = } {encoded_query = }")
             response = requests.get(yandex_url)
             xml_data = response.text
             parsed_data = parse_yandex_xml(xml_data)
