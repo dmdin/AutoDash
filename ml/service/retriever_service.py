@@ -14,14 +14,14 @@ class RetrieverService:
     store: RedisStore
     child_splitter: Optional[TextSplitter] = None
     parent_splitter: Optional[TextSplitter] = None
-    use_parent_splitter: bool = False
+    use_parent_splitter: bool = True
 
     def __post_init__(self):
         self.base_child_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=512, chunk_overlap=64
+            chunk_size=128, chunk_overlap=32
         )
         self.base_parent_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=2048, chunk_overlap=256
+            chunk_size=512, chunk_overlap=128
         )
         if not self.child_splitter:
             self.child_splitter = self.base_child_splitter
@@ -36,6 +36,7 @@ class RetrieverService:
             docstore=byte_docstore,
             child_splitter=self.child_splitter,
             parent_splitter=self.parent_splitter,
+            search_kwargs={'k': 2},
         )
 
     async def health(self) -> None:
