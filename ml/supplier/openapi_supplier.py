@@ -26,9 +26,9 @@ class OpenAISupplier:
         self._block_examples = json.load(
             open(app_settings.llm_data_path + 'llm_block_examples.json', 'r')
         )
-        self._few_shot_examples = json.load(
-            open(app_settings.llm_data_path + 'llm_few_shot_examples.json', 'r')
-        )
+        # self._few_shot_examples = json.load(
+        #     open(app_settings.llm_data_path + 'llm_few_shot_examples.json', 'r')
+        # )
 
     def get_model(
         self, model_name: OPENAI_MODELS = OPENAI_MODELS.GPT_4O, streaming: bool = False
@@ -43,9 +43,9 @@ class OpenAISupplier:
         )
         return chat
 
-    @property
-    def few_shot_examples(self):
-        return self._few_shot_examples
+    # @property
+    # def few_shot_examples(self):
+    #     return self._few_shot_examples
 
     @property
     def block_examples(self):

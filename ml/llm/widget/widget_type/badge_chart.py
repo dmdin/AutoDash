@@ -9,10 +9,8 @@ class LLMBadgeWidget(CamelizedBaseModel):
     data: int | float = Field(description='значение внутри бейджа')
 
 
-badge_widget_info = (
-    {
-        'name': 'badge',
-        'description': 'Наиболее подходящий виджет для отображения значимой цифры (например, средняя зарплата в компании)',
-        'parser': PydanticOutputParser(LLMBadgeWidget),
-    },
-)
+badge_widget_info = {
+    'name': 'badge',
+    'description': 'Наиболее подходящий виджет для отображения значимой цифры (например, средняя зарплата в компании)',
+    'parser': PydanticOutputParser(pydantic_object=LLMBadgeWidget),
+}

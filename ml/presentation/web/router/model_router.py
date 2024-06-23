@@ -1,7 +1,7 @@
 from fastapi import APIRouter, WebSocket
 
 from llm.report import agent as report_agent
-from llm.report.model import ReportTemplate
+from llm.report.model import ReportTemplate, ReportTemplateBlock
 from llm.widget import agent as widget_agent
 from presentation.dependencies import container
 from schemas.report_template import (
@@ -21,7 +21,7 @@ router = APIRouter(prefix='/llm')
 @router.websocket(
     '/generate_template',
 )
-async def generate_template(websocket: WebSocket) -> None:
+async def generate_template_websocket(websocket: WebSocket) -> None:
     """
     Generate template
     """
@@ -33,6 +33,24 @@ async def generate_template(websocket: WebSocket) -> None:
             await websocket.send_json(block)
     except Exception as e:  # TODO: mb smth better
         logger.debug(e)
+
+
+@router.get(
+    '/generate_template',
+    response_model=ReportTemplateBlock,
+    response_model_exclude_none=True,
+)
+async def generate_template(
+    query: str, use_template_w_examples: bool
+) -> ReportTemplateBlock:
+    """
+    Generate template
+    """
+    input_data = ReportTemplateGeneratorInput(
+        input_theme=query, use_template_w_examples=use_template_w_examples
+    )
+    async for block in report_agent.generate_template(container, input_data):
+        return block
 
 
 @router.post(
@@ -51,10 +69,9 @@ async def create_report(
             model_name=report_input.model_name,
         ),
     )
-    report_template = ReportTemplate(**report_template_response['response'])
     input_data = ParsedReportGeneratorInput(
         report_theme=report_input.report_theme,
-        report_template=report_template,
+        report_template=report_template_response,
         model_name=report_input.model_name,
         urls=report_input.urls,
     )
@@ -85,7 +102,7 @@ async def create_report_websocket(websocket: WebSocket) -> None:
                 model_name=raw_input_data.model_name,
             ),
         )
-        report_template = ReportTemplate(**report_template_response['response'])
+        report_template = ReportTemplate(report_template_response)
         input_data = ParsedReportGeneratorInput(
             report_theme=raw_input_data.report_theme,
             report_template=report_template,

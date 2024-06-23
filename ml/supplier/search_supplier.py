@@ -5,12 +5,14 @@ from langchain.docstore.document import Document
 
 from schemas.search_parser import SearchParsedDocument, SearchParsedSourceDocuments
 from shared.base import logger
+from shared.settings import app_settings
 
 
 @dataclass
 class SearchSupplier:
-    host: str
-    port: str
+    def __post_init__(self):
+        self.host = app_settings.search_host
+        self.port = app_settings.search_port
 
     @property
     def search_data_for_llm_route(self):
@@ -19,12 +21,19 @@ class SearchSupplier:
     async def search_data_for_llm(self, query: str, urls: SearchParsedSourceDocuments):
         async with httpx.AsyncClient() as client:
             try:
+                data = {
+                    'query': query,
+                    'urls': urls.urls,
+                    'return_html': False,
+                    'extra_data': False,
+                }
                 response: httpx.Response = await client.post(
                     self.search_data_for_llm_route,
-                    data={'query': query, 'urls': urls.json()},
+                    data=data,
                 )
                 all_documents: list[SearchParsedDocument] = response.json()
-            except httpx.HTTPError:
+            except httpx.HTTPError as e:
+                logger.debug(e)
                 all_documents: list[SearchParsedDocument] = []
             return all_documents
 

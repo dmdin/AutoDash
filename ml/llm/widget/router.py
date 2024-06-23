@@ -16,12 +16,11 @@ def generate_destinations(
     destination_chains: dict[WidgetChartType, LLMChain] = {}
     chat_model = container.openai_supplier.get_model(input_data.model_name)
     for w in all_widget_types:
-        name = LLMWidgetType(chosen_widget_type=WidgetChartType(w['name']))
+        name = w['name']
         parser: PydanticOutputParser = w['parser']
-        prompt = ChatPromptTemplate.from_template(
+        prompt = ChatPromptTemplate.from_messages(
             widget_template,
-            partial_variables={'format_instructions': parser.get_format_instructions()},
-        )
+        ).partial(format_instructions=parser.get_format_instructions())
         chain: LLMChain = prompt | chat_model | parser
         destination_chains[name] = chain
     return destination_chains
@@ -35,13 +34,12 @@ def generate_router(
     destinations = [f"{w['name']}: {w['description']}" for w in all_widget_types]
     destinations_str = '\n'.join(destinations)
 
-    parser = PydanticOutputParser(LLMWidgetType)
-    prompt = ChatPromptTemplate.from_template(
+    parser = PydanticOutputParser(pydantic_object=LLMWidgetType)
+    prompt = ChatPromptTemplate.from_messages(
         router_template,
-        partial_variables={
-            'widget_description_list': destinations_str,
-            'format_instructions': parser.get_format_instructions(),
-        },
+    ).partial(
+        widget_description_list=destinations_str,
+        format_instructions=parser.get_format_instructions(),
     )
     router_chain: LLMChain = prompt | chat_model | parser
     return router_chain

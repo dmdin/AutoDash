@@ -1,16 +1,19 @@
 import random
 
 import ujson as json
-from langchain.chains.conversation.base import ConversationChain
 from langchain.chains.llm import LLMChain
-from langchain.memory import ConversationBufferMemory
 from langchain.output_parsers import PydanticOutputParser
-from langchain.prompts import ChatPromptTemplate
+from langchain.prompts import (
+    ChatPromptTemplate,
+)
+from langchain.schema import AIMessage, HumanMessage
+from langchain_core.exceptions import OutputParserException
 
 from schemas.report_template import (
     ReportTemplateGeneratorInput,
     ReportTemplateParserInput,
 )
+from shared.base import logger
 from shared.containers import Container
 
 from .model import ReportTemplate, ReportTemplateBlock
@@ -26,49 +29,56 @@ async def generate_template(
     if n_blocks == -1:
         n_blocks = random.randint(5, 8)
 
-    memory = ConversationBufferMemory()
-    parser = PydanticOutputParser(ReportTemplateBlock)
+    parser = PydanticOutputParser(pydantic_object=ReportTemplateBlock)
 
+    block_examples_str = ''
     if use_template_w_examples:
         chat_template = template_w_examples
         prompt_template: ChatPromptTemplate = ChatPromptTemplate.from_messages(
             chat_template
+        ).format_messages(
+            input_theme=input_data.input_theme,
+            format_instructions=parser.get_format_instructions(),
+            block_examples=block_examples_str,
         )
         block_examples = [
             json.dumps(x) for x in container.openai_supplier.block_examples
         ]
         block_examples_str = '\n'.join(block_examples)
-        prompt = prompt_template.format_messages(
-            input_theme=input_data.input_theme,
-            block_examples=block_examples_str,
-            format_instructions=parser.get_format_instructions(),
-        )
     else:
         chat_template = template
         prompt_template: ChatPromptTemplate = ChatPromptTemplate.from_messages(
             chat_template
-        )
-        prompt = prompt_template.format_messages(
+        ).format_messages(
             input_theme=input_data.input_theme,
             format_instructions=parser.get_format_instructions(),
+            block_examples=block_examples_str,
         )
 
-    chain = ConversationChain(
-        llm=container.openai_supplier.get_model(input_data.model_name),
-        memory=memory,
-        prompt=prompt,
-        output_parser=parser,
+    chat_model = container.openai_supplier.get_model(
+        input_data.model_name, streaming=False
     )
     for block in range(n_blocks):
         n_points = random.randint(1, 8)
-        response = await chain.ainvoke({
-            'input': f'Сформируй блок номер {block + 1} состоящий из {n_points} пунктов!'
-        })
+        chain = chat_model | parser
+        prompt_template.append(
+            HumanMessage(
+                content=f'Сформируй блок номер {block + 1} состоящий из {n_points} пунктов'
+            )
+        )
+        while True:
+            try:
+                response = await chain.ainvoke(prompt_template)
+                break
+            except OutputParserException as e:
+                logger.debug(e)
+                continue
+        prompt_template.append(AIMessage(content=str(response.json())))
         yield response
 
 
 async def parse_template(container: Container, input_data: ReportTemplateParserInput):
-    parser = PydanticOutputParser(ReportTemplate)
+    parser = PydanticOutputParser(pydantic_object=ReportTemplate)
     chat_template = template_parser
     prompt_template: ChatPromptTemplate = ChatPromptTemplate.from_messages(
         chat_template
@@ -78,7 +88,7 @@ async def parse_template(container: Container, input_data: ReportTemplateParserI
         | container.openai_supplier.get_model(input_data.model_name)
         | parser
     )
-    response = await chain.ainvoke({
+    response: ReportTemplate = await chain.ainvoke({
         'input_theme': input_data.input_theme,
         'format_instructions': parser.get_format_instructions(),
         'raw_report_template_text': input_data.raw_report_template_text,

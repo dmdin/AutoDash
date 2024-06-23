@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 import urllib.parse
 import requests
 import aiohttp
@@ -358,4 +358,4 @@ async def search_data_for_llm_v2(item: URLListItem):
 if __name__ == '__main__':
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8002)

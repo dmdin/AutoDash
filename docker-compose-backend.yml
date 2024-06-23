@@ -1,4 +1,5 @@
 services:
+
   redis:
     container_name: redis
     image: redis:7.2.3-bookworm
@@ -19,11 +20,8 @@ services:
     restart: unless-stopped
     env_file:
       - ./secrets/ml.env
-    environment:
-      - _chroma_host=http://127.0.0.1
-      - _chroma_port=8003
     ports:
-      - "8001:8000"
+      - 8001:8001
     build:
       context: ./ml
       dockerfile: Dockerfile
@@ -47,10 +45,11 @@ services:
     environment:
       - IS_PERSISTENT=TRUE
       - ALLOW_RESET=TRUE
+      - CHROMA_HOST_PORT=8003
     volumes:
       - ./volumes/chroma_index_data:/chroma/.chroma/index
     ports:
-      - 8003:8000
+      - 8003:8003
     deploy:
       resources:
         limits:
@@ -63,7 +62,7 @@ services:
       context: ./search
       dockerfile: Dockerfile
     ports:
-      - "8002:8000"
+      - 8002:8002
     volumes:
       - ./search/:/app/
       - ./secrets/search.json:/app/config.json

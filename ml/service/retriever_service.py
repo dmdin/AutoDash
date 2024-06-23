@@ -12,9 +12,9 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter, TextSplitte
 class RetrieverService:
     vectorstore: Chroma
     store: RedisStore
-    child_splitter: Optional[TextSplitter]
-    parent_splitter: Optional[TextSplitter]
-    use_parent_splitter: bool
+    child_splitter: Optional[TextSplitter] = None
+    parent_splitter: Optional[TextSplitter] = None
+    use_parent_splitter: bool = True
 
     def __post_init__(self):
         self.base_child_splitter = RecursiveCharacterTextSplitter(

@@ -9,10 +9,8 @@ class LLMTextWidget(CamelizedBaseModel):
     text: str = Field(description='основное тело текста')
 
 
-text_widget_info = (
-    {
-        'name': 'pie',
-        'description': 'Наиболее подходящий виджет для отображения текстовой информации (например, когда необходимо сформировать вывод по проанализированной информации)',
-        'parser': PydanticOutputParser(LLMTextWidget),
-    },
-)
+text_widget_info = {
+    'name': 'text',
+    'description': 'Наиболее подходящий виджет для отображения текстовой информации (например, когда необходимо сформировать вывод по проанализированной информации)',
+    'parser': PydanticOutputParser(pydantic_object=LLMTextWidget),
+}

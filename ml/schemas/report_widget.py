@@ -1,10 +1,10 @@
 import enum
-import string
 
 from llm.report.model import ReportTemplate
 from supplier.openapi_supplier import OPENAI_MODELS
 
 from .base import CamelizedBaseModel
+from .search_parser import SearchParsedSourceDocuments
 
 
 class RawReportGeneratorInput(CamelizedBaseModel):
@@ -12,8 +12,8 @@ class RawReportGeneratorInput(CamelizedBaseModel):
 
     report_theme: str
     report_text: str
-    model_name: OPENAI_MODELS
-    urls: list[str] | None
+    model_name: OPENAI_MODELS = OPENAI_MODELS.GPT_4O
+    urls: SearchParsedSourceDocuments
 
 
 class ParsedReportGeneratorInput(CamelizedBaseModel):
@@ -21,8 +21,8 @@ class ParsedReportGeneratorInput(CamelizedBaseModel):
 
     report_theme: str
     report_template: ReportTemplate
-    model_name: OPENAI_MODELS
-    urls: list[str] | None
+    model_name: OPENAI_MODELS = OPENAI_MODELS.GPT_4O
+    urls: SearchParsedSourceDocuments
 
 
 class WidgetChartType(enum.StrEnum):
@@ -34,8 +34,8 @@ class WidgetChartType(enum.StrEnum):
 
 
 class WidgetSource(CamelizedBaseModel):
-    url: string
-    text: string
+    url: str
+    text: str
 
 
 class AbstractWidget(CamelizedBaseModel):

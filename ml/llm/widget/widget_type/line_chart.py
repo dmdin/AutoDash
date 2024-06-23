@@ -21,10 +21,8 @@ class LLMLineWidget(CamelizedBaseModel):
         return v
 
 
-line_widget_info = (
-    {
-        'name': 'line',
-        'description': 'Наиболее подходящий виджет для отображения временных изменений (например, график изменения средней зарплаты в компании)',
-        'parser': PydanticOutputParser(LLMLineWidget),
-    },
-)
+line_widget_info = {
+    'name': 'line',
+    'description': 'Наиболее подходящий виджет для отображения временных изменений (например, график изменения средней зарплаты в компании)',
+    'parser': PydanticOutputParser(pydantic_object=LLMLineWidget),
+}

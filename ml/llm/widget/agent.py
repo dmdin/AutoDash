@@ -28,7 +28,7 @@ async def generate_report(
                 'point_name': point,
             }
             route_response: LLMWidgetType = await router_chain.ainvoke(llm_input)
-            widget_chain = destination_chains[route_response.chosen_widget_type]
+            widget_chain = destination_chains[str(route_response.chosen_widget_type)]
 
             search_query = f'Тема - {input_data.report_theme}, блок - {block_name}, пункт - {point}'
             all_documents_from_search_raw = (
