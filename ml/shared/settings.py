@@ -14,6 +14,8 @@ class AppSettings(BaseSettings):
     anthropic_api_key: Optional[str]
     anthropic_api_url: Optional[str]
 
+    local_llm_embedding_model_name: Optional[str] = 'cointegrated/rubert-tiny2'
+
     redis_host: str = 'redis'
     redis_port: int = 6379
 

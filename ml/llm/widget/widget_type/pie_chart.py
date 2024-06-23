@@ -1,5 +1,5 @@
 from langchain.output_parsers import PydanticOutputParser
-from pydantic import Field, validator
+from pydantic import Field
 
 from schemas.base import CamelizedBaseModel
 
@@ -15,18 +15,13 @@ class LLMPieWidget(CamelizedBaseModel):
         description='единица измерения (все данные должны соответсвовать выбранной единице измерения)'
     )
     data: list[LLMPiePiece] = Field(
-        description='массив всех частей круговой диаграммы (должно быть как минимум две части)'
+        description='массив всех частей круговой диаграммы (должно быть как минимум две части)',
+        min_items=2,
     )
-
-    @validator('data')
-    def data_must_containt_more_pieces(cls, v):
-        if len(v) < 2:
-            raise ValueError('data contains only one pie piece')
-        return v
 
 
 pie_widget_info = {
     'name': 'pie',
-    'description': 'Наиболее подходящий виджет для отображения долей (например, доля каждой компании на рынке, или доля мужчин и женщин в компании)',
+    'description': 'Наиболее подходящий виджет для отображения долей',
     'parser': PydanticOutputParser(pydantic_object=LLMPieWidget),
 }

@@ -18,11 +18,10 @@ class OPENAI_MODELS(str, Enum):
 @dataclass
 class OpenAISupplier:
     def __post_init__(self):
-        assert app_settings.openai_api_key
         self.embeddings: OpenAIEmbeddings = OpenAIEmbeddings(
             base_url=app_settings.openai_api_url,
             api_key=app_settings.openai_api_key,
-            model='text-embedding-3-large',
+            model='text-embedding-3-small',
         )
 
         self._block_examples = json.load(
@@ -35,13 +34,14 @@ class OpenAISupplier:
     def get_model(
         self,
         model_name: OPENAI_MODELS = OPENAI_MODELS.GPT_3_5_TURBO,
+        temperature: float = 0.7,
         streaming: bool = False,
     ) -> ChatOpenAI:
         assert app_settings.openai_api_key
         chat: ChatOpenAI = ChatOpenAI(
             base_url=app_settings.openai_api_url,
             api_key=app_settings.openai_api_key,
-            temperature=0.675,
+            temperature=temperature,
             model=model_name,
             streaming=streaming,
             model_kwargs={'response_format': {'type': 'json_object'}},
@@ -69,9 +69,5 @@ class OpenAISupplier:
             app_settings.openai_api_url + '/models',
             auth=OpenAICustomAuth(app_settings.openai_api_key),
         )
-
-        print(model_endpoint_response.headers)
-        print('-L-L-')
         if model_endpoint_response.status_code != 200:
-            print(model_endpoint_response.content)
             raise Exception('problem occured connecting to openai service')

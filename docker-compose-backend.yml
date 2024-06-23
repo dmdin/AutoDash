@@ -74,6 +74,7 @@ services:
           memory: 4G
 
   search:
+    container_name: search
     restart: unless-stopped
     build:
       context: ./search

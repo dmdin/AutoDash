@@ -63,7 +63,7 @@ async def generate_template_websocket(websocket: WebSocket) -> None:
             code=1011,
             reason=json.dumps({
                 'code': 500,
-                'error': f'Error occured on server: {e}. Please contact administrator.',
+                'error': 'Error occured on server. Please contact administrator.',
             }),
         )
 
@@ -117,10 +117,9 @@ async def create_report_websocket(websocket: WebSocket) -> None:
                 model_name=raw_input_data.model_name,
             ),
         )
-        report_template = ReportTemplate(report_template_response)
         input_data = ParsedReportGeneratorInput(
             report_theme=raw_input_data.report_theme,
-            report_template=report_template,
+            report_template=report_template_response,
             model_name=raw_input_data.model_name,
             urls=raw_input_data.urls,
         )
@@ -136,6 +135,6 @@ async def create_report_websocket(websocket: WebSocket) -> None:
             code=1011,
             reason=json.dumps({
                 'code': 500,
-                'error': f'Error occured on server: {e}. Please contact administrator.',
+                'error': 'Error occured on server. Please contact administrator.',
             }),
         )
