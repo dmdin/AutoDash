@@ -17,10 +17,12 @@ class LLMTableWidget(CamelizedBaseModel):
     )
 
     @validator('rows')
-    def lengths_rows_data_categories_match(cls, v, values, **kwargs):
+    def lengths_rows_data_categories_match(
+        cls, v: list[LLMTableRowWidget], values, **kwargs
+    ):
         if 'categories' in values:
             for _v in v:
-                if len(_v) != len(values['categories']):
+                if len(_v.data) != len(values['categories']):
                     raise ValueError(
                         "data's row and categories are of different length"
                     )

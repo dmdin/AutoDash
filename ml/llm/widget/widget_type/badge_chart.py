@@ -11,6 +11,6 @@ class LLMBadgeWidget(CamelizedBaseModel):
 
 badge_widget_info = {
     'name': 'badge',
-    'description': 'Наиболее подходящий виджет для отображения значимой цифры',
+    'description': 'Наиболее подходящий виджет для отображения какой-либо значимой цифры',
     'parser': PydanticOutputParser(pydantic_object=LLMBadgeWidget),
 }
