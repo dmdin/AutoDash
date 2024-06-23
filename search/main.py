@@ -15,20 +15,24 @@ import ssl
 load_dotenv()
 app = FastAPI()
 
-# Новые модели данных
+
 class URLItem(BaseModel):
     url: str
     return_html: Optional[bool] = False
     extra_data: Optional[bool] = False
+
 
 class URLListItem(BaseModel):
     urls: List[str]
     return_html: Optional[bool] = False
     extra_data: Optional[bool] = False
 
+
 class URLListItemSearch(URLListItem):
     query: str
+    links_number: Optional[int] = 10
     to_page: Optional[int] = 0
+
 
 class Article(BaseModel):
     title: str
@@ -37,12 +41,15 @@ class Article(BaseModel):
     extra_data: Optional[Dict[str, Any]] = None
     html: Optional[str] = None
 
+
 class SearchResult(BaseModel):
     results: List[Article]
     errors: List[Dict[str, str]]
 
+
 def clean_title(title: str) -> str:
     return ' '.join(title.split()).replace('\n', ' ').replace('|', '-').strip()
+
 
 def parse_yandex_xml(xml_data: str) -> List[Dict[str, str]]:
     root = ET.fromstring(xml_data)
@@ -57,7 +64,8 @@ def parse_yandex_xml(xml_data: str) -> List[Dict[str, str]]:
             results.append({"url": url, "title": cleaned_title})
     return results
 
-async def fetch_html(url: str) -> str:
+
+async def fetch_html(url: str, timeout: int = 3) -> str:
     REQUEST_HEADERS = {
         'User-Agent': random.choice([
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36",
@@ -70,11 +78,15 @@ async def fetch_html(url: str) -> str:
     ssl_context.verify_mode = ssl.CERT_NONE
 
     async with aiohttp.ClientSession() as session:
-        async with session.get(url, headers=REQUEST_HEADERS, ssl=ssl_context) as response:
-            text = await response.text()
-            if response.status != 200 or (len(text) < 200 and "captcha" in text.lower()):
-                raise HTTPException(status_code=response.status, detail="Доступ к контенту ограничен или требуется капча")
-            return text
+        try:
+            async with session.get(url, headers=REQUEST_HEADERS, ssl=ssl_context, timeout=aiohttp.ClientTimeout(total=timeout)) as response:
+                text = await response.text()
+                if response.status != 200 or (len(text) < 200 and "captcha" in text.lower()):
+                    raise HTTPException(status_code=response.status, detail="Доступ к контенту ограничен или требуется капча")
+                return text
+        except asyncio.TimeoutError:
+            raise HTTPException(status_code=408, detail="Request Timeout")
+
 
 def extract_comnews_body(html: str) -> str:
     soup = BeautifulSoup(html, 'html.parser')
@@ -84,6 +96,7 @@ def extract_comnews_body(html: str) -> str:
         ad_block.decompose()
     main_content = soup.find('div', {'class': 'field field-text full-html field-name-body'})
     return main_content.get_text(separator='\n').strip() if main_content else None
+
 
 def parse_rbc_article(html_content: str, return_html: bool, extra_data: bool) -> Optional[Dict[str, Any]]:
     soup = BeautifulSoup(html_content, 'html.parser')
@@ -104,9 +117,11 @@ def parse_rbc_article(html_content: str, return_html: bool, extra_data: bool) ->
         article_dict["html"] = html_content
     return article_dict
 
+
 def parse_kommersant_article(html_content: str, return_html: bool, extra_data: bool) -> Optional[Dict[str, Any]]:
     soup = BeautifulSoup(html_content, 'html.parser')
-    first_article = soup.find('article') or soup.find('div', class_='article-class') or soup.find('section', class_='article-class')
+    first_article = soup.find('article') or soup.find('div', class_='article-class') or soup.find('section',
+                                                                                                  class_='article-class')
     if first_article:
         title_tag = first_article.find(['h1', 'h2', 'h3'])
         title = title_tag.get_text(strip=True) if title_tag else "Заголовок не найден"
@@ -123,6 +138,7 @@ def parse_kommersant_article(html_content: str, return_html: bool, extra_data: b
         return article_dict
     else:
         return None
+
 
 def parse_tadviser_article(html_content: str, return_html: bool, extra_data: bool) -> Optional[Dict[str, Any]]:
     soup = BeautifulSoup(html_content, 'html.parser')
@@ -144,6 +160,7 @@ def parse_tadviser_article(html_content: str, return_html: bool, extra_data: boo
     else:
         return None
 
+
 def parse_cnews_article(html_content: str, return_html: bool, extra_data: bool) -> Optional[Dict[str, Any]]:
     soup = BeautifulSoup(html_content, 'html.parser')
     main_content = soup.find('article', class_='news_container')
@@ -164,11 +181,51 @@ def parse_cnews_article(html_content: str, return_html: bool, extra_data: bool) 
     else:
         return None
 
-async def parse_article(html_content: str, domain: str, return_html: bool, extra_data: bool) -> Optional[Dict[str, Any]]:
+
+async def get_page_content(url):
+    try:
+        REQUEST_HEADERS = {
+            'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Mobile Safari/537.36",
+        }
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url, headers=REQUEST_HEADERS) as response:
+                try:
+                    response.raise_for_status()
+                    text = await response.text()
+                    soup = BeautifulSoup(text, 'html.parser')
+
+                    # Extract all text
+                    texts = soup.stripped_strings
+                    all_text = ' '.join(texts)
+
+                    # Extract title
+                    title = soup.title.string if soup.title else 'No title found'
+
+                    return {
+                        "url": url,
+                        "all_text_from_page": all_text,
+                        "page_title": title
+                    }
+                except Exception as e:
+                    return {
+                        "url": url,
+                        "all_text_from_page": "",
+                        "page_title": 'No title found'
+                    }
+    except aiohttp.ClientError as e:
+        return {
+            "url": url,
+            "error": str(e)
+        }
+
+
+async def parse_article(html_content: str, domain: str, return_html: bool, extra_data: bool) -> Optional[
+    Dict[str, Any]]:
     if "comnews" in domain:
         content = extract_comnews_body(html_content)
         if content:
-            return {"title": "comnews article", "text": content, "extra_data": {}, "html": html_content if return_html else None}
+            return {"title": "comnews article", "text": content, "extra_data": {},
+                    "html": html_content if return_html else None}
     elif "rbc" in domain:
         return parse_rbc_article(html_content, return_html, extra_data)
     elif "kommersant" in domain:
@@ -194,6 +251,7 @@ async def parse_article(html_content: str, domain: str, return_html: bool, extra
         article_dict["url"] = domain
         return article_dict
 
+
 def search_func(query: str, sources: List[str], to_page: int = 0) -> List[Dict[str, str]]:
     try:
         encoded_query = urllib.parse.quote(query)
@@ -201,19 +259,21 @@ def search_func(query: str, sources: List[str], to_page: int = 0) -> List[Dict[s
             encoded_query = "%20|%20".join([f"site:{url}%20{encoded_query}" for url in sources])
         parsed = []
         for page in range(to_page + 1):
-            yandex_url = f"https://yandex.ru/search/xml?folderid={os.getenv('yandex_folderid')}&apikey={os.getenv('yandex_apikey')}&query={encoded_query}"
-            print(f"{yandex_url = } {query = } {encoded_query = }")
+            yandex_url = f"https://yandex.ru/search/xml?folderid={os.getenv('yandex_folderid')}&apikey={os.getenv('yandex_apikey')}&query={encoded_query}&page={page}"
             response = requests.get(yandex_url)
             xml_data = response.text
             parsed_data = parse_yandex_xml(xml_data)
             parsed.extend(parsed_data)
+        print(f"{parsed = }")
         return parsed
     except requests.RequestException as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @app.post("/search")
 async def search(query: str, sources: Optional[URLListItem] = None):
     return search_func(query, sources.urls if sources else [])
+
 
 @app.post("/extract", response_model=List[dict])
 async def extract(url_list: URLListItem):
@@ -223,6 +283,7 @@ async def extract(url_list: URLListItem):
     tasks = [get_page_content(url) for url in url_list.urls]
     results = await asyncio.gather(*tasks)
     return results
+
 
 @app.post("/parse", response_model=Article)
 async def parse_url(item: URLItem):
@@ -237,45 +298,73 @@ async def parse_url(item: URLItem):
         return {"url": item.url, "error": str(e.detail)}
 
 @app.post("/parse_multiple", response_model=SearchResult)
-async def parse_urls(item: URLListItem):
-    async def fetch_and_parse(url: str) -> Dict[str, Any]:
-        try:
-            html_content = await fetch_html(url)
-            parsed_article = await parse_article(html_content, url, item.return_html, item.extra_data)
-            if parsed_article is None or len(parsed_article.get("text").strip()) == 0 or len(parsed_article.get("text").strip()) < 100:
-                return {"url": url, "error": "Статья не найдена"}
-            parsed_article["url"] = url
-            return parsed_article
-        except Exception as e:
-            return {"url": url, "error": str(e)}
 
-    batch_size = 10
+async def parse_urls(item: URLListItem):
+    semaphore = asyncio.Semaphore(20)  # Ограничение на количество одновременных запросов
+
+    async def fetch_and_parse(session: aiohttp.ClientSession, url: str) -> Dict[str, Any]:
+        async with semaphore:
+            try:
+                html_content = await fetch_html(url)
+                parsed_article = await parse_article(html_content, url, item.return_html, item.extra_data)
+                if parsed_article is None or len(parsed_article.get("text", "").strip()) < 100:
+                    return {"url": url, "error": "Статья не найдена"}
+                parsed_article["url"] = url
+                return parsed_article
+            except Exception as e:
+                return {"url": url, "error": str(e)}
+
+    batch_size = 50  # Увеличение размера батча для улучшения производительности
     results = []
     errors = []
 
-    for i in range(0, len(item.urls), batch_size):
-        batch_urls = item.urls[i:i + batch_size]
-        tasks = [fetch_and_parse(url) for url in batch_urls]
-        batch_results = await asyncio.gather(*tasks)
-        for result in batch_results:
-            if "error" in result:
-                errors.append(result)
-            else:
-                results.append(result)
+    async with aiohttp.ClientSession() as session:
+        for i in range(0, len(item.urls), batch_size):
+            batch_urls = item.urls[i:i + batch_size]
+            tasks = [fetch_and_parse(session, url) for url in batch_urls]
+            batch_results = await asyncio.gather(*tasks, return_exceptions=True)
+            for result in batch_results:
+                if isinstance(result, dict) and "error" in result:
+                    errors.append(result)
+                elif isinstance(result, dict):
+                    results.append(result)
+
+    print(f"!!!!!!!!!!!!! results_len = {len(errors) + len(results)}")
 
     return {"results": results, "errors": errors}
+
+@app.post("/search_data_for_llm")
+async def search_data_for_llm(query: str, sources: Optional[URLListItem] = None):
+    try:
+        # Step 1: Perform the search
+        parsed_data = search_func(query, sources.urls if sources else [])
+
+        # Step 2: Extract content from the search results
+        url_list = [item['url'] for item in parsed_data]
+        tasks = [get_page_content(url) for url in url_list]
+        extract_results = await asyncio.gather(*tasks)
+
+        return extract_results
+    except requests.RequestException as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.post("/search_data_for_llm_v2", response_model=SearchResult)
 async def search_data_for_llm_v2(item: URLListItemSearch):
     try:
+        if item.links_number:
+            item.to_page = (item.links_number // 10) + int(item.links_number % 10 == 0)
         parsed_data = search_func(item.query, item.urls, item.to_page)
         url_list = [entry['url'] for entry in parsed_data]
-        url_list_item = URLListItem(query=item.query, urls=url_list, return_html=item.return_html, extra_data=item.extra_data, to_page=item.to_page)
+        url_list_item = URLListItem(query=item.query, urls=url_list, return_html=item.return_html,
+                                    extra_data=item.extra_data, to_page=item.to_page)
         parse_results = await parse_urls(url_list_item)
         return parse_results
     except requests.RequestException as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 if __name__ == '__main__':
     import uvicorn
+
     uvicorn.run("main:app", port=8000, reload=True)
