@@ -5,18 +5,40 @@
 	import BarChart from "./BarChart/BarChart.svelte";
 	import LineChart from "./LineChart/LineChart.svelte";
 
-  export let chart: Chart
+  export let chart
   export let svgUrl = ''
+  let parsedChart
+  function parseChart() {
+    console.log('parse')
+    if (chart.series) return // Совместимость со старым форматом)
+    console.log('continue')
+
+    parsedChart = {
+      "type": chart.type,
+      "title": chart.title,
+      "subtitle": "",
+      "category": chart.categories || chart.data.map(el => el.name) || [],
+      "series": [
+        {
+          "name": "",
+          "unit": "",
+          "data": chart.data
+        }
+      ]
+    }
+  }
+
+  $: if (chart) parseChart()
 </script>
 
 {#if chart.type === ChartType.Pie}
-  <PieChart {...chart} bind:svgUrl />
+  <PieChart {...parsedChart} bind:svgUrl />
 {/if}
 
 {#if chart.type === ChartType.Bar}
-  <BarChart {...chart} bind:svgUrl />
+  <BarChart {...parsedChart} bind:svgUrl />
 {/if}
 
 {#if chart.type === ChartType.Line}
-  <LineChart {...chart} bind:svgUrl />
+  <LineChart {...parsedChart} bind:svgUrl />
 {/if}

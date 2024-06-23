@@ -7,6 +7,7 @@ export async function load({ params }) {
   const dashboard = await db.query.dashboards.findFirst({
     where: eq(dashboards.id, params.dashId),
     with: {
+      template: true,
       blocks: {
         with: {
           widgets: true

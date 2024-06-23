@@ -1,4 +1,6 @@
 <script>
+  import { model } from '$client/stores'
+  import { env } from '$env/dynamic/public'
   import { onMount, setContext } from 'svelte'
   import Toolbar from '$root/routes/dashboards/[dashId]/ui/Toolbar.svelte'
   import { Board } from './ui'
@@ -11,19 +13,49 @@
   import { Circle } from 'svelte-loading-spinners'
 	import { get, writable } from 'svelte/store';
   import TdesignShare from '~icons/tdesign/share';
-  import { dashId } from './controller'
+  import { dashId, generating } from './controller'
 
   export let data
   let loading = true
-
+  let ws
+  let receiveTimeout
   const blocksImages = writable([])
 
   onMount(() => {
     loading = true
     $dashboard = data.dashboard
+    $generating = !$dashboard.generated
+    initSockets()
     loading = false
     console.log($dashboard)
   })
+
+  function initSockets() {
+    ws = new WebSocket(env.PUBLIC_REPORT_ENDPOINT);
+    ws.onopen = function () {
+      console.log('Соединение установлено.')
+      // ws.send(JSON.stringify({ "report_theme": "Анализ рынка пылесосов",
+      //   "report_text": "Проанализируй рынок ",
+      //   "model_name": "gpt-4o",
+      //   "urls": {
+      //     "urls": []
+      //   }}))
+    };
+
+    ws.onmessage = function (event) {
+      console.log(event)
+      if (receiveTimeout) clearInterval(receiveTimeout);
+
+      // receiveTimeout = setTimeout(() => {
+      //   generating = false;
+      // }, 300000);
+      // description += event.data;
+    }
+
+    ws.onerror = err => {
+      console.log(err)
+    }
+  }
 </script>
 
 
@@ -42,5 +74,9 @@
       <DownloadButton/>
     </div>
   </div>
+
+  {#if $generating}
+    <div class="fixed right-3 bottom-3 p-5 bg-base-100 border rounded-xl flex items-center gap-2 shadow-2xl"><Circle color="oklch(var(--n))" size="25" /> Ожидайте, производится генерация отчета...</div>
+  {/if}
 {/if}
 
