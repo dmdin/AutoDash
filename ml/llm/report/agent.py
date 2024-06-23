@@ -81,7 +81,9 @@ async def generate_template(
     )
 
 
-async def parse_template(container: Container, input_data: ReportTemplateParserInput):
+async def parse_template(
+    container: Container, input_data: ReportTemplateParserInput
+) -> ReportTemplate:
     logging_time_start = time()
     parser = PydanticOutputParser(pydantic_object=ReportTemplate)
     chat_template = template_parser
