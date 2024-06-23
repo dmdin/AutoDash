@@ -94,3 +94,6 @@ services:
     restart: unless-stopped
     ports:
       - 8080:7000
+volumes:
+  db:
+    driver: local
