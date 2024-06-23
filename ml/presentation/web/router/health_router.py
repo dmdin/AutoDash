@@ -1,7 +1,8 @@
 from fastapi import APIRouter, status
 from fastapi.responses import UJSONResponse
+
 from presentation.dependencies import container
-from presentation.web.schemas import HealthResponse, HealthStatuses
+from schemas.health import HealthResponse, HealthStatuses
 from shared.base import logger
 
 router = APIRouter(prefix='')
@@ -18,6 +19,8 @@ async def check_server_health() -> UJSONResponse:
     """
     try:
         await container.heath_service.check()
+        await container.redis_repository.health()
+        await container.chroma_repository.health()
     except Exception as exc:
         logger.exception('Exception while checking health')
         return UJSONResponse(

@@ -4,8 +4,8 @@ from pathlib import Path
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
-from presentation.web.router import health_router, model_router
 
+from presentation.web.router import health_router, model_router
 
 PARENT = Path(os.path.realpath(__file__)).parent
 with open(PARENT / 'rapidoc.html', 'r') as f:
