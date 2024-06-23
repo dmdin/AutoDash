@@ -14,7 +14,7 @@ class RetrieverService:
     store: RedisStore
     child_splitter: Optional[TextSplitter] = None
     parent_splitter: Optional[TextSplitter] = None
-    use_parent_splitter: bool = True
+    use_parent_splitter: bool = False
 
     def __post_init__(self):
         self.base_child_splitter = RecursiveCharacterTextSplitter(
