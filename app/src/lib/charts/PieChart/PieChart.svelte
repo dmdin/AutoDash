@@ -43,6 +43,16 @@
 
 	onMount(() => {
 		options = configureOptions(PIE_VIEW_CONFIG, PIE_SERIES, title, series.slice(0, 1), null);
+
+    if (!options?.series?.length) return
+    console.log(options.series[0].data)
+    options.series[0].data = options.series[0].data.map((c, i) => {
+      return {
+        name: category[i],
+        value: c,
+      }
+    })
+    options = options
 	});
 </script>
 

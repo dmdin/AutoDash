@@ -40,8 +40,9 @@
 		{#if columns && data}
 			<DataTable {data} {columns} download {rowHeight}>
 				<svelte:fragment slot="controlsTop">
+          <div></div>
 					<Exports
-						class="mb-[16px] flex h-full items-center justify-center border-0 bg-white p-[12px]"
+						class="mb-[16px] flex h-full items-center justify-end border-0 bg-white p-[12px]"
 					/>
 				</svelte:fragment>
 

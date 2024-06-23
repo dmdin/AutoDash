@@ -7,7 +7,7 @@
 	const user = data.session?.user;
 </script>
 
-<div in:fade class="self-center mt-2 w-full border-neutral/40 rounded-2xl p-5 max-w-4xl bg-secondary">
+<div in:fade class="self-center mt-2 w-full border-neutral/40 rounded-2xl p-5 max-w-4xl bg-base-300">
 	<h1 class="text-2xl font-[600] mb-4">Мой профиль:</h1>
 
 	{#if !user}
