@@ -21,7 +21,7 @@ class OpenAISupplier:
         self.embeddings: OpenAIEmbeddings = OpenAIEmbeddings(
             base_url=app_settings.openai_api_url,
             api_key=app_settings.openai_api_key,
-            model='text-embedding-3-large',
+            model='text-embedding-3-small',
         )
 
         self._block_examples = json.load(

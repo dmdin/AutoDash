@@ -51,7 +51,8 @@ async def generate_report(
             logger.debug('Finished parsing documents from search')
             if langchain_documents:
                 logger.debug(f'Starting adding documents {len(langchain_documents)}')
-                container.retriever_service.retriever.add_documents(langchain_documents)
+                for document in langchain_documents:
+                    container.retriever_service.retriever.add_documents([document])
                 logger.debug(f'Finished adding documents {len(langchain_documents)}')
 
             logger.debug(f'Starting retriever for {search_query}')
