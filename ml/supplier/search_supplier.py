@@ -35,7 +35,6 @@ class SearchSupplier:
                     self.search_data_for_llm_route,
                     json=data,
                 )
-                print(response.json())
                 all_documents: SearchParsedDocumentList = SearchParsedDocumentList(
                     **response.json()
                 )
