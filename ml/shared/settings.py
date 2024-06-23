@@ -18,15 +18,15 @@ class AppSettings(BaseSettings):
     redis_port: int = 6379
 
     search_host: str = 'search'
-    search_port: int = 8002
+    search_port: int = 8000
 
     chroma_host: str = 'chroma'
-    chroma_port: int = 8003
+    chroma_port: int = 8000
 
     llm_data_path: str = 'data/'
 
     uvicorn_host: str = '0.0.0.0'
-    uvicorn_port: int = 8001
+    uvicorn_port: int = 8000
     uvicorn_workers: int = mp.cpu_count()
     uvicorn_log_level: str = 'WARNING'
 

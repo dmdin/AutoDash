@@ -12,7 +12,7 @@ class RawReportGeneratorInput(CamelizedBaseModel):
 
     report_theme: str
     report_text: str
-    model_name: OPENAI_MODELS = OPENAI_MODELS.GPT_4O
+    model_name: OPENAI_MODELS = OPENAI_MODELS.GPT_3_5_TURBO
     urls: SearchParsedSourceDocuments
 
 
@@ -21,7 +21,7 @@ class ParsedReportGeneratorInput(CamelizedBaseModel):
 
     report_theme: str
     report_template: ReportTemplate
-    model_name: OPENAI_MODELS = OPENAI_MODELS.GPT_4O
+    model_name: OPENAI_MODELS = OPENAI_MODELS.GPT_3_5_TURBO
     urls: SearchParsedSourceDocuments
 
 

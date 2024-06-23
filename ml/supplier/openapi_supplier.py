@@ -31,7 +31,9 @@ class OpenAISupplier:
         # )
 
     def get_model(
-        self, model_name: OPENAI_MODELS = OPENAI_MODELS.GPT_4O, streaming: bool = False
+        self,
+        model_name: OPENAI_MODELS = OPENAI_MODELS.GPT_3_5_TURBO,
+        streaming: bool = False,
     ) -> ChatOpenAI:
         assert app_settings.openai_api_key
         chat: ChatOpenAI = ChatOpenAI(
@@ -40,6 +42,7 @@ class OpenAISupplier:
             temperature=0.675,
             model=model_name,
             streaming=streaming,
+            model_kwargs={'response_format': {'type': 'json_object'}},
         )
         return chat
 

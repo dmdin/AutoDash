@@ -2,18 +2,15 @@ import random
 
 import ujson as json
 from langchain.chains.llm import LLMChain
-from langchain.output_parsers import PydanticOutputParser
+from langchain.output_parsers import OutputFixingParser, PydanticOutputParser
 from langchain.prompts import (
     ChatPromptTemplate,
 )
-from langchain.schema import AIMessage, HumanMessage
-from langchain_core.exceptions import OutputParserException
 
 from schemas.report_template import (
     ReportTemplateGeneratorInput,
     ReportTemplateParserInput,
 )
-from shared.base import logger
 from shared.containers import Container
 
 from .model import ReportTemplate, ReportTemplateBlock
@@ -29,65 +26,53 @@ async def generate_template(
     if n_blocks == -1:
         n_blocks = random.randint(5, 8)
 
+    chat_model = container.openai_supplier.get_model(input_data.model_name)
     parser = PydanticOutputParser(pydantic_object=ReportTemplateBlock)
+    parser_fixer = OutputFixingParser.from_llm(llm=chat_model, parser=parser)
 
-    block_examples_str = ''
     if use_template_w_examples:
-        chat_template = template_w_examples
-        prompt_template: ChatPromptTemplate = ChatPromptTemplate.from_messages(
-            chat_template
-        ).format_messages(
-            input_theme=input_data.input_theme,
-            format_instructions=parser.get_format_instructions(),
-            block_examples=block_examples_str,
-        )
         block_examples = [
             json.dumps(x) for x in container.openai_supplier.block_examples
         ]
         block_examples_str = '\n'.join(block_examples)
-    else:
-        chat_template = template
+        chat_template = template_w_examples
         prompt_template: ChatPromptTemplate = ChatPromptTemplate.from_messages(
             chat_template
-        ).format_messages(
+        ).partial(
             input_theme=input_data.input_theme,
             format_instructions=parser.get_format_instructions(),
             block_examples=block_examples_str,
         )
+    else:
+        chat_template = template
+        prompt_template: ChatPromptTemplate = ChatPromptTemplate.from_messages(
+            chat_template
+        ).partial(
+            input_theme=input_data.input_theme,
+            format_instructions=parser.get_format_instructions(),
+        )
 
-    chat_model = container.openai_supplier.get_model(
-        input_data.model_name, streaming=False
-    )
+    history_blocks = ''
     for block in range(n_blocks):
         n_points = random.randint(1, 8)
-        chain = chat_model | parser
-        prompt_template.append(
-            HumanMessage(
-                content=f'Сформируй блок номер {block + 1} состоящий из {n_points} пунктов'
-            )
-        )
-        while True:
-            try:
-                response = await chain.ainvoke(prompt_template)
-                break
-            except OutputParserException as e:
-                logger.debug(e)
-                continue
-        prompt_template.append(AIMessage(content=str(response.json())))
+        chain = prompt_template | chat_model | parser_fixer
+        response = await chain.ainvoke({
+            'input': f'Сформируй блок номер {block + 1} состоящий из {n_points} пунктов',
+            'history_blocks': history_blocks,
+        })
+        history_blocks = history_blocks + '\n' + str(response)
         yield response
 
 
 async def parse_template(container: Container, input_data: ReportTemplateParserInput):
     parser = PydanticOutputParser(pydantic_object=ReportTemplate)
     chat_template = template_parser
+    chat_model = container.openai_supplier.get_model(input_data.model_name)
+    parser_fixer = OutputFixingParser.from_llm(llm=chat_model, parser=parser)
     prompt_template: ChatPromptTemplate = ChatPromptTemplate.from_messages(
         chat_template
     )
-    chain: LLMChain = (
-        prompt_template
-        | container.openai_supplier.get_model(input_data.model_name)
-        | parser
-    )
+    chain: LLMChain = prompt_template | chat_model | parser_fixer
     response: ReportTemplate = await chain.ainvoke({
         'input_theme': input_data.input_theme,
         'format_instructions': parser.get_format_instructions(),
