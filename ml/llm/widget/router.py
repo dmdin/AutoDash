@@ -20,7 +20,11 @@ def generate_destinations(
         parser: PydanticOutputParser = w['parser']
         prompt = ChatPromptTemplate.from_messages(
             widget_template,
-        ).partial(format_instructions=parser.get_format_instructions())
+        ).partial(
+            format_instructions=parser.get_format_instructions(),
+            widget_type=w['name'],
+            widget_description=w['description'],
+        )
         chain: LLMChain = prompt | chat_model | parser
         destination_chains[name] = chain
     return destination_chains

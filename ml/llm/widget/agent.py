@@ -39,16 +39,26 @@ async def generate_report(
             langchain_documents = container.search_supplier.parse_documents_from_search(
                 all_documents_from_search_raw
             )
-            container.retriever_service.retriever.add_documents(langchain_documents)
+            if langchain_documents:
+                container.retriever_service.retriever.add_documents(langchain_documents)
 
-            retrieved_docs = await container.retriever_service.retriever.ainvoke({
-                'input': search_query
-            })
-            sources = [
-                WidgetSource(url=x.metadata['url'], text=x.page_content)
-                for x in retrieved_docs
-            ]
-            context = format_docs(retrieved_docs)
+            retrieved_docs = await container.retriever_service.retriever.ainvoke(
+                search_query
+            )
+            if retrieved_docs:
+                sources = [
+                    WidgetSource(url=x.metadata['url'], text=x.page_content)
+                    for x in retrieved_docs
+                ]
+                context = format_docs(retrieved_docs)
+            else:
+                sources = [
+                    WidgetSource(
+                        url='chat.openai.com',
+                        text='Information was gathered from External Knowledge Base (ChatGPT)',
+                    )
+                ]
+                context = 'Никакой информации не получилось найти, поэтому используй информацию из ChatGPT'
 
             widget_response = await widget_chain.ainvoke({
                 'input_theme': input_data.report_theme,
