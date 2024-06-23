@@ -4,7 +4,6 @@ from llm.report.model import ReportTemplate
 from supplier.openapi_supplier import OPENAI_MODELS
 
 from .base import CamelizedBaseModel
-from .search_parser import SearchParsedSourceDocuments
 
 
 class RawReportGeneratorInput(CamelizedBaseModel):
@@ -13,7 +12,7 @@ class RawReportGeneratorInput(CamelizedBaseModel):
     report_theme: str
     report_text: str
     model_name: OPENAI_MODELS = OPENAI_MODELS.GPT_3_5_TURBO
-    urls: SearchParsedSourceDocuments
+    urls: list[str] = []
 
 
 class ParsedReportGeneratorInput(CamelizedBaseModel):
@@ -22,7 +21,7 @@ class ParsedReportGeneratorInput(CamelizedBaseModel):
     report_theme: str
     report_template: ReportTemplate
     model_name: OPENAI_MODELS = OPENAI_MODELS.GPT_3_5_TURBO
-    urls: SearchParsedSourceDocuments
+    urls: list[str] = []
 
 
 class WidgetChartType(enum.StrEnum):

@@ -19,7 +19,7 @@ async def generate_report(
     input_data: ParsedReportGeneratorInput,
 ):
     logging_time_start = time()
-    router_chain = generate_router(container, input_data)
+    router_chain_callable = generate_router(container, input_data)
     destination_chains = generate_destinations(container, input_data)
 
     for block in input_data.report_template.blocks:
@@ -33,7 +33,9 @@ async def generate_report(
                 'block_name': block_name,
                 'point_name': point,
             }
-            route_response: LLMWidgetType = await router_chain.ainvoke(llm_input)
+            route_response: LLMWidgetType = await router_chain_callable(
+                input_kwargs=llm_input
+            )
             widget_chain = destination_chains[str(route_response.chosen_widget_type)]
 
             search_query = f'Тема - {input_data.report_theme}, блок - {block_name}, пункт - {point}'
@@ -66,12 +68,14 @@ async def generate_report(
                 ]
                 context = 'Никакой информации не получилось найти, поэтому используй информацию из ChatGPT'
 
-            widget_response = await widget_chain.ainvoke({
-                'input_theme': input_data.report_theme,
-                'point_name': point,
-                'block_name': block_name,
-                'context': context,
-            })
+            widget_response = await widget_chain(
+                input_kwargs={
+                    'input_theme': input_data.report_theme,
+                    'point_name': point,
+                    'block_name': block_name,
+                    'context': context,
+                }
+            )
 
             final_widget_response = create_widget_response(
                 widget_response, route_response, sources=sources

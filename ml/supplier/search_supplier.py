@@ -3,7 +3,7 @@ from dataclasses import dataclass
 import httpx
 from langchain.docstore.document import Document
 
-from schemas.search_parser import SearchParsedDocument, SearchParsedSourceDocuments
+from schemas.search_parser import SearchParsedDocumentList
 from shared.base import logger
 from shared.settings import app_settings
 
@@ -22,35 +22,40 @@ class SearchSupplier:
         if not httpx.get(f'http://{self.host}:{self.port}/ping'):
             raise Exception('non true ping')
 
-    async def search_data_for_llm(self, query: str, urls: SearchParsedSourceDocuments):
+    async def search_data_for_llm(self, query: str, urls: list[str] | None):
+        if not urls:
+            urls = []
         async with httpx.AsyncClient() as client:
             try:
                 data = {
                     'query': query,
-                    'urls': urls.urls,
-                    'return_html': False,
-                    'extra_data': False,
+                    'urls': urls,
                 }
                 response: httpx.Response = await client.post(
                     self.search_data_for_llm_route,
-                    data=data,
+                    json=data,
                 )
-                all_documents: list[SearchParsedDocument] = response.json()
+                print(response.json())
+                all_documents: SearchParsedDocumentList = SearchParsedDocumentList(
+                    **response.json()
+                )
             except httpx.HTTPError as e:
                 logger.debug(e)
-                all_documents: list[SearchParsedDocument] = []
+                all_documents: SearchParsedDocumentList = SearchParsedDocumentList(
+                    results=[], errors=[]
+                )
             return all_documents
 
     def parse_documents_from_search(
-        self, documents: list[SearchParsedDocument]
+        self, documents: SearchParsedDocumentList
     ) -> list[Document]:
         langchain_documents: list[Document] = []
-        for doc in documents:
+        for doc in documents.results:
             try:
                 new_doc = Document(
-                    doc['all_text_from_page'],
-                    page_title=doc['page_title'],
-                    url=doc['url'],
+                    doc.text,
+                    page_title=doc.title,
+                    url=doc.url,
                 )
                 langchain_documents.append(new_doc)
             except Exception as e:

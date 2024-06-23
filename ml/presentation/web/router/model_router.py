@@ -63,7 +63,7 @@ async def generate_template_websocket(websocket: WebSocket) -> None:
             code=1011,
             reason=json.dumps({
                 'code': 500,
-                'error': f'Error occured on server: {e}. Please contact administrator.',
+                'error': 'Error occured on server. Please contact administrator.',
             }),
         )
 
@@ -136,6 +136,6 @@ async def create_report_websocket(websocket: WebSocket) -> None:
             code=1011,
             reason=json.dumps({
                 'code': 500,
-                'error': f'Error occured on server: {e}. Please contact administrator.',
+                'error': 'Error occured on server. Please contact administrator.',
             }),
         )
