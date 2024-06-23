@@ -32,15 +32,15 @@
 	let textarea: HTMLTextAreaElement;
 	let autoscroll = false;
 	let loading = false;
+	let blocksAmount = 8;
 	let generating = false;
 	let selectedSources = sources;
 
 	let sourceTemplate = {
 		title: '',
-		link: '',
-	}
-	let newSource = {...sourceTemplate}
-
+		link: ''
+	};
+	let newSource = { ...sourceTemplate };
 
 	let receiveTimeout;
 
@@ -58,7 +58,6 @@
 		}
 	});
 
-
 	onMount(async () => {
 		ws = new WebSocket(env.PUBLIC_CHAT_ENDPOINT);
 		ws.onopen = function () {
@@ -70,15 +69,15 @@
 
 			receiveTimeout = setTimeout(() => {
 				generating = false;
-			}, 10000);
+			}, 30000);
 
 			try {
-				const {block_name, points} = JSON.parse(event.data)
-				description += block_name + '\n'
-				description += points.map( (p, i) => `\t${i + 1}. ${p}`).join('\n')
-				description += '\n\n'
-			} catch (e){
-				console.error(e)
+				const { block_name, points } = JSON.parse(event.data);
+				description += block_name + '\n';
+				description += points.map((p, i) => `\t${i + 1}. ${p}`).join('\n');
+				description += '\n\n';
+			} catch (e) {
+				console.error(e);
 			}
 		};
 	});
@@ -86,12 +85,16 @@
 	function generateTemplate() {
 		generating = true;
 		description += '';
-		ws.send(JSON.stringify({ input_theme: topic, model_name: $model }));
+		ws.send(JSON.stringify({ input_theme: topic, model_name: $model, n_blocks: blocksAmount }));
 	}
 
 	async function generateDashboard() {
 		loading = true;
-		await rpc.Prompt.createDashboard(topic, description, selectedSources.map(s => s.link)).then((dashboard) => {
+		await rpc.Prompt.createDashboard(
+			topic,
+			description,
+			selectedSources.map((s) => s.link)
+		).then((dashboard) => {
 			window.location.href = '/dashboards/' + dashboard.id;
 		});
 		loading = false;
@@ -114,8 +117,8 @@
 	}
 
 	async function addSource() {
-		sources = sources.concat(await rpc.Prompt.addSource(newSource))
-		newSource = {...sourceTemplate}
+		sources = sources.concat(await rpc.Prompt.addSource(newSource));
+		newSource = { ...sourceTemplate };
 	}
 </script>
 
@@ -148,28 +151,42 @@
 				{/each}
 				<option disabled selected>Шаблон не выбран</option>
 			</select>
+			<div class="tooltip w-[80px]" data-tip="Количество блоков">
+				<select class="select select-bordered w-full p-2" bind:value={blocksAmount}>
+					{#each Array(15).keys() as i}
+						<option value={i + 1}>{i + 1}</option>
+					{/each}
+				</select>
+			</div>
+
 			<Combobox
+				class="w-[250px]"
 				bind:value={selectedSources}
 				options={sources}
 				extractor={(o) => o.title}
 				placeholder="Источники информации"
 			/>
-			<div>
-				<div class="tooltip" data-tip="Добавить новый источник">
-					<button class="btn btn-primary btn-square" onclick="addSource.showModal()">
-						<MagnifyingGlass width="20" height="20" />
-					</button>
-				</div>
+
+			<div class="tooltip w-[50px]" data-tip="Добавить новый источник">
+				<button class="btn btn-primary btn-square" onclick="addSource.showModal()">
+					<MagnifyingGlass width="20" height="20" />
+				</button>
 			</div>
 		</div>
-		<div class="tooltip" data-tip="Сгенерировать шаблон под тему">
-			<button
-				disabled={!topic || generating}
-				class="btn btn-sm btn-square btn-success text-center"
-				on:click={generateTemplate}
-			>
-				<Spark height="25" />
-			</button>
+
+		<div>
+			{#if loading}
+				<Circle size="20" />
+			{/if}
+			<div class="tooltip" data-tip="Сгенерировать шаблон под тему">
+				<button
+					disabled={!topic || generating}
+					class="btn btn-sm btn-square btn-success text-center"
+					on:click={generateTemplate}
+				>
+					<Spark height="25" />
+				</button>
+			</div>
 		</div>
 	</div>
 
@@ -220,7 +237,7 @@
 			<form method="dialog">
 				<!-- if there is a button in form, it will close the modal -->
 				<button class="btn btn-outline">Отмена</button>
-				<button class="btn btn-primary  ml-4" on:click={createTemplate}>Сохранить</button>
+				<button class="btn btn-primary ml-4" on:click={createTemplate}>Сохранить</button>
 			</form>
 		</div>
 	</div>
@@ -255,7 +272,11 @@
 			<form method="dialog">
 				<!-- if there is a button in form, it will close the modal -->
 				<button class="btn btn-outline">Отмена</button>
-				<button class="btn btn-primary ml-4" on:click={addSource} disabled={!newSource.link || !newSource.title}>Сохранить</button>
+				<button
+					class="btn btn-primary ml-4"
+					on:click={addSource}
+					disabled={!newSource.link || !newSource.title}>Сохранить</button
+				>
 			</form>
 		</div>
 	</div>

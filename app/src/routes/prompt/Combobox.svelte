@@ -54,11 +54,12 @@
     >
   </label> -->
 
-<div class="relative w-full">
+<div class="relative w-fit box-border {$$restProps.class}">
 	<input
 		use:melt={$input}
 		class="input input-bordered text-sm
-          px-3 pr-12 text-black"
+					w-full
+          px-3 text-black"
 		{placeholder}
 	/>
 	<div class="absolute right-2 top-1/2 z-10 -translate-y-1/2">
