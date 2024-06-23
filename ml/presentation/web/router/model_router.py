@@ -30,7 +30,7 @@ async def generate_template_websocket(websocket: WebSocket) -> None:
         raw_data = await websocket.receive_json()
         input_data = ReportTemplateGeneratorInput(**raw_data)
         async for block in report_agent.generate_template(container, input_data):
-            await websocket.send_json(block)
+            await websocket.send_json(block.json())
     except Exception as e:  # TODO: mb smth better
         logger.debug(e)
 
