@@ -31,6 +31,7 @@ class WidgetChartType(enum.StrEnum):
     PIE = 'pie'
     TABLE = 'table'
     TEXT = 'text'
+    NONE = 'none'
 
 
 class WidgetSource(CamelizedBaseModel):

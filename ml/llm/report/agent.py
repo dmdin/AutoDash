@@ -22,9 +22,9 @@ from .templates import template, template_parser, template_w_examples
 async def generate_template(
     container: Container,
     input_data: ReportTemplateGeneratorInput,
-    use_template_w_examples: bool = False,
-    n_blocks: int = -1,
 ):
+    n_blocks = input_data.n_blocks
+    use_template_w_examples = input_data.use_template_w_examples
     logging_time_start = time()
     if n_blocks == -1:
         n_blocks = random.randint(5, 8)

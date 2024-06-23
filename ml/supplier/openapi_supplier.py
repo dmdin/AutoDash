@@ -15,13 +15,27 @@ class OPENAI_MODELS(str, Enum):
     GPT_3_5_TURBO = 'gpt-3.5-turbo'
 
 
+class OPENAI_EMBEDDING_MODELS(str, Enum):
+    TEXT_EMBEDDING_3_LARGE = 'text-embedding-3-large'
+    TEXT_EMBEDDING_3_SMALL = 'text-embedding-3-small'
+
+
+# class OpenAICustomAuth(httpx.Auth):
+#     def __init__(self, token):
+#         self.token = token
+
+#     def auth_flow(self, request):
+#         request.headers['Authorization'] = f'Bearer {self.token}'
+#         yield request
+
+
 @dataclass
 class OpenAISupplier:
     def __post_init__(self):
         self.embeddings: OpenAIEmbeddings = OpenAIEmbeddings(
             base_url=app_settings.openai_api_url,
             api_key=app_settings.openai_api_key,
-            model='text-embedding-3-small',
+            model='.'.join(app_settings.embedding_model.split('.')[1:]),
         )
 
         self._block_examples = json.load(
@@ -57,17 +71,12 @@ class OpenAISupplier:
         return self._block_examples
 
     async def health(self) -> None:
-        class OpenAICustomAuth(httpx.Auth):
-            def __init__(self, token):
-                self.token = token
+        response = httpx.get(app_settings.openai_api_url)
+        print(response)
 
-            def auth_flow(self, request):
-                request.headers['Authorization'] = f'Bearer {self.token}'
-                yield request
-
-        model_endpoint_response = httpx.get(
-            app_settings.openai_api_url + '/models',
-            auth=OpenAICustomAuth(app_settings.openai_api_key),
-        )
-        if model_endpoint_response.status_code != 200:
-            raise Exception('problem occured connecting to openai service')
+        # model_endpoint_response = httpx.get(
+        #     app_settings.openai_api_url + '/models',
+        #     auth=OpenAICustomAuth(app_settings.openai_api_key),
+        # )
+        # if model_endpoint_response.status_code != 200:
+        #     raise Exception('problem occured connecting to openai service')
