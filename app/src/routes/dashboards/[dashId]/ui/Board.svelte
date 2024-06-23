@@ -3,6 +3,7 @@
   import { ChartType } from '$lib/charts/types'
   import { rpc } from '$root/routes'
   import { WIDGET_SHIFT_X, WIDGET_SHIFT_Y } from '$root/routes/dashboards/[dashId]/constants'
+  import BadgeNode from '$root/routes/dashboards/[dashId]/ui/BadgeNode.svelte'
   import TextNode from '$root/routes/dashboards/[dashId]/ui/TextNode.svelte'
   import { theme } from '$stores'
   import { onMount, tick } from 'svelte'
@@ -34,7 +35,8 @@
   const nodeTypes = {
     'plot-node': PlotNode,
     'text-node': TextNode,
-    'block-node': BlockNode
+    'block-node': BlockNode,
+    'badge-node': BadgeNode
   }
 
   onMount(() => {
@@ -67,7 +69,7 @@
           data: block
         }
 
-        await addNode(textNode, width) // Тут добавляем extra bound, чтобы виджеты не заходили на эту же линиюy
+        await addNode(textNode, width) // Тут добавляем extra bound, чтобы виджеты не заходили на эту же линию
       }
 
       for (const widget of block.widgets.sort((a, b) => a.order - b.order)) {
@@ -79,7 +81,17 @@
           position = { x: widget.xPos, y: widget.yPos }
         }
 
-        const nodeType = widget.data.type === 'text' ? 'text-node' : 'plot-node'
+        let nodeType = 'text-node'
+        switch (widget.data.type) {
+          case 'text':
+            nodeType = 'text-node'
+            break
+          case 'badge':
+            nodeType = 'badge-node'
+            break
+          default:
+            nodeType = 'plot-node'
+        }
         const node = {
           id: widget.id,
           type: nodeType,
@@ -88,7 +100,7 @@
           svgUrl: '',
         }
 
-        await addNode(node, nodeType === 'text-node' ? width : 0) // 🤪🤪🤪🤪🤪
+        await addNode(node, nodeType === 'plot-node' ? 0 : width) // 🤪🤪🤪🤪🤪
       }
     }
 
