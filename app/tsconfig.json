@@ -13,7 +13,7 @@
 		"moduleResolution": "bundler",
 		
 		"experimentalDecorators": true,
-    	"emitDecoratorMetadata": true,
+		"emitDecoratorMetadata": true,
 		"paths": {
 			"$schema": ["./src/schema.ts"],
 			"$repo": ["./src/lib/server/repo"],
@@ -26,7 +26,8 @@
 			"$root/*": ["./src/*"],
 			"$lib": ["./src/lib"],
 			"$lib/*": ["./src/lib/*"]
-		}
+		},
+		"types": ["unplugin-icons/types/svelte"], 
 	}
 	// Path aliases are handled by https://kit.svelte.dev/docs/configuration#alias
 	//

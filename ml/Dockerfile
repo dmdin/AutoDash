@@ -8,15 +8,15 @@ ENV PYTHONFAULTHANDLER=1 \
     PIP_DEFAULT_TIMEOUT=100 \
     POETRY_VERSION=1.0.0
 
-RUN apt-get update && \
-    apt-get install -y gcc python3-dev curl && \
-    rm -rf /var/lib/apt/lists/*
+RUN apt-get update
+RUN apt-get install -y gcc python3-dev curl
+RUN rm -rf /var/lib/apt/lists/*
 RUN pip install "poetry==1.8.2"
 
 COPY pyproject.toml ./
 
-RUN poetry config virtualenvs.create false \
-    && poetry install --no-interaction --no-ansi
+RUN poetry config virtualenvs.create false
+RUN poetry install --no-interaction --no-ansi
 
 COPY . /app
 

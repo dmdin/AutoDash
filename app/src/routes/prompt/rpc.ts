@@ -1,7 +1,7 @@
 import { db, takeUniqueOrThrow } from '$repo/db';
-import { blocks, dashboards, templates, savedTemplates, widgets } from '$schema';
+import { blocks, dashboards, templates, savedTemplates, widgets, sources } from '$schema';
 import { depends, rpc } from '@chord-ts/rpc';
-import axios from 'axios'
+import axios from 'axios';
 export class Prompt {
 	@depends()
 	ctx!: { user: { id: string } };
@@ -18,7 +18,17 @@ export class Prompt {
 	}
 
 	@rpc()
-	async createDashboard(topic: string, description: string) {
+	async addSource({ title, link }: { title: string; link: string }) {
+		const source = await db
+			.insert(sources)
+			.values({title, link})
+			.returning()
+			.then(takeUniqueOrThrow);
+		return source
+	}
+
+	@rpc()
+	async createDashboard(topic: string, description: string, urls: string[]) {
 		//   Тут какая то логика обращенния к LLM
 
 		//   Пока мокаю данные
@@ -158,17 +168,17 @@ export class Prompt {
 		// 	}
 		// ]
 
-		const generatedWidgets = await generateWidgets(topic, description)
+		const generatedWidgets = await generateWidgets(topic, description, urls);
 		for (const widget of generatedWidgets) {
 			if (widget.type === 'text') {
-				let text = ''
-				console.log(widget)
+				let text = '';
+				console.log(widget);
 				for (const s of widget?.series) {
 					for (const val of s.data) {
-						text += val.value + '\n'
+						text += val.value + '\n';
 					}
 				}
-				widget.text = text
+				widget.text = text;
 			}
 		}
 		const blocksData = [
@@ -176,7 +186,7 @@ export class Prompt {
 				name: '',
 				widgets: generatedWidgets
 			}
-		]
+		];
 
 		// const genWidgets = await generateWidgets(topic, description)
 
@@ -186,7 +196,7 @@ export class Prompt {
 			.returning()
 			.then(takeUniqueOrThrow);
 
-    const authorId = this.ctx.user.id
+		const authorId = this.ctx.user.id;
 		const dashboard = await db
 			.insert(dashboards)
 			.values({ templateId: template.id, authorId })
@@ -220,14 +230,16 @@ export class Prompt {
 	}
 }
 
-async function generateWidgets(topic: string, description: string) {
-	return await axios.post('http://87.242.103.101:8001/api/llm/create_report?model_name=gpt-4o', {
-		"urls": {
-			"urls": []
-		},
-		"report_item": {
-			"report_theme": topic,
-			"report_text": description
-		}
-	}).then(res => res.data.widgets)
+async function generateWidgets(topic: string, description: string, urls=[]) {
+	return await axios
+		.post('http://87.242.103.101:8001/api/llm/create_report?model_name=gpt-4o', {
+			urls: {
+				urls
+			},
+			report_item: {
+				report_theme: topic,
+				report_text: description
+			}
+		})
+		.then((res) => res.data.widgets);
 }

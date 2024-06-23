@@ -19,12 +19,7 @@ export function configureOptions(viewConfig: unknown, seriesSample: SeriesModel,
 
 	if (category && category.length) {
 		viewOptions.xAxis.data = category;
-	} else {
-    const category = series[0]?.data?.map((n) => {
-      return n.name
-    })
-    viewOptions.xAxis.data = category
-  }
+	}
 
 	return viewOptions;
 }

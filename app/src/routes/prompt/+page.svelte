@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount, onDestroy, beforeUpdate, afterUpdate, tick } from 'svelte';
+	import { Circle } from 'svelte-loading-spinners';
 	import { scale, fly, fade } from 'svelte/transition';
 
 	import { env } from '$env/dynamic/public';
@@ -10,13 +11,19 @@
 	import Spark from '~icons/streamline/ai-generate-variation-spark';
 	import Play from '~icons/solar/play-broken';
 	import Save from '~icons/material-symbols/save-outline';
+	import MagnifyingGlass from '~icons/heroicons/magnifying-glass-plus-20-solid';
 
 	import { rpc } from '$root/routes';
 	import { model } from '$client/stores/index.js';
 
+	import { topics } from './topics';
+	import Combobox from './Combobox.svelte';
+
 	export let data;
 
 	let templates = data.templates;
+	let sources = data.sources;
+
 	let template;
 	let topic = '';
 	let description = '';
@@ -24,8 +31,20 @@
 	let ws: WebSocket;
 	let textarea: HTMLTextAreaElement;
 	let autoscroll = false;
+	let loading = false;
+	let generating = false;
+	let selectedSources = sources;
 
-	$: selectTemplate(template)
+	let sourceTemplate = {
+		title: '',
+		link: '',
+	}
+	let newSource = {...sourceTemplate}
+
+
+	let receiveTimeout;
+
+	$: selectTemplate(template);
 	beforeUpdate(() => {
 		if (textarea) {
 			const scrollableDistance = textarea.scrollHeight - textarea.offsetHeight;
@@ -39,37 +58,52 @@
 		}
 	});
 
-	onDestroy(() => {
-		ws.close()
-	})
+
 	onMount(async () => {
 		ws = new WebSocket(env.PUBLIC_CHAT_ENDPOINT);
-		ws.onopen = function() {
-			console.log("Соединение установлено.");
+		ws.onopen = function () {
+			console.log('Соединение установлено.');
 		};
 
 		ws.onmessage = function (event) {
-			description += event.data
+			clearInterval(receiveTimeout);
+
+			receiveTimeout = setTimeout(() => {
+				generating = false;
+			}, 10000);
+
+			try {
+				const {block_name, points} = JSON.parse(event.data)
+				description += block_name + '\n'
+				description += points.map( (p, i) => `\t${i + 1}. ${p}`).join('\n')
+				description += '\n\n'
+			} catch (e){
+				console.error(e)
+			}
 		};
 	});
 
 	function generateTemplate() {
-		description += ''
-		ws.send(JSON.stringify({"input_theme": topic, "model_name": $model}))
+		generating = true;
+		description += '';
+		ws.send(JSON.stringify({ input_theme: topic, model_name: $model }));
 	}
 
 	async function generateDashboard() {
-		await rpc.Prompt.createDashboard(topic, description).then((dashboard) => {
+		loading = true;
+		await rpc.Prompt.createDashboard(topic, description, selectedSources.map(s => s.link)).then((dashboard) => {
 			window.location.href = '/dashboards/' + dashboard.id;
 		});
+		loading = false;
 	}
 
-	function randomTopic(params: type) {
-		topic = 'Отчет по рынку BI систем';
+	function randomTopic() {
+		const index = Math.floor(Math.random() * topics.length);
+		topic = topics[index];
 	}
 
 	async function selectTemplate(template) {
-		if (!template?.body) return
+		if (!template?.body) return;
 		description = template.body;
 	}
 
@@ -77,6 +111,11 @@
 		const newTemplate = await rpc.Prompt.saveTemplate({ title: templateName, body: description });
 		templates = templates.concat(newTemplate);
 		templateName = '';
+	}
+
+	async function addSource() {
+		sources = sources.concat(await rpc.Prompt.addSource(newSource))
+		newSource = {...sourceTemplate}
 	}
 </script>
 
@@ -97,23 +136,37 @@
 		</div>
 	</label>
 
-	<div class="w-full flex justify-between pr-1.5 items-center">
-		<select
-			class="mt-4 select select-bordered w-full max-w-xs text-md"
-			on:change={selectTemplate}
-			bind:value={template}
-		>
-			{#each templates as template}
-				<option value={template}>{template.title}</option>
-			{/each}
-			<option disabled selected>Шаблон не выбран</option>
-		</select>
-
+	<div class="w-full flex justify-between pr-1.5 items-center mt-4">
+		<div class="flex gap-5">
+			<select
+				class=" select select-bordered w-full max-w-xs text-md"
+				on:change={selectTemplate}
+				bind:value={template}
+			>
+				{#each templates as template}
+					<option value={template}>{template.title}</option>
+				{/each}
+				<option disabled selected>Шаблон не выбран</option>
+			</select>
+			<Combobox
+				bind:value={selectedSources}
+				options={sources}
+				extractor={(o) => o.title}
+				placeholder="Источники информации"
+			/>
+			<div>
+				<div class="tooltip" data-tip="Добавить новый источник">
+					<button class="btn btn-primary btn-square" onclick="addSource.showModal()">
+						<MagnifyingGlass width="20" height="20" />
+					</button>
+				</div>
+			</div>
+		</div>
 		<div class="tooltip" data-tip="Сгенерировать шаблон под тему">
-			<button 
-				disabled={!topic}
-				class="btn btn-sm btn-square btn-secondary text-center"
-				on:click={generateTemplate}	
+			<button
+				disabled={!topic || generating}
+				class="btn btn-sm btn-square btn-success text-center"
+				on:click={generateTemplate}
 			>
 				<Spark height="25" />
 			</button>
@@ -128,8 +181,16 @@
 	></textarea>
 
 	<div class="flex gap-5">
-		<button class="self-end btn text-md btn-primary mt-4" on:click={generateDashboard}>
-			<Play />
+		<button
+			class="self-end btn text-md btn-primary mt-4"
+			disabled={loading}
+			on:click={generateDashboard}
+		>
+			{#if loading}
+				<Circle size="20" />
+			{:else}
+				<Play />
+			{/if}
 			Сгенерировать отчет
 		</button>
 
@@ -159,7 +220,42 @@
 			<form method="dialog">
 				<!-- if there is a button in form, it will close the modal -->
 				<button class="btn btn-outline">Отмена</button>
-				<button class="btn btn-primary" on:click={createTemplate}>Сохранить</button>
+				<button class="btn btn-primary  ml-4" on:click={createTemplate}>Сохранить</button>
+			</form>
+		</div>
+	</div>
+</dialog>
+
+<dialog id="addSource" class="modal">
+	<div class="modal-box flex flex-col gap-4">
+		<h3 class="font-bold text-lg text-neutral">Добавить новый источник</h3>
+		<label class="form-control w-full">
+			<div class="label">
+				<span class="label-text">Название источника</span>
+			</div>
+			<input
+				type="text"
+				placeholder="RBC"
+				class="input input-bordered w-full"
+				bind:value={newSource.title}
+			/>
+		</label>
+		<label class="form-control w-full">
+			<div class="label">
+				<span class="label-text">Ссылка на источник</span>
+			</div>
+			<input
+				type="text"
+				placeholder="https://www.rbc.ru/"
+				class="input input-bordered w-full"
+				bind:value={newSource.link}
+			/>
+		</label>
+		<div class="modal-action">
+			<form method="dialog">
+				<!-- if there is a button in form, it will close the modal -->
+				<button class="btn btn-outline">Отмена</button>
+				<button class="btn btn-primary ml-4" on:click={addSource} disabled={!newSource.link || !newSource.title}>Сохранить</button>
 			</form>
 		</div>
 	</div>

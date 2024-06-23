@@ -42,9 +42,7 @@
   })
 
   async function createNodes() {
-    console.log('enter')
     if (!$dashboard) return
-    console.log('proceed')
 
     if ($dashboard.template.topic) {
       const topicNode = {
@@ -99,9 +97,7 @@
 
   async function addNode(node, extraBoundX = 0, extraBoundY = 0) {
     $nodes = [...$nodes, node]
-    console.log($nodes)
     const bounds = await getNodeBounds($nodes.length - 1)
-    console.log(bounds)
     $reservedPlace = { x: bounds.x, y: bounds.y, endX: bounds.x + bounds.width + extraBoundX,
       endY: bounds.y + bounds.height + extraBoundY }
   }
@@ -110,7 +106,6 @@
     return new Promise((resolve) => {
       const timer = setInterval(() => {
         const bounds = getNodesBounds([$nodes[ind]])
-        console.log(bounds)
         if (bounds.width !== 0) {
           clearInterval(timer)
           resolve(bounds)
