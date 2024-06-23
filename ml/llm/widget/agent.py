@@ -85,11 +85,11 @@ async def generate_report(
                     'context': context,
                 }
             )
-
-            final_widget_response = create_widget_response(
-                widget_response, route_response, sources=sources
-            )
-            block_widgets.append(final_widget_response)
+            if widget_response is not None:
+                final_widget_response = create_widget_response(
+                    widget_response, route_response, sources=sources
+                )
+                block_widgets.append(final_widget_response)
             logger.debug(
                 f"Time for the block's point report generation: {time() - logging_block_point_time_start}"
             )

@@ -28,10 +28,14 @@ async def create_chain_function(
         parsed_response = await parser.aparse(response)
     except ValidationError as e:
         logger.debug(f'Error occured while parsing: {e}')
-        parsed_response = await parser_fixer.aparse_with_prompt(
-            completion=response.content,
-            prompt_value=prompt.format_prompt(**input_kwargs),
-        )
+        try:
+            parsed_response = await parser_fixer.aparse_with_prompt(
+                completion=response.content,
+                prompt_value=prompt.format_prompt(**input_kwargs),
+            )
+        except Exception as e:
+            logger.debug(e)
+            return None
     return parsed_response
 
 
@@ -44,7 +48,7 @@ def generate_destinations(
         name = w['name']
         parser: PydanticOutputParser = w['parser']
         parser_fixer = RetryWithErrorOutputParser.from_llm(
-            llm=chat_model, parser=parser, max_retries=5
+            llm=chat_model, parser=parser, max_retries=10
         )
         prompt = ChatPromptTemplate.from_messages(
             widget_template,
@@ -74,7 +78,7 @@ def generate_router(
 
     parser = PydanticOutputParser(pydantic_object=LLMWidgetType)
     parser_fixer = RetryWithErrorOutputParser.from_llm(
-        llm=chat_model, parser=parser, max_retries=5
+        llm=chat_model, parser=parser, max_retries=10
     )
     prompt = ChatPromptTemplate.from_messages(
         router_template,

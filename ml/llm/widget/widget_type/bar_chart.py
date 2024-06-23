@@ -21,6 +21,6 @@ class LLMBarWidget(CamelizedBaseModel):
 
 bar_widget_info = {
     'name': 'bar',
-    'description': 'Наиболее подходящий виджет для отображения относительных показателей между разными компаниями (например, годовую выручку между компаниями Apple и Google)',
+    'description': 'Наиболее подходящий виджет для отображения относительных показателей между разными компаниями',
     'parser': PydanticOutputParser(pydantic_object=LLMBarWidget),
 }

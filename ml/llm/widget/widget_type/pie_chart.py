@@ -22,6 +22,6 @@ class LLMPieWidget(CamelizedBaseModel):
 
 pie_widget_info = {
     'name': 'pie',
-    'description': 'Наиболее подходящий виджет для отображения долей (например, доля каждой компании на рынке, или доля мужчин и женщин в компании)',
+    'description': 'Наиболее подходящий виджет для отображения долей',
     'parser': PydanticOutputParser(pydantic_object=LLMPieWidget),
 }
