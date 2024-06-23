@@ -21,7 +21,7 @@ services:
     env_file:
       - ./secrets/ml.env
     ports:
-      - 8001:8001
+      - 8001:8000
     build:
       context: ./ml
       dockerfile: Dockerfile
@@ -45,11 +45,11 @@ services:
     environment:
       - IS_PERSISTENT=TRUE
       - ALLOW_RESET=TRUE
-      - CHROMA_HOST_PORT=8003
+      - CHROMA_HOST_PORT=8000
     volumes:
       - ./volumes/chroma_index_data:/chroma/.chroma/index
     ports:
-      - 8003:8003
+      - 8003:8000
     deploy:
       resources:
         limits:
@@ -62,7 +62,7 @@ services:
       context: ./search
       dockerfile: Dockerfile
     ports:
-      - 8002:8002
+      - 8002:8000
     volumes:
       - ./search/:/app/
       - ./secrets/search.json:/app/config.json
