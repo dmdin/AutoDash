@@ -39,7 +39,6 @@
 	// 	return v === undefined ? (value = null) : (value = v.value);
 	// });
 
-	$: console.log('selected', $selected);
 	$: filtered = $touchedInput
 		? options.filter((option) => {
 				const normalizedInput = $inputValue.toLowerCase();

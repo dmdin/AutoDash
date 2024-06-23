@@ -23,4 +23,4 @@ export const avaliableModels = [
 	'gpt-3.5-turbo'
 ];
 
-export const model = writable<string>('gpt-4-turbo');
+export const model = writable<string>('gpt-3.5-turbo');

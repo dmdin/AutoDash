@@ -23,7 +23,7 @@
 
 	let templates = data.templates;
 	let sources = data.sources;
-	console.log(sources)
+
 	let template;
 	let topic = '';
 	let description = '';
@@ -58,9 +58,7 @@
 		}
 	});
 
-	onDestroy(() => {
-		// ws.close()
-	});
+
 	onMount(async () => {
 		ws = new WebSocket(env.PUBLIC_CHAT_ENDPOINT);
 		ws.onopen = function () {
@@ -72,8 +70,16 @@
 
 			receiveTimeout = setTimeout(() => {
 				generating = false;
-			}, 3000);
-			description += event.data;
+			}, 10000);
+
+			try {
+				const {block_name, points} = JSON.parse(event.data)
+				description += block_name + '\n'
+				description += points.map( (p, i) => `\t${i + 1}. ${p}`).join('\n')
+				description += '\n\n'
+			} catch (e){
+				console.error(e)
+			}
 		};
 	});
 
