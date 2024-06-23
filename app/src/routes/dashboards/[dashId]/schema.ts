@@ -18,7 +18,8 @@ export const dashboards = pgTable('dashboards', {
   id: uuid('id').primaryKey().defaultRandom(),
   templateId: uuid('templateId').references(() => templates.id).notNull(),
   createdAt: timestamp('createdAt').defaultNow(),
-  authorId: text('authorId').references(() => users.id).notNull()
+  authorId: text('authorId').references(() => users.id).notNull(),
+  generated: boolean('generated').default(false)
 })
 
 export const dashboardsRelations = relations(dashboards, ({ one, many }) => ({

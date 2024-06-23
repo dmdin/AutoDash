@@ -14,3 +14,5 @@ export const nodes = writable([]);
 export const edges = writable([]);
 export const reservedPlace = writable<{ x: number; y: number; endX: number; endY: number }>();
 export const readonly = writable(false)
+
+export const generating = writable(false)
