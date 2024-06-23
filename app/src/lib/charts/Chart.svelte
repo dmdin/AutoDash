@@ -9,9 +9,7 @@
   export let svgUrl = ''
   let parsedChart
   function parseChart() {
-    console.log('parse')
     if (chart.series) return // Совместимость со старым форматом)
-    console.log('continue')
 
     parsedChart = {
       "type": chart.type,

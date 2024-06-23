@@ -18,9 +18,11 @@ async def check_server_health() -> UJSONResponse:
     Check service health
     """
     try:
-        await container.heath_service.check()
-        await container.redis_repository.health()
         await container.chroma_repository.health()
+        await container.openai_supplier.health()
+        await container.redis_repository.health()
+        await container.retriever_service.health()
+        await container.search_supplier.health()
     except Exception as exc:
         logger.exception('Exception while checking health')
         return UJSONResponse(

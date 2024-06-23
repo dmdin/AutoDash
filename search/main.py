@@ -269,6 +269,9 @@ def search_func(query: str, sources: List[str], to_page: int = 0) -> List[Dict[s
     except requests.RequestException as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.get("/ping")
+async def ping():
+    return 'pong'
 
 @app.post("/search")
 async def search(query: str, sources: Optional[URLListItem] = None):

@@ -1,0 +1,88 @@
+{
+    "type": "text",
+    "text": "string",
+    "sources": [
+        {
+            "url": "string",
+            "text": "string"
+        }
+    ]
+}
+
+{
+    "type": "pie",
+    "title": "string",
+    "unit": "string",
+    "data": [
+        {
+            "name": "string",
+            "value": number
+        }
+    ],
+    "sources": [
+        {
+            "url": "string",
+            "text": "string"
+        }
+    ]
+}
+
+{
+    "type": "bar",
+    "title": "string",
+    "categories": ["string"],
+    "unit": "string",
+    "data": [number],
+    "sources": [
+        {
+            "url": "string",
+            "text": "string"
+        }
+    ]
+}
+
+{
+    "type": "line",
+    "title": "string",
+    "categories": ["string"],
+    "unit": "string",
+    "data": [number],
+    "sources": [
+        {
+            "url": "string",
+            "text": "string"
+        }
+    ]
+}
+
+{
+    "type": "badge",
+    "title": "string",
+    "data": "number",
+    "sources": [
+        {
+            "url": "string",
+            "text": "string"
+        }
+    ]
+}
+
+{
+    "type": "table",
+    "title": "",
+    "categories": ["Название компании", "Доля на рынке", "Продажи"],
+    "unit": "",
+    "data": [
+      ["KAMAZ", "21.5", "31010"],
+      ["SITRAK", "16.4", "23633"],
+      ["SHACMAN", "14.4", "20760"],
+      ["FAW", "11", "15804"],
+      ["HOWO", "4.3", "6900"]
+    ],
+    "sources": [
+      {
+        "url": "https://www.autostat.ru/press-releases/56570/1",
+        "text": "Продажи новых грузовых автомобилей в России в 2023 году"
+      }
+    ]
+}

@@ -1,7 +1,8 @@
+import ujson as json
 from fastapi import APIRouter, WebSocket
 
 from llm.report import agent as report_agent
-from llm.report.model import ReportTemplate, ReportTemplateBlock
+from llm.report.model import ReportTemplate
 from llm.widget import agent as widget_agent
 from presentation.dependencies import container
 from schemas.report_template import (
@@ -14,8 +15,31 @@ from schemas.report_widget import (
     ReportOutput,
 )
 from shared.base import logger
+from supplier.openapi_supplier import OPENAI_MODELS
 
 router = APIRouter(prefix='/llm')
+
+
+@router.get(
+    '/generate_template',
+    response_model=ReportTemplate,
+    response_model_exclude_none=True,
+)
+async def generate_template(
+    query: str, model_name: OPENAI_MODELS, use_template_w_examples: bool
+) -> ReportTemplate:
+    """
+    Generate template
+    """
+    input_data = ReportTemplateGeneratorInput(
+        input_theme=query,
+        model_name=model_name,
+        use_template_w_examples=use_template_w_examples,
+    )
+    all_blocks = []
+    async for block in report_agent.generate_template(container, input_data):
+        all_blocks.append(block)
+    return ReportTemplate(blocks=all_blocks)
 
 
 @router.websocket(
@@ -31,26 +55,17 @@ async def generate_template_websocket(websocket: WebSocket) -> None:
         input_data = ReportTemplateGeneratorInput(**raw_data)
         async for block in report_agent.generate_template(container, input_data):
             await websocket.send_json(block.dict())
+        await websocket.send_text('finish')
+        await websocket.close()
     except Exception as e:  # TODO: mb smth better
-        logger.debug(e)
-
-
-@router.get(
-    '/generate_template',
-    response_model=ReportTemplateBlock,
-    response_model_exclude_none=True,
-)
-async def generate_template(
-    query: str, use_template_w_examples: bool
-) -> ReportTemplateBlock:
-    """
-    Generate template
-    """
-    input_data = ReportTemplateGeneratorInput(
-        input_theme=query, use_template_w_examples=use_template_w_examples
-    )
-    async for block in report_agent.generate_template(container, input_data):
-        return block
+        logger.debug(f'Error occured: {e}')
+        await websocket.close(
+            code=1011,
+            reason=json.dumps({
+                'code': 500,
+                'error': f'Error occured on server: {e}. Please contact administrator.',
+            }),
+        )
 
 
 @router.post(
@@ -112,6 +127,15 @@ async def create_report_websocket(websocket: WebSocket) -> None:
         async for block in widget_agent.generate_report(
             container=container, input_data=input_data
         ):
-            await websocket.send_json(block)
+            await websocket.send_json(block.dict())
+        await websocket.send_text('finish')
+        await websocket.close()
     except Exception as e:  # TODO: mb smth better
-        logger.debug(e)
+        logger.debug(f'Error occured: {e}')
+        await websocket.close(
+            code=1011,
+            reason=json.dumps({
+                'code': 500,
+                'error': f'Error occured on server: {e}. Please contact administrator.',
+            }),
+        )

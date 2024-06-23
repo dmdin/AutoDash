@@ -18,6 +18,10 @@ class SearchSupplier:
     def search_data_for_llm_route(self):
         return f'http://{self.host}:{self.port}/search_data_for_llm_v2'
 
+    async def health(self):
+        if not httpx.get(f'http://{self.host}:{self.port}/ping'):
+            raise Exception('non true ping')
+
     async def search_data_for_llm(self, query: str, urls: SearchParsedSourceDocuments):
         async with httpx.AsyncClient() as client:
             try:

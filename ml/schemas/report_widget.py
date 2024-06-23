@@ -12,7 +12,7 @@ class RawReportGeneratorInput(CamelizedBaseModel):
 
     report_theme: str
     report_text: str
-    model_name: OPENAI_MODELS = OPENAI_MODELS.GPT_4O
+    model_name: OPENAI_MODELS = OPENAI_MODELS.GPT_3_5_TURBO
     urls: SearchParsedSourceDocuments
 
 
@@ -21,16 +21,17 @@ class ParsedReportGeneratorInput(CamelizedBaseModel):
 
     report_theme: str
     report_template: ReportTemplate
-    model_name: OPENAI_MODELS = OPENAI_MODELS.GPT_4O
+    model_name: OPENAI_MODELS = OPENAI_MODELS.GPT_3_5_TURBO
     urls: SearchParsedSourceDocuments
 
 
 class WidgetChartType(enum.StrEnum):
-    PIE = 'pie'
+    BADGE = 'badge'
     BAR = 'bar'
     LINE = 'line'
+    PIE = 'pie'
+    TABLE = 'table'
     TEXT = 'text'
-    BADGE = 'badge'
 
 
 class WidgetSource(CamelizedBaseModel):
@@ -79,12 +80,23 @@ class BadgeChartWidget(AbstractWidget):
     data: int | float
 
 
+class TableRow(CamelizedBaseModel):
+    data: list[str | int | float]
+
+
+class TableChartWidget(AbstractWidget):
+    type: WidgetChartType = WidgetChartType.TABLE
+    categories: list[str]
+    rows: list[TableRow]
+
+
 AllWidgets = (
     BarChartWidget
     | TextChartWidget
     | LineChartWidget
     | PieChartWidget
     | BadgeChartWidget
+    | TableChartWidget
 )
 
 
