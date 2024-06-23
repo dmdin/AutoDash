@@ -1,4 +1,6 @@
 <script lang="ts">
+	import Table from '$root/lib/widgets/Table/Table.svelte';
+
 	// import Table from '$root/lib/widgets/Table/Table.svelte';
 	import { Chart } from '../../lib/charts';
 	import { ChartType } from '../../lib/charts/types';
@@ -6,32 +8,73 @@
 	import { BADGES } from './constants';
 
 	const barChart = {
-		type: 'bar',
-		title: 'Smartphone Revenue Growth Q1 2024',
-		subtitle: 'Year-on-Year Revenue Growth by Vendor',
-		category: ['Samsung', 'Apple', 'Xiaomi', 'TRANSSION', 'OPPO'],
-		series: [
-			{
-				name: 'Revenue Growth',
-				unit: '%',
-				data: [
-					{ name: 'Samsung', value: 5 },
-					{ name: 'Apple', value: 21 },
-					{ name: 'Xiaomi', value: 33 },
-					{ name: 'TRANSSION', value: 86 },
-					{ name: 'OPPO', value: 10 }
-				]
-			}
+		type: 'table',
+		title: '',
+		categories: ['Название компании', 'Доля на рынке', 'Продажи'],
+		rows: [
+			['KAMAZ', '21.5', '31010'],
+			['SITRAK', '16.4', '23633'],
+			['SHACMAN', '14.4', '20760'],
+			['FAW', '11', '15804'],
+			['HOWO', '4.3', '6900'],
+      ['KAMAZ', '21.5', '31010'],
+			['SITRAK', '16.4', '23633'],
+			['SHACMAN', '14.4', '20760'],
+			['FAW', '11', '15804'],
+      ['KAMAZ', '21.5', '31010'],
+			['SITRAK', '16.4', '23633'],
+			['SHACMAN', '14.4', '20760'],
+			['FAW', '11', '15804'],
+      ['KAMAZ', '21.5', '31010'],
+			['SITRAK', '16.4', '23633'],
+			['SHACMAN', '14.4', '20760'],
+			['FAW', '11', '15804'],
+      ['KAMAZ', '21.5', '31010'],
+			['SITRAK', '16.4', '23633'],
+			['SHACMAN', '14.4', '20760'],
+			['FAW', '11', '15804'],
+      ['KAMAZ', '21.5', '31010'],
+			['SITRAK', '16.4', '23633'],
+			['SHACMAN', '14.4', '20760'],
+			['FAW', '11', '15804'],
+      ['KAMAZ', '21.5', '31010'],
+			['SITRAK', '16.4', '23633'],
+			['SHACMAN', '14.4', '20760'],
+			['FAW', '11', '15804'],
+      ['KAMAZ', '21.5', '31010'],
+			['SITRAK', '16.4', '23633'],
+			['SHACMAN', '14.4', '20760'],
+			['FAW', '11', '15804'],
+      ['KAMAZ', '21.5', '31010'],
+			['SITRAK', '16.4', '23633'],
+			['SHACMAN', '14.4', '20760'],
+			['FAW', '11', '15804'],
+      ['KAMAZ', '21.5', '31010'],
+			['SITRAK', '16.4', '23633'],
+			['SHACMAN', '14.4', '20760'],
+			['FAW', '11', '15804'],
+      ['KAMAZ', '21.5', '31010'],
+			['SITRAK', '16.4', '23633'],
+			['SHACMAN', '14.4', '20760'],
+			['FAW', '11', '15804'],
+      ['KAMAZ', '21.5', '31010'],
+			['SITRAK', '16.4', '23633'],
+			['SHACMAN', '14.4', '20760'],
+			['FAW', '11', '15804'],
+      ['KAMAZ', '21.5', '31010'],
+			['SITRAK', '16.4', '23633'],
+			['SHACMAN', '14.4', '20760'],
+			['FAW', '11', '15804'],
+      ['KAMAZ', '21.5', '31010'],
+			['SITRAK', '16.4', '23633'],
+			['SHACMAN', '14.4', '20760'],
+			['FAW', '11', '15804'],
+      ['KAMAZ', '21.5', '31010'],
+			['SITRAK', '16.4', '23633'],
+			['SHACMAN', '14.4', '20760'],
+			['FAW', '11', '15804'],
 		]
 	};
-
-	// setTimeout(() => {
-	//   barChart.type = 'bar'
-	// }, 3000)
-
-	// setTimeout(() => {
-	//   barChart.type = 'line'
-	// }, 7000)
 </script>
 
 <div
@@ -40,6 +83,6 @@
 	{#each BADGES as badge, i}
 		<Badge class={i % 2 ? 'bg-primary' : 'bg-secondary'} {...badge} />
 	{/each}
-	<Chart chart={barChart} />
-  <!-- <Table table={barChart} /> -->
+	<!-- <Chart chart={barChart} /> -->
+	<Table table={barChart} />
 </div>

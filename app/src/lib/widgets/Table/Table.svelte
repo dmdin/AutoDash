@@ -12,17 +12,15 @@
 		const data = {}
 
 		try {
-			table.series.forEach((s) => {
-				for (let { name, value } of s.data) {
-					if (!data[name]) {
-						data[name] = [value];
-						head.push({ name });
-						continue;
-					}
+      table?.categories?.forEach((c, i) => {
+        head.push({ name: c })
+        const row = table.rows.reduce((prev, cur) => {
+          return [ ...prev, cur[i] ]
+        }, [])
 
-					data[name].push(value);
-				}
-			});
+        if (!data[c]) data[c] = {}
+        data[c] = row
+      })
 		} catch (e) {
 			console.log(e);
 		}
