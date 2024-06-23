@@ -23,25 +23,19 @@
 	let popover;
 </script>
 
-<!-- <div slot="trigger" let:trigger let:open>
-	<slot name="button" {open} {trigger}>
-		<button
-			class={twMerge('btn btn-sm text-xs', $$restProps.class)}
-			use:melt={trigger}
-			aria-label="Открыть меню"
-			on:click={() => open.set(true)}
-		>
-			<ArrowDownTray />Экспорт данных
-		</button>
-	</slot>
-</div> -->
-
-<div class="flex w-[150px] flex-col gap-2">
-	<h3 class="text-sm text-base-content/90">Данные таблицы</h3>
-	<div class="flex gap-2">
-		<slot>
-			<CSV />
-			<Excel />
-		</slot>
-	</div>
+<div class="dropdown dropdown-bottom z-[1000]">
+	<div tabIndex={0} role="button" class="flex justify-end btn m-1 bg-secondary">Экспорт</div>
+	<ul
+		tabIndex={0}
+		class="dropdown-content menu bg-base-100 rounded-box z-[1] p-2 shadow flex w-[150px] flex-col gap-2"
+	>
+		<h3 class="text-sm text-center text-base-content/90">Данные таблицы</h3>
+		<div class="flex justify-center gap-2">
+			<slot>
+				<CSV />
+				<Excel />
+			</slot>
+		</div>
+	</ul>
 </div>
+
