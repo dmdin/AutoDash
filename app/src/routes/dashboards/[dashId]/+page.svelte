@@ -95,7 +95,7 @@
       console.log('Соединение установлено.')
       ws.send(JSON.stringify({ "report_theme": $dashboard.template.topic.replaceAll('\t', ''),
         "report_text": $dashboard.template.description.replaceAll('\t', ''),
-        "model_name": $model,
+        "model_name": 'gpt-4o',
         "urls": []}))
     };
     ws.onerror = err => {
