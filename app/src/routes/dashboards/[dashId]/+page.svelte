@@ -155,7 +155,7 @@
   </div>
 
   {#if $generating}
-    <div class="fixed right-3 bottom-3 p-5 bg-base-100 border rounded-xl flex items-center gap-2 shadow-2xl"><Circle color="oklch(var(--n))" size="25" /> Ожидайте, производится генерация отчета...</div>
+    <div class="fixed right-3 bottom-3 p-5 bg-base-100 border rounded-xl flex items-center gap-2 shadow-2xl"><Circle color="oklch(var(--n))" size="25" /> Ожидайте, производится генерация отчета... <br/>(Генерация отчета может занять до 10 минут)</div>
   {/if}
 {/if}
 

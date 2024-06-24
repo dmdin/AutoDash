@@ -69,7 +69,7 @@
       await addNode(topicNode, width)
     }
     const blocksToCreate = $generating ? [$dashboard.blocks[$generatedBlockNumber - 2]] : $dashboard.blocks
-    for (const block of blocksToCreate) {
+    for (const block of blocksToCreate.sort((a, b) => a.order - b.order)) {
       const blockId = $generating || !block.id ? (await rpc.Dashboard.createBlock($dashId, block)).id : block.id
       if (block.name && block.name !== '') {
         let position = { x: WIDGET_SHIFT_X, y: WIDGET_SHIFT_Y }
