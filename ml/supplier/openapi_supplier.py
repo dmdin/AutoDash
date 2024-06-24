@@ -59,7 +59,6 @@ class OpenAISupplier:
             model=model_name,
             streaming=streaming,
             model_kwargs={'response_format': {'type': 'json_object'}},
-            max_tokens=4096,
         )
         return chat
 
