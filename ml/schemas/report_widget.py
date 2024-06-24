@@ -29,7 +29,7 @@ class WidgetChartType(enum.StrEnum):
     BAR = 'bar'
     LINE = 'line'
     PIE = 'pie'
-    TABLE = 'table'
+    # TABLE = 'table'
     TEXT = 'text'
     NONE = 'none'
 

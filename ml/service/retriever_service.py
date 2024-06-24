@@ -25,8 +25,8 @@ class RetrieverService:
         )
         if not self.child_splitter:
             self.child_splitter = self.base_child_splitter
-        if not self.parent_splitter and self.use_parent_splitter:
-            self.parent_splitter = self.base_parent_splitter
+        # if not self.parent_splitter and self.use_parent_splitter:
+        self.parent_splitter = self.base_parent_splitter
         byte_docstore = create_kv_docstore(
             self.store
         )  # required for RedisStore to be used
@@ -36,7 +36,7 @@ class RetrieverService:
             docstore=byte_docstore,
             child_splitter=self.child_splitter,
             parent_splitter=self.parent_splitter,
-            search_kwargs={'k': 2},
+            search_kwargs={'k': 4},
         )
 
     async def health(self) -> None:
