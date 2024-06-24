@@ -80,10 +80,10 @@ class BadgeChartWidget(AbstractWidget):
     data: int | float
 
 
-class TableChartWidget(AbstractWidget):
-    type: WidgetChartType = WidgetChartType.TABLE
-    categories: list[str]
-    rows: list[list[str | int | float]]
+# class TableChartWidget(AbstractWidget):
+#     type: WidgetChartType = WidgetChartType.TABLE
+#     categories: list[str]
+#     rows: list[list[str | int | float]]
 
 
 AllWidgets = (
@@ -92,7 +92,7 @@ AllWidgets = (
     | LineChartWidget
     | PieChartWidget
     | BadgeChartWidget
-    | TableChartWidget
+    # | TableChartWidget
 )
 
 
