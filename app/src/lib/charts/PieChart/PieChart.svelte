@@ -131,19 +131,25 @@
 		options = configureOptions(PIE_VIEW_CONFIG, PIE_SERIES, title, series?.slice(0, 1), null);
 
 		if (!options?.series?.length) return;
-		// options.series[0].data = options.series[0].data.map((c, i) => {
-		// 	return {
-		// 		name: category[i],
-		// 		value: c
-		// 	};
-		// });
+		if (!options.series[0]?.data?.[0]?.name) {
+			options.series[0].data = options.series[0].data.map((c, i) => {
+				return {
+					name: category[i],
+					value: c
+				};
+			});
+		}
 
 		const element = document.querySelector('#theme-root');
 		if (!element) return;
 		console.log(getComputedStyle(element));
 		const headerColor = getComputedStyle(element)?.getPropertyValue('--suc');
 		options.title.textStyle.color = `lab(${headerColor})`;
-    console.log(options)
+		console.log(options);
+	});
+
+	themeVariables.subscribe((t) => {
+		console.log(t);
 	});
 </script>
 
