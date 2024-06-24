@@ -18,10 +18,10 @@ class RetrieverService:
 
     def __post_init__(self):
         self.base_child_splitter = CharacterTextSplitter(
-            chunk_size=256, chunk_overlap=32
+            chunk_size=128, chunk_overlap=16
         )
         self.base_parent_splitter = CharacterTextSplitter(
-            chunk_size=1024, chunk_overlap=128
+            chunk_size=512, chunk_overlap=32
         )
         if not self.child_splitter:
             self.child_splitter = self.base_child_splitter
