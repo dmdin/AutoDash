@@ -123,7 +123,6 @@
         parsed.widgets = parsed.widgets.map((widget, ind) => ({ order: ind, data: widget, id: ind }))
         $dashboard.blocks = [...$dashboard.blocks, parsed]
         $generatedBlockNumber = $generatedBlockNumber + 1
-        await rpc.Dashboard.saveGenerated($dashId, $dashboard.blocks)
       }
 
       // receiveTimeout = setTimeout(() => {
