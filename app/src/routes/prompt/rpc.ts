@@ -29,9 +29,6 @@ export class Prompt {
 
 	@rpc()
 	async createDashboard(topic: string, description: string, urls: string[]) {
-		//   Тут какая то логика обращенния к LLM
-
-		//   Пока мокаю данные
 		// const blocksData = [
 		// 	{
 		// 		name: 'Блок 1.',
@@ -168,25 +165,25 @@ export class Prompt {
 		// 	}
 		// ]
 
-		const generatedWidgets = await generateWidgets(topic, description, urls);
-		for (const widget of generatedWidgets) {
-			if (widget.type === 'text') {
-				let text = '';
-				console.log(widget);
-				for (const s of widget?.series) {
-					for (const val of s.data) {
-						text += val.value + '\n';
-					}
-				}
-				widget.text = text;
-			}
-		}
-		const blocksData = [
-			{
-				name: '',
-				widgets: generatedWidgets
-			}
-		];
+		// const generatedWidgets = await generateWidgets(topic, description, urls);
+		// for (const widget of generatedWidgets) {
+		// 	if (widget.type === 'text') {
+		// 		let text = '';
+		// 		console.log(widget);
+		// 		for (const s of widget?.series) {
+		// 			for (const val of s.data) {
+		// 				text += val.value + '\n';
+		// 			}
+		// 		}
+		// 		widget.text = text;
+		// 	}
+		// }
+		// const blocksData = [
+		// 	{
+		// 		name: '',
+		// 		widgets: generatedWidgets
+		// 	}
+		// ];
 
 		// const genWidgets = await generateWidgets(topic, description)
 
@@ -203,30 +200,30 @@ export class Prompt {
 			.returning()
 			.then(takeUniqueOrThrow);
 
-		const insertedBlocks = await db
-			.insert(blocks)
-			.values(
-				blocksData.map((block, ind) => ({
-					name: block.name,
-					dashboardId: dashboard.id,
-					order: ind
-				}))
-			)
-			.returning();
+		// const insertedBlocks = await db
+		// 	.insert(blocks)
+		// 	.values(
+		// 		blocksData.map((block, ind) => ({
+		// 			name: block.name,
+		// 			dashboardId: dashboard.id,
+		// 			order: ind
+		// 		}))
+		// 	)
+		// 	.returning();
+		//
+		// const widgetsValues = blocksData
+		// 	.map((block, blockInd) =>
+		// 		block.widgets.map((widget, widgetInd) => ({
+		// 			blockId: insertedBlocks[blockInd].id,
+		// 			data: widget,
+		// 			order: widgetInd
+		// 		}))
+		// 	)
+		// 	.flat(1);
+		//
+		// const insertedWidgets = await db.insert(widgets).values(widgetsValues).returning();
 
-		const widgetsValues = blocksData
-			.map((block, blockInd) =>
-				block.widgets.map((widget, widgetInd) => ({
-					blockId: insertedBlocks[blockInd].id,
-					data: widget,
-					order: widgetInd
-				}))
-			)
-			.flat(1);
-
-		const insertedWidgets = await db.insert(widgets).values(widgetsValues).returning();
-
-		return dashboard;
+		return dashboard
 	}
 }
 

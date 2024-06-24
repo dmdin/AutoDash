@@ -23,7 +23,7 @@
 		await rpc.Dashboard.updateWidget(data.id, { data: data.data });
 	}
 
-  const node = $nodes.find((n) => n.id === data.id)
+  const node = $nodes.find((n) => n.id === id)
 	$: type = data.data.type;
 </script>
 
@@ -54,4 +54,7 @@
 		</div>
 	{/if}
 	<Chart chart={data.data} bind:svgUrl={node.svgUrl} />
+	{#if data?.data?.sources && data?.data?.sources?.length > 0}
+		<a href={data?.data?.sources[0].url} target="_blank">Источник</a>
+	{/if}
 </div>

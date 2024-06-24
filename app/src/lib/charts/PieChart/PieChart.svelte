@@ -42,7 +42,7 @@
   }
 
 	onMount(() => {
-		options = configureOptions(PIE_VIEW_CONFIG, PIE_SERIES, title, series.slice(0, 1), null);
+		options = configureOptions(PIE_VIEW_CONFIG, PIE_SERIES, title, series?.slice(0, 1), null)
 
     if (!options?.series?.length) return
     console.log(options.series[0].data)

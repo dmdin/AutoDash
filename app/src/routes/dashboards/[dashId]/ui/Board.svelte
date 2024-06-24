@@ -19,7 +19,16 @@
   import BlockNode from './BlockNode.svelte'
   import ContextMenu from './ContextMenu.svelte'
   import PlotNode from './PlotNode.svelte'
-  import { nodes, edges, dashboard, reservedPlace, dashId, readonly } from '../controller'
+  import {
+    nodes,
+    edges,
+    dashboard,
+    reservedPlace,
+    dashId,
+    readonly,
+    generatedBlockNumber,
+    generating,
+  } from '../controller'
   import { useNodesInitialized } from '@xyflow/svelte'
   import { useSvelteFlow } from '@xyflow/svelte'
 
@@ -40,11 +49,15 @@
   }
 
   onMount(() => {
-    createNodes()
+    // createNodes()
   })
 
+  $: if ($generatedBlockNumber) createNodes()
+
   async function createNodes() {
+    console.log('here')
     if (!$dashboard) return
+    console.log($dashboard)
 
     if ($dashboard.template.topic) {
       const topicNode = {
@@ -55,32 +68,38 @@
       }
       await addNode(topicNode, width)
     }
-
     for (const block of $dashboard.blocks) {
-      if (block.name !== '') {
+      const blockId = $generating || !block.id ? (await rpc.Dashboard.createBlock($dashId, block)).id : block.id
+      if (block.name && block.name !== '') {
         let position = { x: WIDGET_SHIFT_X, y: WIDGET_SHIFT_Y }
         if ($reservedPlace) {
-          position = { x: WIDGET_SHIFT_X, y: $reservedPlace.y + TEXT_NODE_SIZE.height + WIDGET_SHIFT_Y }
+          position = { x: WIDGET_SHIFT_X, y: $reservedPlace.endY + TEXT_NODE_SIZE.height + WIDGET_SHIFT_Y }
         }
         const textNode = {
-          id: block.id,
+          id: blockId,
           type: 'block-node',
           position: position,
           data: block
         }
-
+        console.log(textNode)
         await addNode(textNode, width) // Тут добавляем extra bound, чтобы виджеты не заходили на эту же линию
       }
-
       for (const widget of block.widgets.sort((a, b) => a.order - b.order)) {
         let position
-        if (widget.xPos === null || widget.yPos === null) {
+        // position = calcPos()
+        if ($generating) {
           position = calcPos()
-          await rpc.Dashboard.updateWidget(widget.id, { xPos: position.x, yPos: position.y })
+          widget.xPos = position.x
+          widget.yPos = position.y
+          console.log(widget)
+          $dashboard = $dashboard
+          console.log(position)
+          // await rpc.Dashboard.updateWidget(widget.id, { xPos: position.x, yPos: position.y })
         } else {
           position = { x: widget.xPos, y: widget.yPos }
         }
 
+        const widgetId = $generating || !widget.id ? (await rpc.Dashboard.saveWidget(blockId, widget)).id : widget.id
         let nodeType = 'text-node'
         switch (widget.data.type) {
           case 'text':
@@ -93,13 +112,14 @@
             nodeType = 'plot-node'
         }
         const node = {
-          id: widget.id,
+          id: widgetId,
           type: nodeType,
           position: position,
           data: widget,
           svgUrl: '',
         }
-
+        console.log(node)
+        console.log(node)
         await addNode(node, nodeType === 'plot-node' ? 0 : width) // 🤪🤪🤪🤪🤪
       }
     }
@@ -110,8 +130,14 @@
   async function addNode(node, extraBoundX = 0, extraBoundY = 0) {
     $nodes = [...$nodes, node]
     const bounds = await getNodeBounds($nodes.length - 1)
-    $reservedPlace = { x: bounds.x, y: bounds.y, endX: bounds.x + bounds.width + extraBoundX,
-      endY: bounds.y + bounds.height + extraBoundY }
+    if ($reservedPlace) {
+      $reservedPlace = { x: bounds.x, y: bounds.y > $reservedPlace.y ? bounds.y : $reservedPlace.y,
+        endX: bounds.x + bounds.width + extraBoundX,
+        endY: bounds.y + bounds.height + extraBoundY > $reservedPlace.endY ? bounds.y + bounds.height + extraBoundY : $reservedPlace.endY }
+    } else
+      $reservedPlace = { x: bounds.x, y: bounds.y,
+        endX: bounds.x + bounds.width + extraBoundX,
+        endY: bounds.y + bounds.height + extraBoundY }
   }
 
   async function getNodeBounds(ind) {
