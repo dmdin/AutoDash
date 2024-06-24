@@ -28,7 +28,7 @@ export class Prompt {
 	}
 
 	@rpc()
-	async createDashboard(topic: string, description: string, urls: string[]) {
+	async createDashboard(topic: string, description: string) {
 		// const blocksData = [
 		// 	{
 		// 		name: 'Блок 1.',

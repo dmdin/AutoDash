@@ -92,8 +92,7 @@
 		loading = true;
 		await rpc.Prompt.createDashboard(
 			topic,
-			description,
-			selectedSources.map((s) => s.link)
+			description
 		).then((dashboard) => {
 			window.location.href = '/dashboards/' + dashboard.id;
 		});
