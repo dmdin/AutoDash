@@ -48,7 +48,7 @@ class OpenAISupplier:
     def get_model(
         self,
         model_name: OPENAI_MODELS = OPENAI_MODELS.GPT_3_5_TURBO,
-        temperature: float = 0.7,
+        temperature: float = 0.95,
         streaming: bool = False,
     ) -> ChatOpenAI:
         assert app_settings.openai_api_key
@@ -59,6 +59,7 @@ class OpenAISupplier:
             model=model_name,
             streaming=streaming,
             model_kwargs={'response_format': {'type': 'json_object'}},
+            max_tokens=4096,
         )
         return chat
 

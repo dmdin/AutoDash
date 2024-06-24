@@ -1,3 +1,5 @@
+import traceback
+
 import ujson as json
 from fastapi import APIRouter, WebSocket
 
@@ -26,7 +28,9 @@ router = APIRouter(prefix='/llm')
     response_model_exclude_none=True,
 )
 async def generate_template(
-    query: str, model_name: OPENAI_MODELS, use_template_w_examples: bool
+    query: str,
+    model_name: OPENAI_MODELS = OPENAI_MODELS.GPT_3_5_TURBO,
+    use_template_w_examples: bool = False,
 ) -> ReportTemplate:
     """
     Generate template
@@ -58,7 +62,7 @@ async def generate_template_websocket(websocket: WebSocket) -> None:
         await websocket.send_text('finish')
         await websocket.close()
     except Exception as e:  # TODO: mb smth better
-        logger.debug(f'Error occured: {e}')
+        logger.debug(f'Error occured: {e}, traceback: {traceback.format_exc()}')
         await websocket.close(
             code=1011,
             reason=json.dumps({
@@ -130,7 +134,7 @@ async def create_report_websocket(websocket: WebSocket) -> None:
         await websocket.send_text('finish')
         await websocket.close()
     except Exception as e:  # TODO: mb smth better
-        logger.debug(f'Error occured: {e}')
+        logger.debug(f'Error occured: {e}, traceback: {traceback.format_exc()}')
         await websocket.close(
             code=1011,
             reason=json.dumps({

@@ -80,14 +80,10 @@ class BadgeChartWidget(AbstractWidget):
     data: int | float
 
 
-class TableRow(CamelizedBaseModel):
-    data: list[str | int | float]
-
-
 class TableChartWidget(AbstractWidget):
     type: WidgetChartType = WidgetChartType.TABLE
     categories: list[str]
-    rows: list[TableRow]
+    rows: list[list[str | int | float]]
 
 
 AllWidgets = (
