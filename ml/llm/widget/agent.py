@@ -49,6 +49,7 @@ async def generate_report(
             logging_block_point_time_start = time()
             search_query = f'Тема - {input_data.report_theme}, блок - {block_name}, пункт - {point}'
             context = 'пусто'
+            sources = []
 
             logger.debug(f'Starting retriever for {search_query}')
             retrieved_docs = await container.retriever_service.retriever.ainvoke(
@@ -73,6 +74,10 @@ async def generate_report(
                     f'Finished retriever second time for {search_query} with {len(retrieved_docs)}'
                 )
                 if retrieved_docs:
+                    sources = [
+                        WidgetSource(url=x.metadata['url'], text=x.page_content)
+                        for x in retrieved_docs
+                    ]
                     context = format_docs(retrieved_docs)
 
             llm_input = {
