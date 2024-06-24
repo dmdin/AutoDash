@@ -69,7 +69,7 @@
         {
 					type: 'image',
           height: 100,
-					src: 'https://i.ibb.co/3sq9hYr/Screenshot-2024-06-24-at-01-13-05.png',
+					src: 'https://i.ibb.co/XzcPz6q/Screenshot-2024-06-24-at-07-15-56.png',
 					alt: 'Вы можете изменить тип графика, выбрав отображение на верхней панели редактирования графика'
 				},
         {
