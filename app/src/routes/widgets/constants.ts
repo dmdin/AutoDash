@@ -8,13 +8,13 @@ export interface Badge {
 export const BADGES: Badge[] = [
 		{
 			title: 'Total Shipments 2022',
-			value: 1200000000,
+			value: 2002,
 			delta: -6,
 			unit: ''
 		},
 		{
 			title: 'Total Shipments 2023',
-			value: 1140000000,
+			value: 10000,
 			delta: -3,
 			unit: ''
 		},

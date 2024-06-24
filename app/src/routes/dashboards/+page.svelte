@@ -70,7 +70,7 @@
 					<tr>
 						<th>{i + 1}</th>
 						<td>{dash.template.topic}</td>
-						<td><p class="truncate max-w-[300px]">{dash.template.description}</p> </td>
+						<td><p class="truncate max-w-[300px] truncate">{dash.template.description}</p> </td>
 						<td>
 							<div
 								class="tooltip tooltip-top"

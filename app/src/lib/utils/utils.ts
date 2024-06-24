@@ -2,7 +2,7 @@ export function formatNumber(num: number) {
   const units = ["", "K", "M", "B", "T"];
   let unitIndex = 0;
 
-  while (Math.abs(num) >= 1000 && unitIndex < units.length - 1) {
+  while (Math.abs(num) >= 9999 && unitIndex < units.length - 1) {
       num /= 1000;
       unitIndex++;
   }
