@@ -2,7 +2,7 @@ import random
 from time import time
 
 import ujson as json
-from langchain.output_parsers import PydanticOutputParser, RetryOutputParser
+from langchain.output_parsers import PydanticOutputParser, RetryWithErrorOutputParser
 from langchain.prompts import (
     ChatPromptTemplate,
 )
@@ -31,7 +31,7 @@ async def generate_template(
 
     chat_model = container.openai_supplier.get_model(input_data.model_name)
     parser = PydanticOutputParser(pydantic_object=ReportTemplateBlock)
-    parser_fixer = RetryOutputParser.from_llm(
+    parser_fixer = RetryWithErrorOutputParser.from_llm(
         llm=chat_model, parser=parser, max_retries=10
     )
 
@@ -90,7 +90,7 @@ async def parse_template(
     parser = PydanticOutputParser(pydantic_object=ReportTemplate)
     chat_template = template_parser
     chat_model = container.openai_supplier.get_model(input_data.model_name)
-    parser_fixer = RetryOutputParser.from_llm(
+    parser_fixer = RetryWithErrorOutputParser.from_llm(
         llm=chat_model, parser=parser, max_retries=10
     )
     prompt: ChatPromptTemplate = ChatPromptTemplate.from_messages(chat_template)

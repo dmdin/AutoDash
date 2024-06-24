@@ -2,7 +2,7 @@ from functools import partial
 from typing import Callable
 
 from langchain.chains.llm import LLMChain
-from langchain.output_parsers import PydanticOutputParser, RetryOutputParser
+from langchain.output_parsers import PydanticOutputParser, RetryWithErrorOutputParser
 from langchain.prompts import ChatPromptTemplate
 from langchain.pydantic_v1 import ValidationError
 from langchain_core.messages import BaseMessage
@@ -20,7 +20,7 @@ async def create_chain_function(
     completion_chain: LLMChain,
     prompt: ChatPromptTemplate,
     parser: PydanticOutputParser,
-    parser_fixer: RetryOutputParser,
+    parser_fixer: RetryWithErrorOutputParser,
     input_kwargs: dict[str, str],
 ):
     response: BaseMessage = await completion_chain.ainvoke(input_kwargs)
@@ -47,7 +47,7 @@ def generate_destinations(
     for w in all_widget_types:
         name = w['name']
         parser: PydanticOutputParser = w['parser']
-        parser_fixer = RetryOutputParser.from_llm(
+        parser_fixer = RetryWithErrorOutputParser.from_llm(
             llm=chat_model, parser=parser, max_retries=10
         )
         prompt = ChatPromptTemplate.from_messages(
@@ -77,7 +77,7 @@ def generate_router(
     destinations_str = '\n'.join(destinations)
 
     parser = PydanticOutputParser(pydantic_object=LLMWidgetType)
-    parser_fixer = RetryOutputParser.from_llm(
+    parser_fixer = RetryWithErrorOutputParser.from_llm(
         llm=chat_model, parser=parser, max_retries=10
     )
     prompt = ChatPromptTemplate.from_messages(

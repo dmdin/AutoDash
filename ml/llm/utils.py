@@ -8,7 +8,6 @@ from schemas.report_widget import (
     PieChartWidget,
     PiePiece,
     TableChartWidget,
-    TableRow,
     TextChartWidget,
     WidgetChartType,
     WidgetSource,
@@ -61,7 +60,7 @@ def create_widget_response(
         return TableChartWidget(
             title='table',
             sources=sources,
-            rows=[TableRow(**x) for x in llm_response.rows],
+            rows=llm_response.rows,
         )
     else:
         raise NotImplementedError
