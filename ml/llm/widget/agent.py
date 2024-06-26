@@ -42,7 +42,7 @@ async def generate_report(
     router_chain_callable = generate_router(container, input_data)
     destination_chains = generate_destinations(container, input_data)
 
-    collection_name = uuid.uuid4(input_data.report_theme).hex
+    collection_name = uuid.uuid4().hex
     vectorstore = container.chroma_repository.get_langchain_with_context(
         collection_name
     )
