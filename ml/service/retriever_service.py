@@ -7,7 +7,6 @@ from langchain_chroma import Chroma
 from langchain_community.storage import RedisStore
 from langchain_text_splitters import (
     CharacterTextSplitter,
-    RecursiveCharacterTextSplitter,
     TextSplitter,
 )
 
@@ -33,12 +32,12 @@ class RetrieverService:
             self.store
         )  # required for RedisStore to be used
 
-        self.child_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
+        self.child_splitter = CharacterTextSplitter.from_tiktoken_encoder(
             model_name='gpt-4o',
             chunk_size=64,
             chunk_overlap=0,
         )
-        self.parent_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
+        self.parent_splitter = CharacterTextSplitter.from_tiktoken_encoder(
             model_name='gpt-4o',
             chunk_size=256,
             chunk_overlap=8,
