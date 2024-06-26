@@ -68,7 +68,9 @@
       }
       await addNode(topicNode, width)
     }
-    const blocksToCreate = $generating ? [$dashboard.blocks[$generatedBlockNumber - 2]] : $dashboard.blocks
+    console.log($dashboard.blocks)
+    const blocksToCreate = $generating && $dashboard.blocks.length !== 0 ? [$dashboard.blocks[$generatedBlockNumber - 2]] : $dashboard.blocks
+    console.log(blocksToCreate)
     for (const block of blocksToCreate.sort((a, b) => a.order - b.order)) {
       const blockId = $generating || !block.id ? (await rpc.Dashboard.createBlock($dashId, block)).id : block.id
       if (block?.name && block?.name !== '') {
