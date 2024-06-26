@@ -264,7 +264,7 @@ def search_func(query: str, sources: List[str], to_page: int = 0) -> List[Dict[s
             xml_data = response.text
             parsed_data = parse_yandex_xml(xml_data)
             parsed.extend(parsed_data)
-        print(f"{parsed = }")
+        # print(f"{parsed = }")
         return parsed
     except requests.RequestException as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -332,7 +332,7 @@ async def parse_urls(item: URLListItem):
                 elif isinstance(result, dict):
                     results.append(result)
 
-    print(f"!!!!!!!!!!!!! results_len = {len(errors) + len(results)}")
+    # print(f"!!!!!!!!!!!!! results_len = {len(errors) + len(results)}")
 
     return {"results": results, "errors": errors}
 
@@ -362,7 +362,7 @@ async def search_data_for_llm_v2(item: URLListItemSearch):
         url_list_item = URLListItem(query=item.query, urls=url_list, return_html=item.return_html,
                                     extra_data=item.extra_data, to_page=item.to_page)
         parse_results = await parse_urls(url_list_item)
-        print(f"{item.urls = } with result = {parse_results['results'] = }; {parse_results['errors'] = }")
+        # print(f"{item.urls = } with result = {parse_results['results'] = }; {parse_results['errors'] = }")
         if len(parse_results['results']) == 0:
             raise HTTPException(status_code=404, detail="No results found")
         return parse_results

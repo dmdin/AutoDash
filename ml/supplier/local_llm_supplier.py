@@ -18,4 +18,5 @@ class LocalLLMSupplier:
         )
 
     async def health(self) -> None:
-        assert self.embeddings
+        pass
+        # assert self.embeddings

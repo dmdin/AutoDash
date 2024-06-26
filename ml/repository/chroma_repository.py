@@ -13,9 +13,7 @@ class ChromaRepository:
         self.client = chromadb.HttpClient(
             host=app_settings.chroma_host, port=app_settings.chroma_port
         )
-        self.collection_name = (
-            f'vectorstore_collection_emb_{app_settings.embedding_model}'
-        )
+        self.collection_name = 'vectorstore_collection'
         self.langchain_chroma = None
 
     async def health(self) -> None:

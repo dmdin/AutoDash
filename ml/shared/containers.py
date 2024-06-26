@@ -23,11 +23,7 @@ class Container:
 def init_combat_container() -> Container:
     chroma_repository = ChromaRepository()
     redis_repository = RedisRepository()
-    openai_supplier = (
-        OpenAISupplier()
-        if app_settings.embedding_model.split('.')[0] == 'openai'
-        else None
-    )
+    openai_supplier = OpenAISupplier()
     search_supplier = SearchSupplier()
     local_llm_supplier = (
         LocalLLMSupplier()
@@ -37,10 +33,10 @@ def init_combat_container() -> Container:
     try:
         chroma_store = chroma_repository.get_langchain_chroma()
     except AttributeError as e:
-        if openai_supplier:
-            chroma_repository.setup_langchain_chroma(openai_supplier.embeddings)
-        elif local_llm_supplier:
+        if app_settings.embedding_model.split('.')[0] == 'local':
             chroma_repository.setup_langchain_chroma(local_llm_supplier.embeddings)
+        elif app_settings.embedding_model.split('.')[0] == 'openai':
+            chroma_repository.setup_langchain_chroma(openai_supplier.embeddings)
         else:
             raise NotImplementedError from e
         chroma_store = chroma_repository.get_langchain_chroma()

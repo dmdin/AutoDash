@@ -19,7 +19,7 @@ async def check_server_health() -> UJSONResponse:
     """
     try:
         await container.chroma_repository.health()
-        await container.openai_supplier.health()
+        # await container.openai_supplier.health()
         await container.redis_repository.health()
         await container.retriever_service.health()
         await container.search_supplier.health()
