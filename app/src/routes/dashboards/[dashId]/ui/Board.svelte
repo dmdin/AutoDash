@@ -71,7 +71,7 @@
     const blocksToCreate = $generating ? [$dashboard.blocks[$generatedBlockNumber - 2]] : $dashboard.blocks
     for (const block of blocksToCreate.sort((a, b) => a.order - b.order)) {
       const blockId = $generating || !block.id ? (await rpc.Dashboard.createBlock($dashId, block)).id : block.id
-      if (block.name && block.name !== '') {
+      if (block?.name && block?.name !== '') {
         let position = { x: WIDGET_SHIFT_X, y: WIDGET_SHIFT_Y }
         if ($reservedPlace) {
           position = { x: WIDGET_SHIFT_X, y: $reservedPlace.endY + TEXT_NODE_SIZE.height + WIDGET_SHIFT_Y }
