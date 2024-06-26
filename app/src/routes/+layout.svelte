@@ -13,6 +13,7 @@
 	import Sun from '~icons/ph/sun';
 	import Robot from '~icons/mdi/robot-outline';
 	import Plus from '~icons/ic/round-plus';
+	import { SignIn } from "@auth/sveltekit/components"
 
 	import '../app.css';
 	import { theme, model, avaliableModels, type Themes } from '$stores';
@@ -37,6 +38,8 @@
 					<h1 class="text-2xl font-bold mb-5 text-neutral">Войти с помощью SSO</h1>
 					<div class="flex flex-col gap-2">
 						<button class="btn" on:click={() => signIn('github')}><Github /> GitHub</button>
+						<button class="btn" on:click={signIn}>Войти при помощи email</button>						
+						<!-- <SignIn provider="resend" /> -->
 						<!-- <button class="btn" on:click={() => signIn('google')}><Google /> Google</button> -->
 					</div>
 				</div>
@@ -166,3 +169,14 @@
 {:else}
 	<slot />
 {/if}
+
+
+<style>
+	:global(.signInButton) {
+		@apply btn
+	}
+
+	:global(#input-email-for-email-provider) {
+		@apply input input-bordered input-sm
+	}
+</style>
