@@ -24,7 +24,7 @@ async def generate_template(
     input_data: ReportTemplateGeneratorInput,
 ):
     n_blocks = input_data.n_blocks
-    use_template_w_examples = input_data.use_template_w_examples
+    use_template_w_examples = False
     logging_time_start = time()
     if n_blocks == -1:
         n_blocks = random.randint(5, 8)
