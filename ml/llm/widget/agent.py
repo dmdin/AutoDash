@@ -41,6 +41,12 @@ async def generate_report(
     router_chain_callable = generate_router(container, input_data)
     destination_chains = generate_destinations(container, input_data)
 
+    collection_name = input_data.report_theme
+    vectorstore = container.chroma_repository.get_langchain_with_context(
+        collection_name
+    )
+    container.retriever_service.recreate_retriever_with_context(vectorstore)
+
     for block in input_data.report_template.blocks:
         logging_block_time_start = time()
         block_name = block.block_name
