@@ -90,6 +90,7 @@
 
 	async function generateDashboard() {
 		loading = true;
+		localStorage.setItem('urls', JSON.stringify(selectedSources.map(source => source.link)))
 		await rpc.Prompt.createDashboard(
 			topic,
 			description

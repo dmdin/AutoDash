@@ -93,10 +93,12 @@
     ws = new WebSocket(env.PUBLIC_REPORT_ENDPOINT);
     ws.onopen = function () {
       console.log('Соединение установлено.')
+      console.log(JSON.parse(localStorage.getItem('urls') || '') || [])
       ws.send(JSON.stringify({ "report_theme": $dashboard.template.topic.replaceAll('\t', ''),
         "report_text": $dashboard.template.description.replaceAll('\t', ''),
         "model_name": 'gpt-4o',
-        "urls": []}))
+        "urls": JSON.parse(localStorage.getItem('urls') || '') || []
+      }))
     };
     ws.onerror = err => {
       alert('Произошла ошибка генерации отчета(')
