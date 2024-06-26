@@ -8,8 +8,8 @@ services:
       - PORT=3000
       - ORIGIN=http://87.242.103.101
 
-    env_file:
-      - ./secrets/app.env
+    # env_file:
+      # - ./secrets/app.env
     volumes:
       - ./static:/app/static
     ports:
@@ -39,8 +39,8 @@ services:
   ml:
     container_name: ml
     restart: unless-stopped
-    env_file:
-      - ./secrets/ml.env
+    # env_file:
+    #   - ./secrets/ml.env
     ports:
       - "8001:8000"
     healthcheck:
