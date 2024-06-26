@@ -7,15 +7,16 @@ readme      = "README.md"
 
 [tool.poetry.dependencies]
 python = "~3.11.9"
-redis  = "^5.0.6"
 
 
 [tool.poetry.group.langchain.dependencies]
-langchain             = "^0.2.5"
-langchain-chroma      = "^0.1.1"
-langchain-community   = "^0.2.5"
-langchain-huggingface = "^0.0.3"
-langchain-openai      = "^0.1.8"
+langchain                = "^0.2.5"
+langchain-chroma         = "^0.1.1"
+langchain-community      = "^0.2.5"
+langchain-huggingface    = "^0.0.3"
+langchain-openai         = "^0.1.8"
+langchain-text-splitters = "^0.2.2"
+tiktoken                 = "^0.7.0"
 
 
 [tool.poetry.group.fastapi.dependencies]
@@ -28,6 +29,7 @@ requests      = "^2.32.3"
 ujson         = "^5.10.0"
 ulid-py       = "^1.1.0"
 uvicorn       = "^0.23.2"
+redis         = "^5.0.6"
 websockets    = "^12.0"
 
 
