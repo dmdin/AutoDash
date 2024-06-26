@@ -29,28 +29,38 @@ class RetrieverService:
         # self.child_splitter = self.base_child_splitter
         # if not self.parent_splitter and self.use_parent_splitter:
         # self.parent_splitter = self.base_parent_splitter
-        byte_docstore = create_kv_docstore(
+        self.byte_docstore = create_kv_docstore(
             self.store
         )  # required for RedisStore to be used
 
         self.child_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
-            model_name='gpt-4',
+            model_name='gpt-4o',
             chunk_size=64,
             chunk_overlap=0,
         )
         self.parent_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
-            model_name='gpt-4',
-            chunk_size=128,
+            model_name='gpt-4o',
+            chunk_size=256,
             chunk_overlap=8,
         )
 
         self.retriever = ParentDocumentRetriever(
             vectorstore=self.vectorstore,
-            docstore=byte_docstore,
+            docstore=self.byte_docstore,
             child_splitter=self.child_splitter,
             parent_splitter=self.parent_splitter,
             search_kwargs={'k': 2},
         )
+
+    def recreate_retriever_with_context(self, vectorstore: Chroma):
+        self.retriever = ParentDocumentRetriever(
+            vectorstore=vectorstore,
+            docstore=self.byte_docstore,
+            child_splitter=self.child_splitter,
+            parent_splitter=self.parent_splitter,
+            search_kwargs={'k': 2},
+        )
+        return self.retriever
 
     async def health(self) -> None:
         try:

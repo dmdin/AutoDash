@@ -23,12 +23,22 @@ class ChromaRepository:
             raise Exception('non true ping')
 
     def setup_langchain_chroma(self, embedding_function: Embeddings):
+        self.embedding_function = embedding_function
         self.langchain_chroma = Chroma(
             client=self.client,
             collection_name=self.collection_name,
             embedding_function=embedding_function,
             create_collection_if_not_exists=True,
         )
+
+    def get_langchain_with_context(self, collection_name: str):
+        self.langchain_chroma = Chroma(
+            client=self.client,
+            collection_name=collection_name,
+            embedding_function=self.embedding_function,
+            create_collection_if_not_exists=True,
+        )
+        return self.langchain_chroma
 
     def get_langchain_chroma(self):
         if self.langchain_chroma:

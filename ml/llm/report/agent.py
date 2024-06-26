@@ -1,6 +1,7 @@
 import random
 from time import time
 
+import numpy as np
 import ujson as json
 from langchain.output_parsers import PydanticOutputParser, RetryWithErrorOutputParser
 from langchain.prompts import (
@@ -24,10 +25,10 @@ async def generate_template(
     input_data: ReportTemplateGeneratorInput,
 ):
     n_blocks = input_data.n_blocks
-    use_template_w_examples = False
+    use_template_w_examples = input_data.use_template_w_examples
     logging_time_start = time()
     if n_blocks == -1:
-        n_blocks = random.randint(5, 8)
+        n_blocks = random.randint(2, 5)
 
     chat_model = container.openai_supplier.get_model(input_data.model_name)
     parser = PydanticOutputParser(pydantic_object=ReportTemplateBlock)
@@ -36,10 +37,10 @@ async def generate_template(
     )
 
     if use_template_w_examples:
-        block_examples = [
-            json.dumps(x) for x in container.openai_supplier.block_examples
-        ]
-        block_examples_str = '\n'.join(block_examples)
+        block_examples = np.random.choice(
+            [json.dumps(x) for x in container.openai_supplier.block_examples], size=2
+        ).tolist()
+        block_examples_str = '\n\n'.join(block_examples)
         chat_template = template_w_examples
         prompt: ChatPromptTemplate = ChatPromptTemplate.from_messages(
             chat_template

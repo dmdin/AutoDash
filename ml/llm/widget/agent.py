@@ -41,6 +41,12 @@ async def generate_report(
     router_chain_callable = generate_router(container, input_data)
     destination_chains = generate_destinations(container, input_data)
 
+    collection_name = input_data.report_theme
+    vectorstore = container.chroma_repository.get_langchain_with_context(
+        collection_name
+    )
+    container.retriever_service.recreate_retriever_with_context(vectorstore)
+
     for block in input_data.report_template.blocks:
         logging_block_time_start = time()
         block_name = block.block_name
@@ -51,6 +57,7 @@ async def generate_report(
             context = 'пусто'
             sources = []
 
+            await populate_documents(container, search_query, input_data)
             logger.debug(f'Starting retriever for {search_query}')
             retrieved_docs = await container.retriever_service.retriever.ainvoke(
                 search_query
@@ -60,8 +67,7 @@ async def generate_report(
             )
             if retrieved_docs:
                 sources = [
-                    WidgetSource(url=x.metadata['url'], text=x.page_content)
-                    for x in retrieved_docs
+                    WidgetSource(url=x.metadata['url'], text='') for x in retrieved_docs
                 ]
                 context = format_docs(retrieved_docs)
             else:
