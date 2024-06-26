@@ -18,7 +18,7 @@ services:
   redis:
     container_name: redis
     image: redis:7.2.3-bookworm
-    restart: always
+    restart: unless-stopped
     command: redis-server --save 20 1 --loglevel warning
     volumes:
       - ./volumes/redis/:/data
