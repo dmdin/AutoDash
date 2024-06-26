@@ -35,6 +35,8 @@ class OpenAISupplier:
         self.embeddings: OpenAIEmbeddings = OpenAIEmbeddings(
             base_url=app_settings.openai_api_url,
             api_key=app_settings.openai_api_key,
+            timeout=60 * 1000,
+            max_retries=10,
             model='.'.join(app_settings.embedding_model.split('.')[1:]),
         )
 
