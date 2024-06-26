@@ -25,7 +25,8 @@ class AppSettings(BaseSettings):
 
     llm_data_path: str = 'data/'
 
-    embedding_model: str = 'openai.text-embedding-3-small'
+    # embedding_model: str = 'openai.text-embedding-3-small'
+    embedding_model: str = 'local.cointegrated/rubert-tiny2'
 
     uvicorn_host: str = '0.0.0.0'
     uvicorn_port: int = 8000
