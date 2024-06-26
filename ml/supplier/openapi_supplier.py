@@ -61,7 +61,6 @@ class OpenAISupplier:
             model=model_name,
             streaming=streaming,
             timeout=60 * 1000,
-            max_tokens=30_000,
             max_retries=10,
             model_kwargs={'response_format': {'type': 'json_object'}},
         )
