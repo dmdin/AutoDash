@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
 
-import httpx
+# import httpx
 import ujson as json
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 
@@ -48,7 +48,7 @@ class OpenAISupplier:
     def get_model(
         self,
         model_name: OPENAI_MODELS = OPENAI_MODELS.GPT_3_5_TURBO,
-        temperature: float = 0.95,
+        temperature: float = 0.875,
         streaming: bool = False,
     ) -> ChatOpenAI:
         assert app_settings.openai_api_key
@@ -58,6 +58,9 @@ class OpenAISupplier:
             temperature=temperature,
             model=model_name,
             streaming=streaming,
+            timeout=60 * 1000,
+            max_tokens=30_000,
+            max_retries=10,
             model_kwargs={'response_format': {'type': 'json_object'}},
         )
         return chat
@@ -71,8 +74,9 @@ class OpenAISupplier:
         return self._block_examples
 
     async def health(self) -> None:
-        response = httpx.get(app_settings.openai_api_url)
-        print(response)
+        pass
+        # response = httpx.get(app_settings.openai_api_url)
+        # print(response)
 
         # model_endpoint_response = httpx.get(
         #     app_settings.openai_api_url + '/models',
