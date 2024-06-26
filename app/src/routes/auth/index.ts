@@ -19,7 +19,7 @@ export const { handle, signIn, signOut } = SvelteKitAuth({
 	trustHost: true,
 	providers: [
 		GitHub,
-		Google,
+		// Google,
 		Nodemailer({
 			server: {
 				host: EMAIL_SERVER_HOST,
