@@ -1,5 +1,8 @@
+import asyncio
 import uuid
 from time import time
+
+from openai import RateLimitError
 
 from llm.utils import create_widget_response, format_docs
 from schemas.report_widget import (
@@ -102,9 +105,15 @@ async def generate_report(
                 ]
                 widget_response = await widget_chain(input_kwargs=llm_input)
                 if widget_response is not None:
-                    final_widget_response = create_widget_response(
-                        widget_response, route_response, sources=sources
-                    )
+                    try:
+                        final_widget_response = create_widget_response(
+                            widget_response, route_response, sources=sources
+                        )
+                    except RateLimitError:
+                        await asyncio.sleep(60)
+                        final_widget_response = create_widget_response(
+                            widget_response, route_response, sources=sources
+                        )
                     block_widgets.append(final_widget_response)
             else:
                 logger.debug(f'Nothing was made for {search_query}')
@@ -112,6 +121,7 @@ async def generate_report(
             logger.debug(
                 f"Time for the block's point report generation: {time() - logging_block_point_time_start}"
             )
+            await asyncio.sleep(60)
         widget_block_response = WidgetBlock(
             block_name=block_name, widgets=block_widgets
         )

@@ -1,3 +1,4 @@
+import asyncio
 import random
 from time import time
 
@@ -8,6 +9,7 @@ from langchain.prompts import (
     ChatPromptTemplate,
 )
 from langchain.pydantic_v1 import ValidationError
+from openai import RateLimitError
 
 from schemas.report_template import (
     ReportTemplateGeneratorInput,
@@ -63,17 +65,23 @@ async def generate_template(
         logging_block_time_start = time()
         n_points = random.randint(1, 8)
         completion_chain = prompt | chat_model
-        response = await completion_chain.ainvoke({
-            'input': f'Сформируй блок номер {block + 1} состоящий из {n_points} пунктов',
-            'history_blocks': history_blocks,
-        })
-        try:
-            parsed_response = await parser.aparse(response)
-        except ValidationError as e:
-            logger.debug(f'Error occured while parsing: {e}')
-            parsed_response = await parser_fixer.aparse_with_prompt(
-                completion=response.content, prompt_value=prompt
-            )
+        while True:
+            try:
+                response = await completion_chain.ainvoke({
+                    'input': f'Сформируй блок номер {block + 1} состоящий из {n_points} пунктов',
+                    'history_blocks': history_blocks,
+                })
+                try:
+                    parsed_response = await parser.aparse(response)
+                    break
+                except ValidationError as e:
+                    logger.debug(f'Error occured while parsing: {e}')
+                    parsed_response = await parser_fixer.aparse_with_prompt(
+                        completion=response.content, prompt_value=prompt
+                    )
+                    break
+            except RateLimitError:
+                await asyncio.sleep(60)
         history_blocks = history_blocks + '\n' + str(parsed_response)
         yield parsed_response
         logger.debug(

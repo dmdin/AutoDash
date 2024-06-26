@@ -106,11 +106,6 @@ services:
     volumes:
       - ./search/:/app/
       - ./secrets/search.json:/app/config.json
-    deploy:
-      resources:
-        limits:
-          cpus: "4.00"
-          memory: 8G
 
 volumes:
   db:
