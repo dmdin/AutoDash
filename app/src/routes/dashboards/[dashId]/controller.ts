@@ -16,3 +16,4 @@ export const reservedPlace = writable<{ x: number; y: number; endX: number; endY
 export const readonly = writable(false)
 
 export const generating = writable(false)
+export const generatedBlockNumber = writable(1)

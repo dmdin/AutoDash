@@ -80,6 +80,7 @@
 		"postgres": "^3.4.3",
 		"sharp": "^0.33.4",
 		"svelte-loading-spinners": "^0.3.6",
+		"svelte-sonner": "^0.3.24",
 		"tailwind-merge": "^2.3.0"
 	}
 }

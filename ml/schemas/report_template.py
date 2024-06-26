@@ -8,7 +8,7 @@ class ReportTemplateGeneratorInput(CamelizedBaseModel):
 
     input_theme: str
     model_name: OPENAI_MODELS = OPENAI_MODELS.GPT_3_5_TURBO
-    use_template_w_examples: bool = False
+    use_template_w_examples: bool = True
     n_blocks: int = -1
 
 

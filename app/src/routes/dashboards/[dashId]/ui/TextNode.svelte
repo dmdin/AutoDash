@@ -53,4 +53,7 @@
               on:input={handleInput}
               on:blur={finishEdit}></textarea>
   {/if}
+  {#if data?.data?.sources && data?.data?.sources?.length > 0}
+    <a href={data?.data?.sources[0].url} target="_blank">Источник</a>
+  {/if}
 </div>

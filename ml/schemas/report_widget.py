@@ -29,8 +29,9 @@ class WidgetChartType(enum.StrEnum):
     BAR = 'bar'
     LINE = 'line'
     PIE = 'pie'
-    TABLE = 'table'
+    # TABLE = 'table'
     TEXT = 'text'
+    NONE = 'none'
 
 
 class WidgetSource(CamelizedBaseModel):
@@ -79,14 +80,10 @@ class BadgeChartWidget(AbstractWidget):
     data: int | float
 
 
-class TableRow(CamelizedBaseModel):
-    data: list[str | int | float]
-
-
-class TableChartWidget(AbstractWidget):
-    type: WidgetChartType = WidgetChartType.TABLE
-    categories: list[str]
-    rows: list[TableRow]
+# class TableChartWidget(AbstractWidget):
+#     type: WidgetChartType = WidgetChartType.TABLE
+#     categories: list[str]
+#     rows: list[list[str | int | float]]
 
 
 AllWidgets = (
@@ -95,7 +92,7 @@ AllWidgets = (
     | LineChartWidget
     | PieChartWidget
     | BadgeChartWidget
-    | TableChartWidget
+    # | TableChartWidget
 )
 
 

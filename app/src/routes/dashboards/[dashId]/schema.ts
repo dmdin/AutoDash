@@ -30,7 +30,7 @@ export const dashboardsRelations = relations(dashboards, ({ one, many }) => ({
 
 export const blocks = pgTable('blocks', {
   id: uuid('id').primaryKey().defaultRandom(),
-  dashboardId: uuid('dashboardId').references(() => dashboards.id).notNull(),
+  dashboardId: uuid('dashboardId').references(() => dashboards.id, { onDelete: 'cascade' }).notNull(),
   order: integer('order').notNull(),
   name: text('name')
 })
@@ -42,7 +42,7 @@ export const blocksRelations = relations(blocks, ({ many, one }) => ({
 
 export const widgets = pgTable('widgets', {
   id: uuid('id').primaryKey().defaultRandom(),
-  blockId: uuid('blockId').references(() => blocks.id).notNull(),
+  blockId: uuid('blockId').references(() => blocks.id, { onDelete: 'cascade' }).notNull(),
   data: json('data').notNull(),
   order: integer('order'),
   xPos: integer('xPos'),

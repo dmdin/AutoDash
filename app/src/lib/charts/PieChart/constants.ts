@@ -1,4 +1,9 @@
-export const SERIES_COLORS = ['#95A4FC', '#BAEDBD', '#1C1C1C', '#B1E3FF', '#A8C5DA', '#E3A1CB'];
+import { onMount } from "svelte";
+
+export const SERIES_COLORS = [
+  '#95A4FC', '#BAEDBD', '#1C1C1C', '#B1E3FF', '#A8C5DA', '#E3A1CB',
+  '#95A4FC', '#BAEDBD', '#1C1C1C', '#B1E3FF', '#A8C5DA', '#E3A1CB'
+];
 
 export const PIE_SERIES = {
 	width: 350,
@@ -40,7 +45,6 @@ export const PIE_VIEW_CONFIG = {
 	title: {
 		textStyle: {
 			fontSize: 16,
-			color: '#1C1C1C',
 			fontFamily: 'system-ui',
 			width: 520, // Максимальная ширина текста в пикселях
 			overflow: 'truncate', // Указание на усечение текста

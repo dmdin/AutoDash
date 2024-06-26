@@ -14,8 +14,6 @@ class AppSettings(BaseSettings):
     anthropic_api_key: Optional[str]
     anthropic_api_url: Optional[str]
 
-    local_llm_embedding_model_name: Optional[str] = 'cointegrated/rubert-tiny2'
-
     redis_host: str = 'redis'
     redis_port: int = 6379
 
@@ -26,6 +24,8 @@ class AppSettings(BaseSettings):
     chroma_port: int = 8000
 
     llm_data_path: str = 'data/'
+
+    embedding_model: str = 'openai.text-embedding-3-small'
 
     uvicorn_host: str = '0.0.0.0'
     uvicorn_port: int = 8000

@@ -1,12 +1,81 @@
 import { db, takeUniqueOrThrow } from '$repo/db';
 import type { TableType } from '$repo/db/utils';
 import { blocks, dashboards, widgets } from '$schema';
-import { rpc } from '@chord-ts/rpc';
+import { depends, rpc } from '@chord-ts/rpc';
 import { asc, desc, eq } from 'drizzle-orm';
 import { ExportType, type ExportData } from './types';
 import { getExcelFile, changeFormat } from '$root/lib/utils/export';
 
+interface DashboardType {
+	blocks: { widgets: { data: object }[] }[]
+}
+
+interface Block {
+	name: string,
+	widgets: Widget[]
+}
+
+interface Widget {
+	data: object
+}
 export class Dashboard {
+	@depends()
+	ctx!: { user: { id: string } };
+
+	@rpc()
+	async saveGenerated(dashId: string, blocksData: Block[]) {
+		// console.log(blocksData)
+		// const insertedBlocks = await db
+		// 	.insert(blocks)
+		// 	.values(
+		// 		blocksData.map((block, ind) => ({
+		// 			name: block.name,
+		// 			dashboardId: dashId,
+		// 			order: ind
+		// 		}))
+		// 	)
+		// 	.returning();
+		//
+		// const widgetsValues = blocksData
+		// 	.map((block, blockInd) =>
+		// 		block.widgets.map((widget, widgetInd) => ({
+		// 			blockId: insertedBlocks[blockInd].id,
+		// 			data: widget.data,
+		// 			order: widgetInd,
+		// 			xPos: widget.xPos,
+		// 			yPos: widget.yPos
+		// 		}))
+		// 	)
+		// 	.flat(1);
+		// await db.insert(widgets).values(widgetsValues).returning()
+		await db.update(dashboards).set({ generated: true }).where(eq(dashboards.id, dashId))
+	}
+
+	@rpc()
+	async createBlock(dashId, block) {
+		return db
+			.insert(blocks)
+			.values({
+					name: block.name,
+					dashboardId: dashId,
+					order: block.order
+				})
+			.returning()
+			.then(takeUniqueOrThrow)
+	}
+
+	@rpc()
+	async saveWidget(blockId, widget) {
+		return db.insert(widgets).values({
+			blockId: blockId,
+			data: widget.data,
+			order: widget.order,
+			xPos: widget.xPos,
+			yPos: widget.yPos})
+			.returning()
+			.then(takeUniqueOrThrow)
+	}
+
 	@rpc()
 	async get(dashId: string) {
 		return await db.query.dashboards.findFirst({

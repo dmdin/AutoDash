@@ -71,6 +71,9 @@ importers:
       svelte-loading-spinners:
         specifier: ^0.3.6
         version: 0.3.6
+      svelte-sonner:
+        specifier: ^0.3.24
+        version: 0.3.24(svelte@4.2.11)
       tailwind-merge:
         specifier: ^2.3.0
         version: 2.3.0
@@ -3651,6 +3654,11 @@ packages:
         optional: true
       typescript:
         optional: true
+
+  svelte-sonner@0.3.24:
+    resolution: {integrity: sha512-txuL0JBUs0v6qGrr0PGCsbXmKHuthdrAkfISYi8umuveF7+gINb6EXl6VmKY9aHhyxCqvVgqd6yophQNrnor4w==}
+    peerDependencies:
+      svelte: '>=3 <5'
 
   svelte@4.2.11:
     resolution: {integrity: sha512-YIQk3J4X89wOLhjsqIW8tqY3JHPuBdtdOIkASP2PZeAMcSW9RsIjQzMesCrxOF3gdWYC0mKknlKF7OqmLM+Zqg==}
@@ -7411,6 +7419,10 @@ snapshots:
       postcss: 8.4.35
       postcss-load-config: 4.0.2(postcss@8.4.35)
       typescript: 5.3.3
+
+  svelte-sonner@0.3.24(svelte@4.2.11):
+    dependencies:
+      svelte: 4.2.11
 
   svelte@4.2.11:
     dependencies:

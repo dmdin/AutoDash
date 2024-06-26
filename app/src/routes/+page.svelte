@@ -15,7 +15,7 @@
 	</h1>
 	<div class="flex items-center gap-4">
 		{#if $page.data.session}
-			<a class="btn btn-xl h-16 text-xl bg-secondary" href="/support">FAQ</a>
+			<a class="btn btn-xl h-16 text-xl text-secondary-content bg-primary hover:bg-secondary hover:opacity-80" href="/support">FAQ</a>
 			<a href="/prompt" class="btn btn-xl h-16 text-xl btn-accent my-10"><StartUp />Начать</a>
 		{:else}
 			<button onclick="signinModal.showModal()" class="btn btn-xl h-16 text-xl btn-accent my-6">
