@@ -62,8 +62,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "2.00"
-          memory: 10G
+          cpus: "4.00"
+          memory: 16G
 
   chroma:
     container_name: chromadb
@@ -109,8 +109,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "1.00"
-          memory: 2G
+          cpus: "4.00"
+          memory: 8G
 
 volumes:
   db:
