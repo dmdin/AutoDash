@@ -121,7 +121,6 @@ async def generate_report(
             logger.debug(
                 f"Time for the block's point report generation: {time() - logging_block_point_time_start}"
             )
-            await asyncio.sleep(60)
         widget_block_response = WidgetBlock(
             block_name=block_name, widgets=block_widgets
         )
@@ -129,4 +128,5 @@ async def generate_report(
         logger.debug(
             f'Time for the block report generation: {time() - logging_block_time_start}'
         )
+        await asyncio.sleep(60)
     logger.debug(f'Time for the full report generation: {time() - logging_time_start}')
