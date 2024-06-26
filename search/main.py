@@ -362,6 +362,9 @@ async def search_data_for_llm_v2(item: URLListItemSearch):
         url_list_item = URLListItem(query=item.query, urls=url_list, return_html=item.return_html,
                                     extra_data=item.extra_data, to_page=item.to_page)
         parse_results = await parse_urls(url_list_item)
+        print(f"{item.urls = } with result = {parse_results['results'] = }; {parse_results['errors'] = }")
+        if len(parse_results['results']) == 0:
+            raise HTTPException(status_code=404, detail="No results found")
         return parse_results
     except requests.RequestException as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -370,4 +373,4 @@ async def search_data_for_llm_v2(item: URLListItemSearch):
 if __name__ == '__main__':
     import uvicorn
 
-    uvicorn.run("main:app", port=8000, reload=True)
+    uvicorn.run("main:app", reload=True)
