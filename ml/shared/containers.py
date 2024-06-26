@@ -23,11 +23,7 @@ class Container:
 def init_combat_container() -> Container:
     chroma_repository = ChromaRepository()
     redis_repository = RedisRepository()
-    openai_supplier = (
-        OpenAISupplier()
-        if app_settings.embedding_model.split('.')[0] == 'openai'
-        else None
-    )
+    openai_supplier = OpenAISupplier()
     search_supplier = SearchSupplier()
     local_llm_supplier = (
         LocalLLMSupplier()
