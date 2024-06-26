@@ -37,7 +37,7 @@ class OpenAISupplier:
             api_key=app_settings.openai_api_key,
             timeout=60 * 1000,
             max_retries=10,
-            model='.'.join(app_settings.embedding_model.split('.')[1:]),
+            model=OPENAI_EMBEDDING_MODELS.TEXT_EMBEDDING_3_SMALL,
         )
 
         self._block_examples = json.load(
