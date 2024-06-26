@@ -25,7 +25,9 @@
 			"$root": ["./src"],
 			"$root/*": ["./src/*"],
 			"$lib": ["./src/lib"],
-			"$lib/*": ["./src/lib/*"]
+			"$lib/*": ["./src/lib/*"],
+			"$auth/*": ["./src/routes/auth/*"],
+
 		},
 		"types": ["unplugin-icons/types/svelte"], 
 	}
