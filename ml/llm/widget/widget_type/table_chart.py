@@ -13,6 +13,6 @@ class LLMTableWidget(CamelizedBaseModel):
 
 table_widget_info = {
     'name': 'table',
-    'description': 'Лучший для большого количества разной информации',
+    'description': 'Для большого количества разной информации',
     'parser': PydanticOutputParser(pydantic_object=LLMTableWidget),
 }

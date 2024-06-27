@@ -11,6 +11,6 @@ class LLMTextWidget(CamelizedBaseModel):
 
 text_widget_info = {
     'name': 'text',
-    'description': 'Наиболее подходящий виджет для отображения текстовой информации, ЛУЧШЕ НЕ ИСПОЛЬЗОВАТЬ ВООБЩЕ',
+    'description': 'Для текста',
     'parser': PydanticOutputParser(pydantic_object=LLMTextWidget),
 }

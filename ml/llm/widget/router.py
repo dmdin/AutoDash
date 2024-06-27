@@ -73,7 +73,7 @@ def generate_router(
 ) -> Callable:
     chat_model = container.openai_supplier.get_model(input_data.model_name)
 
-    destinations = [f"{w['name']}: {w['description']}" for w in all_widget_types]
+    destinations = [f"{w['name']}: {w['description'][:10]}" for w in all_widget_types]
     destinations_str = '\n'.join(destinations)
 
     parser = PydanticOutputParser(pydantic_object=LLMWidgetType)
@@ -84,7 +84,7 @@ def generate_router(
         router_template,
     ).partial(
         widget_description_list=destinations_str,
-        format_instructions=parser_fixer.get_format_instructions(),
+        format_instructions=parser.get_format_instructions(),
     )
     completion_chain: LLMChain = prompt | chat_model
     router_chain_func = partial(

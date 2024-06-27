@@ -34,12 +34,12 @@ class RetrieverService:
 
         self.child_splitter = CharacterTextSplitter.from_tiktoken_encoder(
             model_name='gpt-4o',
-            chunk_size=64,
+            chunk_size=32,
             chunk_overlap=0,
         )
         self.parent_splitter = CharacterTextSplitter.from_tiktoken_encoder(
             model_name='gpt-4o',
-            chunk_size=256,
+            chunk_size=128,
             chunk_overlap=8,
         )
 
