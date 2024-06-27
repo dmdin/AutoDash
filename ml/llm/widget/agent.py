@@ -96,24 +96,28 @@ async def generate_report(
                 'point_name': point,
                 'context': context,
             }
-            route_response: LLMWidgetType = await router_chain_callable(
-                input_kwargs=llm_input
-            )
+            try:
+                route_response: LLMWidgetType = await router_chain_callable(
+                    input_kwargs=llm_input
+                )
+            except RateLimitError:
+                await asyncio.sleep(60)
+                route_response: LLMWidgetType = await router_chain_callable(
+                    input_kwargs=llm_input
+                )
             if route_response.chosen_widget_type != WidgetChartType.NONE:
                 widget_chain = destination_chains[
                     str(route_response.chosen_widget_type)
                 ]
-                widget_response = await widget_chain(input_kwargs=llm_input)
+                try:
+                    widget_response = await widget_chain(input_kwargs=llm_input)
+                except RateLimitError:
+                    await asyncio.sleep(60)
+                    widget_response = await widget_chain(input_kwargs=llm_input)
                 if widget_response is not None:
-                    try:
-                        final_widget_response = create_widget_response(
-                            widget_response, route_response, sources=sources
-                        )
-                    except RateLimitError:
-                        await asyncio.sleep(60)
-                        final_widget_response = create_widget_response(
-                            widget_response, route_response, sources=sources
-                        )
+                    final_widget_response = create_widget_response(
+                        widget_response, route_response, sources=sources
+                    )
                     block_widgets.append(final_widget_response)
             else:
                 logger.debug(f'Nothing was made for {search_query}')
