@@ -96,24 +96,24 @@ async def generate_report(
                 'point_name': point,
                 'context': context,
             }
-            try:
-                route_response: LLMWidgetType = await router_chain_callable(
-                    input_kwargs=llm_input
-                )
-            except RateLimitError:
-                await asyncio.sleep(60)
-                route_response: LLMWidgetType = await router_chain_callable(
-                    input_kwargs=llm_input
-                )
+            while True:
+                try:
+                    route_response: LLMWidgetType = await router_chain_callable(
+                        input_kwargs=llm_input
+                    )
+                    break
+                except RateLimitError:
+                    await asyncio.sleep(10)
             if route_response.chosen_widget_type != WidgetChartType.NONE:
                 widget_chain = destination_chains[
                     str(route_response.chosen_widget_type)
                 ]
-                try:
-                    widget_response = await widget_chain(input_kwargs=llm_input)
-                except RateLimitError:
-                    await asyncio.sleep(60)
-                    widget_response = await widget_chain(input_kwargs=llm_input)
+                while True:
+                    try:
+                        widget_response = await widget_chain(input_kwargs=llm_input)
+                        break
+                    except RateLimitError:
+                        await asyncio.sleep(10)
                 if widget_response is not None:
                     final_widget_response = create_widget_response(
                         widget_response, route_response, sources=sources
@@ -132,5 +132,4 @@ async def generate_report(
         logger.debug(
             f'Time for the block report generation: {time() - logging_block_time_start}'
         )
-        await asyncio.sleep(60)
     logger.debug(f'Time for the full report generation: {time() - logging_time_start}')

@@ -81,7 +81,7 @@ async def generate_template(
                     )
                     break
             except RateLimitError:
-                await asyncio.sleep(60)
+                await asyncio.sleep(10)
         history_blocks = history_blocks + '\n' + str(parsed_response)
         yield parsed_response
         logger.debug(
@@ -109,14 +109,20 @@ async def parse_template(
         'format_instructions': parser.get_format_instructions(),
         'raw_report_template_text': input_data.raw_report_template_text,
     }
-    response = await completion_chain.ainvoke(input_kwargs)
-    try:
-        parsed_response = await parser.aparse(response)
-    except ValidationError as e:
-        logger.debug(f'Error occured while parsing: {e}')
-        parsed_response = await parser_fixer.aparse_with_prompt(
-            completion=response.content,
-            prompt_value=prompt.format_prompt(**input_kwargs),
-        )
+    while True:
+        try:
+            response = await completion_chain.ainvoke(input_kwargs)
+            try:
+                parsed_response = await parser.aparse(response)
+                break
+            except ValidationError as e:
+                logger.debug(f'Error occured while parsing: {e}')
+                parsed_response = await parser_fixer.aparse_with_prompt(
+                    completion=response.content,
+                    prompt_value=prompt.format_prompt(**input_kwargs),
+                )
+                break
+        except RateLimitError:
+            await asyncio.sleep(10)
     logger.debug(f'Time for the full template parsing: {time() - logging_time_start}')
     return parsed_response
