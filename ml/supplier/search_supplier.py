@@ -50,13 +50,14 @@ class SearchSupplier:
         self, documents: SearchParsedDocumentList
     ) -> list[Document]:
         langchain_documents: list[Document] = []
-        for doc in documents.results:
-            try:
-                new_doc = Document(
-                    doc.text, page_title=doc.title, metadata={'url': doc.url}
-                )
-                langchain_documents.append(new_doc)
-            except Exception as e:
-                logger.debug(e)
-                continue
+        if documents.results:
+            for doc in documents.results:
+                try:
+                    new_doc = Document(
+                        doc.text, page_title=doc.title, metadata={'url': doc.url}
+                    )
+                    langchain_documents.append(new_doc)
+                except Exception as e:
+                    logger.debug(e)
+                    continue
         return langchain_documents
